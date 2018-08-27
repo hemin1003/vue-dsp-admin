@@ -53,7 +53,7 @@ export default {
                // _self.$cookies.set('qbsusername',_self.datas.name);
                 // _self.$cookies.set('qbsusername',_self.datas.name);
                localStorage.setItem('ms_username',_self.datas.name);
-              _self.$router.push('/index');
+              _self.$router.push('/ad_userinfo');
             }
         }, function(err){
             console.log(err);

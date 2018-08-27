@@ -1,11 +1,11 @@
 <template>
     <div class="sidebar">
         <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
-           <!--  <template v-for="(item,index) in items">
+            <template v-for="(item,index) in items">
                 <template v-if="item.children">
                     <el-submenu :index="item.id" @click.native="menuFn(index)">
                         <template slot="title"><i :class="item.icon"></i>{{ item.menuName }}</template>
-                        <el-menu-item v-for="(subItem,i) in item.children" @click="menuChildFn(index,i)" :key="i" :index="subItem.id">{{ subItem.menuName }}
+                        <el-menu-item v-for="(subItem,i) in item.children" @click="menuChildFn(index,i)" :key="i" :index="subItem.src">{{ subItem.menuName }}
                         </el-menu-item>
                     </el-submenu>
                 </template>
@@ -14,9 +14,9 @@
                         <i :class="item.icon"></i>{{ item.menuName }}
                     </el-menu-item>
                 </template>
-            </template> -->
+            </template>
 
-            <template v-for="item in items">
+           <!--  <template v-for="item in items">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index">
                         <template slot="title"><i :class="item.icon"></i>{{ item.title }}</template>
@@ -29,7 +29,7 @@
                         <i :class="item.icon"></i>{{ item.title }}
                     </el-menu-item>
                 </template>
-            </template>
+            </template> -->
         </el-menu>
     </div>
 </template>
@@ -160,13 +160,13 @@
                 }else {
                     // console.log(_self.items[0].title);
                     // console.log(res.data[0].menuName);
-                    // _self.items = res.data;
-                    // console.log(_self.items);
-                    // for(var i = 0,len = res.data.length;i < len; i++) {
-                    //     // _self.items[i].title = res.data[i].menuName
-                    //     _self.Ids[i] = res.data[i].id;
-                    // }
-                    // console.log(_self.Ids);
+                    _self.items = res.data;
+                    console.log(_self.items);
+                    for(var i = 0,len = res.data.length;i < len; i++) {
+                        // _self.items[i].title = res.data[i].menuName
+                        _self.Ids[i] = res.data[i].id;
+                    }
+                    console.log(_self.Ids);
                 }
             }, function(err){
                 console.log(err);
@@ -178,8 +178,8 @@
                 var _self = this;
                 _self.$axios.get('http://182.92.82.188:8280/manage/sys/menu/getUserMenu?parentId='+Id+'&isUserMenuTree=true').then(function(res){
                     // 响应成功回调
-                    // console.log(res.data);
-                    // _self.items[i].children = res.data;
+                    _self.items[i].children = res.data;
+
                 }, function(err){
                     console.log(err);
                 })
@@ -197,6 +197,7 @@
                                 _self.touchData.push(id);
                                 console.log("第一次点");
                                 _self.ajaxInit(id,index);
+                                console.log(_self.touchData);
                             }
                         }
                     }
@@ -204,7 +205,7 @@
                     _self.ajaxInit(id,index);
                     _self.touchData.push(id);
                 }
-                console.log(_self.touchData);
+                
             },
             menuChildFn(index,i) {
                 var _self = this;
