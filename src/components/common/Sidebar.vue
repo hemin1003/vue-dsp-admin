@@ -151,10 +151,8 @@
         },
         mounted(){
             var _self = this;
-            console.log('666666');
             _self.$axios.get('http://182.92.82.188:8280/manage/sys/menu/getUserMenu?parentId=1&isUserMenuTree=true').then(function(res){
                 // 响应成功回调
-                console.log(typeof(res.data));
                 if(typeof(res.data) != "object" ) {
                     _self.$router.push('/login');
                 }else {
@@ -176,7 +174,7 @@
         methods: {
             ajaxInit(Id,i) {
                 var _self = this;
-                _self.$axios.get('http://182.92.82.188:8280/manage/sys/menu/getUserMenu?parentId='+Id+'&isUserMenuTree=true').then(function(res){
+                _self.$axios.get(this.hostname+'/manage/sys/menu/getUserMenu?parentId='+Id+'&isUserMenuTree=true').then(function(res){
                     // 响应成功回调
                     _self.items[i].children = res.data;
 

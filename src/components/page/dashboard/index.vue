@@ -32,7 +32,7 @@
 			    stripe
 			    style="width: 100%">
 			    <el-table-column
-			      prop="ID"
+			      prop="id"
 			      label="ID"
 			      >
 			    </el-table-column>
@@ -42,18 +42,18 @@
 			      width="220">
 			    </el-table-column>
 			    <el-table-column
-			      prop="balance"
+			      prop="budget"
 			      label="总预算(剩余)"
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="Allprice"
+			      prop="consumption"
 			      label="总消耗"
 			      
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="Creatdate"
+			      prop="createDate"
 			      label="创建时间"
 			      >
 			    </el-table-column>
@@ -64,16 +64,17 @@
                         off-text = "暂停"
                         on-color="#00D1B2"
                         off-color="#dadde5" 
-                        v-model="scope.row.turn"
+                        :disabled="scope.row.btn_stauts"
+                        v-model="scope.row.onlineStatus"
                         >
 					  </el-switch>
-					  <el-tag type="success">{{scope.row.status}}</el-tag>
+					  <el-tag type="success">{{scope.row.proveStatusTxt}}</el-tag>
 					</template>
 			    </el-table-column>
 				<el-table-column
 			    >
 			      <template scope="scope2">
-			      	<router-link :to="scope2.row.link"><span class="table_detail">详情</span></router-link>
+			      	<router-link :to="{path: '/details',query: {id: scope2.row.link}}"><span class="table_detail">详情</span></router-link>
 			      </template>
 			    </el-table-column>
 		  	</el-table>
@@ -83,7 +84,7 @@
             <el-pagination
                     @current-change ="handleCurrentChange"
                     layout="prev, pager, next"
-                    :total="100">
+                    :total="allPage">
             </el-pagination>
         </div>
 	</div>
@@ -106,22 +107,64 @@
 		          name: '上海为行投资管理有限公司',
 		          status: '审核中',
 		          link: "/login"
-		        }, {
-		          ID: "1108118899",
-		          Creatdate: '2016-05-03',
-		          balance: "76178 (0)",
-		          Allprice: "76179.42",
-		          turn: false,
-		          name: '广州幂动科技有限公司',
-		          status: '通过',
-		          link: "/basetable"
-		        }]
+		        }],
+		        allPage: ''
 			}
 		},
+		mounted() {
+			this.Init();
+		},
 		methods:{
-           change:function(index,row){
-                console.log(index,row);
-           }
+			Init() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+					page: 1,
+					rows: 10
+				};
+				this.$axios.get(this.hostname+'/manage/dsp/userInfo/admin/list',{params: datas}).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+
+                    that.allPage = res.data.total;
+                    that.tableData = res.data.rows;
+                     
+                    // 特殊处理
+                    for(var i = 0, Len = that.tableData.length; i < Len; i++) {
+
+                    	that.tableData[i].btn_stauts = true;
+                    	that.tableData[i].link = that.tableData[i].id;
+                    	// 审核状态判断
+                    	switch(that.tableData[i].proveStatus) {
+	                    	case 0:
+	                    		that.tableData[i].proveStatusTxt = "未提交";
+	                    		break;
+	                    	case 1:
+	                    		that.tableData[i].proveStatusTxt = "审核中";
+	                    		break;
+	                    	case 2:
+	                    		that.tableData[i].proveStatusTxt = "审核成功";
+	                    		that.tableData[i].btn_stauts = null
+	                    		break;
+	                    	case 3:
+	                    		that.tableData[i].proveStatusTxt = "审核失败";
+	                    		break;
+	                    }
+	                    // 上线状态
+	                    if(that.tableData[i].onlineStatus == 0) {
+	                    	that.tableData[i].onlineStatus == false
+	                    }else {
+	                    	that.tableData[i].onlineStatus == true
+	                    }
+                    }
+                }, function(err){
+                    console.log(err);
+                })
+			},
+            change:function(index,row){
+            	console.log(index,row);
+            }
         }
 	}
 </script>
@@ -129,6 +172,9 @@
 	.tables {
 		margin-top: 20px;
 	}
+		.tables tr {
+			height: 60px;
+		}
 		.table_detail {
 			border: 1px solid gray;
 			padding: 3px 12px;

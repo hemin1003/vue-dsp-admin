@@ -15,7 +15,11 @@ export default new Router({
             children:[
                 {
                     path: '/',
-                    component: resolve => require(['../components/page/dashboard'], resolve)
+                    component: resolve => require(['../components/page/dashboard/index.vue'], resolve),
+                },
+                {
+                    path: '/details',
+                    component: resolve => require(['../components/page/dashboard/details.vue'], resolve) 
                 },
                 {
                     path: '/basetable',

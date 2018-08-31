@@ -16,6 +16,7 @@ Vue.use(VueResource);
 
 axios.defaults.withCredentials=true;
 Vue.prototype.$axios = axios;
+Vue.prototype.hostname = "http://182.92.82.188:8280";
 // Vue.prototype.url_token = function() {
 // 	return "?token="+this.$cookies.get('token');
 // }
