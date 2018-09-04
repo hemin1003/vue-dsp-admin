@@ -9,7 +9,7 @@
 					<el-button type="primary" plain><i class="el-icon-document"></i><span>复制</span></el-button>
 				</div>
 				<div class="out_btn" v-if="btn_turn">
-					<el-button type="primary"><span>保存</span></el-button>
+					<el-button type="primary" @click="saveFn"><span>保存</span></el-button>
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
 				<el-switch 
@@ -29,12 +29,12 @@
 					<span class="unit_infro">为您的广告主取一个唯一的名字，建议客户名称与营业执照一致</span>
 				</el-form-item>
 				
-				<el-form-item label="邮箱" prop="url">
+				<el-form-item label="邮箱" prop="email">
 					<el-input v-model="ruleForm.email" :disabled="Disabled"></el-input>
 					<span class="unit_infro">填一个广告主的邮箱账号，可以为广告主申请用这个邮箱来登录查看信息</span>
 				</el-form-item>
 
-				<el-form-item label="类型" prop="url">
+				<el-form-item label="类型" prop="action">
 					<el-select v-model="ruleForm.action" style="width: 100%;" :disabled="Disabled">
 				    	<el-option label="理财" value="action"></el-option>
 				    	<el-option label="哦哦哦" value="download"></el-option>
@@ -64,12 +64,14 @@
 				
 				<!--  prop="title" -->
 				<el-form-item label="营业执照">
+					<!-- :action="UploadUrl()" -->
 					<el-upload
 					  :disabled="Disabled"
+					  :data="uploadDatas"
+					  :action="this.hostname+'/manage/sys/fileHandle/upload'"
 					  class="avatar-uploader"
-					  action="https://jsonplaceholder.typicode.com/posts/"
 					  :show-file-list="false"
-					  :on-success="handleAvatarSuccess"
+					  :on-success="yyleAvatarSuccess"
 					  :before-upload="beforeAvatarUpload">
 					  <img v-if="ruleForm.businessLicenseUrl" :src="ruleForm.businessLicenseUrl" class="avatar">
 					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -80,8 +82,11 @@
 					<el-upload
 					  :disabled="Disabled"
 					  class="avatar-uploader"
-					  action="https://jsonplaceholder.typicode.com/posts/"
+					  :data="uploadDatas"
+					  :action="this.hostname+'/manage/sys/fileHandle/upload'"
 					  :show-file-list="false"
+					  :on-preview="IcpView"
+					  :on-remove="handleRemove"
 					  :on-success="handleAvatarSuccess"
 					  :before-upload="beforeAvatarUpload">
 					  <img v-if="ruleForm.icpUrl" :src="ruleForm.icpUrl" class="avatar">
@@ -91,30 +96,35 @@
 				
 				<el-form-item label="其他资质">
 					<el-upload
+					  :limit="10"
 					  :disabled="Disabled"
-					  action="https://jsonplaceholder.typicode.com/posts/"
+					  :data="uploadDatas"
+					  :action="this.hostname+'/manage/sys/fileHandle/upload'"
 					  list-type="picture-card"
+					  :file-list="fileList"
 					  :on-preview="handlePictureCardPreview"
+					  :on-success="otherAvatarSuccess"
 					  :on-remove="handleRemove">
 					  <i class="el-icon-plus"></i>
 					</el-upload>
-					<el-dialog :visible.sync="dialogVisible">
+					<el-dialog visible.sync="dialogVisible">
 					  <img width="100%" :src="ruleForm.othersUrl" alt="">
 					</el-dialog>
 				</el-form-item>
 
 				<el-form-item label="邮箱通知">
 					<el-switch
+					  @change="mailStautsFn"
 					  on-text ="启用"
                       off-text = "禁用"
 					  :disabled="Disabled"
-					  v-model="ruleForm.isNotifyByEmail"
+					  v-model="ruleForm.isNotifyByEmailStauts"
 					  active-color="#13ce66"
 					  inactive-color="#ff4949">
 					</el-switch>
 				</el-form-item>
 
-				<el-form-item label="备注" prop="url">
+				<el-form-item label="备注" prop="descInfo">
 					<el-input
 					  :disabled="Disabled"
 					  type="textarea"
@@ -136,44 +146,32 @@
 	export default {
 		data() {
 			return {
+				uploadDatas: {
+					bucket: "mddsp",
+					ohtersPic: []
+				},
+				fileList: [],
 				mailVal: true,
 				msg: "返回列表",
 				turn: false,
 				btn_turn: false,
 				imageUrl: "",
 				Disabled: "",
-				uploaderData: ["图片一","图片二","图片三"],
-				ruleForm: {
-		          name: '',
-		          url: '',
-		          desc: '',
-		          action: 'action',
-		          types: 'no',
-		          exposure: '',
-		          Clicktypes: 'no',
-		          Click: '',
-		          message_ad: 'kinds',
-		          M_type: 'edu',
-		          title: ''
-		        },
+				ruleForm: {},
 		        rules: {
 		          name: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
-		          url: [
+		          email: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
-		          desc: [
+		          action: [
 		            { required: true, message: '请填写活动形式', trigger: 'blur' }
-		          ],
-		          title: [
-		          	{ required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ]
 		        }
 		      }
 			},
 		mounted() {
-			console.log(this.hostname);
 			this.Init();
 		},
 		methods: {
@@ -187,7 +185,13 @@
                     // 响应成功回调
                     console.log(res.data);
                     that.ruleForm = res.data;
-
+                    that.uploadDatas.ohtersPic = that.ruleForm.othersUrl.split(',');
+                    // 多张图片上传渲染
+                    for(var i = 0,L = that.ruleForm.othersUrl.split(',').length; i < L; i++) {
+                    	that.fileList.push({url: that.ruleForm.othersUrl.split(',')[i]});
+                    	// that.fileList = [{url: "http://peiema7sz.bkt.clouddn.com/mddsp-20180904174116@|@jiantou.png"},{url: "http://peiema7sz.bkt.clouddn.com/mddsp-20180904174116@|@jiantou.png"}];
+                    }
+                    console.log(that.fileList);
                     // 邮箱是否通知
                     if(that.ruleForm.isNotifyByEmail == 0) {
 
@@ -206,31 +210,126 @@
 			cancelFn() {
 				this.Disabled = "";
 				this.btn_turn = false;
+				this.Init();
 			},
-			getAds() {
-				let name = this.ruleForm.message_ad;
-				if(name == "kinds") {
-					this.uploaderData = ["图片一","图片二","图片三"];
-				}else if(name == "direction") {
-					this.uploaderData = ["图片"];
-				}else if(name == "big") {
-					this.uploaderData = ["大图"];
-				}
+			IcpView(res,file) {
+				console.log(res+"66:"+file);
 			},
 			handleAvatarSuccess(res, file) {
+				if(res.resultCode == 200) {
+					this.ruleForm.icpUrl = res.data;
+				}
+				console.log(res);
 		        this.imageUrl = URL.createObjectURL(file.raw);
+		        console.log("666"+this.imageUrl);
+		    },
+		    otherAvatarSuccess(res) {
+		    	console.log(res);
+		    	if(res.resultCode == 200) {
+		    		this.uploadDatas.ohtersPic.push(res.data);
+					this.ruleForm.othersUrl = res.data;
+				}
+				console.log(this.uploadDatas);
+		    },
+		    yyleAvatarSuccess(res) {
+		    	if(res.resultCode == 200) {
+					this.ruleForm.businessLicenseUrl = res.data;
+				}
 		    },
 		    beforeAvatarUpload(file) {
-		        const isJPG = file.type === 'image/jpeg';
-		        const isLt2M = file.size / 1024 / 1024 < 2;
-		        if (!isJPG) {
-		          this.$message.error('上传头像图片只能是 JPG 格式!');
-		        }
-		        if (!isLt2M) {
-		          this.$message.error('上传头像图片大小不能超过 2MB!');
-		        }
-		        return isJPG && isLt2M;
-		    }
+		        // const isJPG = file.type === 'image/jpeg';
+		        // const isLt2M = file.size / 1024 / 1024 < 2;
+		        // if (!isJPG) {
+		        //   this.$message.error('上传头像图片只能是 JPG 格式!');
+		        // }
+		        // if (!isLt2M) {
+		        //   this.$message.error('上传头像图片大小不能超过 2MB!');
+		        // }
+		        // return isJPG && isLt2M;
+		    },
+		    UploadUrl() {
+
+		    },
+		    // 删除上传图片
+		    handleRemove(file) {
+		    	console.log(file.url);
+		    	for(var i = 0, L = this.uploadDatas.ohtersPic.length; i < L; i++) {
+		    		if(file.url == this.uploadDatas.ohtersPic[i]) {
+		    			console.log(i);
+		    			this.uploadDatas.ohtersPic.splice(i,1);
+		    		}
+		    	}
+		    },
+		    mailStautsFn(val) {
+		    	if(val){
+		    		that.ruleForm.isNotifyByEmail = 1
+		    	}else {
+		    		that.ruleForm.isNotifyByEmail = 0
+		    	}
+		    },
+		    upload(file) {
+		    	var that = this;
+		    	console.log(file.file);
+		    	var params = new URLSearchParams();
+				params.append('id', this.$route.query.id);
+				params.append('bucket', "mddsp");
+				params.append('fileName', file.file);
+                // console.log(formData);
+               	// var hostname = "http://192.168.0.205"
+                that.$axios.post(this.hostname+'/manage/sys/fileHandle/upload',params).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+                    that.ruleForm = res.data;
+
+                    // 邮箱是否通知
+                    if(that.ruleForm.isNotifyByEmail == 0) {
+                    	that.ruleForm.isNotifyByEmailStauts = false;
+                    }else {
+                    	that.ruleForm.isNotifyByEmailStauts = true;
+                    }
+                }, function(err){
+                    console.log(err);
+                })
+		    },
+		    // 保存操作
+			saveFn() {
+				var that = this;
+				var params = new URLSearchParams();
+				params.append('id', this.$route.query.id);
+				params.append('name', that.ruleForm.name);
+				params.append('email', that.ruleForm.email);
+				params.append('level', that.ruleForm.level);
+				params.append('contactName', that.ruleForm.contactName);
+				params.append('contactAddress', that.ruleForm.contactAddress);
+				params.append('contactTel', that.ruleForm.contactTel);
+				params.append('businessLicenseUrl', that.ruleForm.businessLicenseUrl);
+				params.append('icpUrl', that.ruleForm.icpUrl);
+				params.append('othersUrl', that.uploadDatas.ohtersPic);
+				params.append('isNotifyByEmail', that.ruleForm.isNotifyByEmail);
+				params.append('descInfo', that.ruleForm.descInfo);
+				
+
+				this.$axios.post(this.hostname+'/manage/dsp/userInfo/admin/update',params).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+                    if(res.data.resultCode == 200) {
+                    	that.Disabled = "";
+						that.btn_turn = false;
+                    	that.$notify({
+				          title: '成功',
+				          message: res.data.message,
+				          type: 'success'
+				        });
+                    }else {
+                    	that.$notify.error({
+				          title: '错误',
+				          message: res.data.message
+				        });
+                    }
+                }, function(err){
+                    console.log(err);
+                })
+			},
     	}
 	}
 </script>
@@ -297,7 +396,8 @@
 		    cursor: pointer;
 		    position: relative;
 		    overflow: hidden;
-		    width: 200px;
+		    width: 150px;
+		    height: 150px;
 		  }
 		  .avatar-uploader .el-upload:hover {
 		    border-color: #409EFF;
@@ -305,14 +405,16 @@
 		  .avatar-uploader-icon {
 		    font-size: 28px;
 		    color: #8c939d;
-		    width: 178px;
-		    height: 178px;
-		    line-height: 178px;
+		    width: 130px;
+		    height: 130px;
+		    line-height: 130px;
 		    text-align: center;
 		  }
 		  .avatar {
-		    width: 178px;
-		    height: 178px;
+		    width: 130px;
+		    height: 130px;
+		    margin: auto;
+		    margin-top: 10px;
 		    display: block;
 		  }
 </style>

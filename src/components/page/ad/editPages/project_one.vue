@@ -7,15 +7,16 @@
 					<el-button type="primary" @click="EditFn" plain><i class="el-icon-edit"></i><span>编辑</span></el-button>
 				</div>
 				<div class="out_btn" v-if="btn_turn">
-					<el-button type="primary"><span>保存</span></el-button>
+					<el-button type="primary" @click="saveFn"><span>保存</span></el-button>
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
 				<el-switch 
+					@change="change(ruleForm.turn)"
 			        on-text ="上线"
                     off-text = "暂停"
                     on-color="#00D1B2"
                     off-color="#dadde5" 
-                    v-model="turn"
+                    v-model="ruleForm.turn"
                     >
 				</el-switch>
 			</div>
@@ -27,13 +28,13 @@
 					<span class="unit_infro">为您的广告项目取一个唯一的名称，格式如下：广告主名称_产品名称，10个字以内</span>
 				</el-form-item>
 				
-				<el-form-item label="合同编号" prop="num">
-					<el-input v-model="ruleForm.num" :disabled="Disabled"></el-input>
+				<el-form-item label="合同编号" prop="pId">
+					<el-input v-model="ruleForm.pId" :disabled="Disabled"></el-input>
 					<span class="unit_infro">写一个唯一的合同编号信息，若没有签订合同，请根据需求填写下项目编号信息：投放日期_广告主名称缩写_该广告主投放的项目编号</span>
 				</el-form-item>
 
 				<el-form-item label="商务邮箱">
-					<div>niubi@dsdsdsds.com</div>
+					<div>{{ruleForm.businessEmail}}</div>
 					<span class="unit_infro">您的专属客服代表</span>
 				</el-form-item>
 			</el-form>
@@ -48,21 +49,20 @@
 				turn: false,
 				btn_turn: false,
 				Disabled: "",
-				ruleForm: {
-		          name: '',
-		          num: '',
-		          action: 'action',
-		        },
+				ruleForm: {},
 		        rules: {
 		          name: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
-		          num: [
+		          pId: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ]
 		        }
 		      }
 			},
+		mounted() {
+			this.Init();
+		},
 		methods: {
 			goBack() {
 				this.$router.go(-1);
@@ -74,6 +74,96 @@
 			cancelFn() {
 				this.Disabled = "";
 				this.btn_turn = false;
+				this.Init();
+			},
+			// 保存操作
+			saveFn() {
+				var that = this;
+				var params = new URLSearchParams();
+				params.append('id', this.$route.query.id);
+				params.append('name', that.ruleForm.name);
+				params.append('pId', that.ruleForm.pId);
+				this.$axios.post(this.hostname+'/manage/dsp/project/admin/update',params).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+                    if(res.data.resultCode == 200) {
+                    	that.Disabled = "";
+						that.btn_turn = false;
+                    	that.$notify({
+				          title: '成功',
+				          message: res.data.message,
+				          type: 'success'
+				        });
+                    }else {
+                    	that.$notify.error({
+				          title: '错误',
+				          message: res.data.message
+				        });
+                    }
+                }, function(err){
+                    console.log(err);
+                })
+			},
+			// 初始渲染数据fn
+			Init() {
+				var that = this;
+				console.log(this.$route.query.id);
+				var datas = {
+					id: this.$route.query.id
+				}
+				this.$axios.get(this.hostname+'/manage/dsp/project/admin/toEdit',{params: datas}).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+                    that.ruleForm = res.data;
+                    if(that.ruleForm.onlineStatus == 0) {
+                    	that.ruleForm.turn = false;
+                    }else {
+                    	that.ruleForm.turn = true;
+                    }
+                }, function(err){
+                    console.log(err);
+                })
+			},
+			// 上下线操作
+			change(val) {
+				console.log(val);
+				var Value;
+				if(val) {
+					Value = 1
+				}else {
+					Value = 0
+				}
+				// 调用公共函数
+				this.StatusFn(Value);
+				// 更新状态
+				setTimeout(this.Init,200);
+			},
+			// 上下线操作公共function
+			StatusFn(statusVal) {
+				var that = this;
+				var params = new URLSearchParams();
+				params.append('id', this.$route.query.id);
+				params.append('onlineStatus', statusVal);
+				this.$axios.post(this.hostname+'/manage/dsp/project/admin/changeStatus',params).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+                    if(res.data.resultCode == 200) {
+                    	that.Disabled = "";
+						that.btn_turn = false;
+                    	that.$notify({
+				          title: '成功',
+				          message: res.data.message,
+				          type: 'success'
+				        });
+                    }else {
+                    	that.$notify.error({
+				          title: '错误',
+				          message: res.data.message
+				        });
+                    }
+                }, function(err){
+                    console.log(err);
+                })
 			}
     	}
 	}

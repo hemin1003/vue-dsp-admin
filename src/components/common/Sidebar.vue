@@ -185,6 +185,7 @@
             menuFn(index) {
                 var _self = this;
                 var id = _self.Ids[index];
+
                 // 判断是否是第一次点击
                 if(_self.touchData.length > 0) {
                     for(let i = 0,L = _self.touchData.length; i < L;i++) {
@@ -195,7 +196,10 @@
                                 _self.touchData.push(id);
                                 console.log("第一次点");
                                 _self.ajaxInit(id,index);
-                                console.log(_self.touchData);
+                            }else {
+                                // _self.touchData.push(id);
+                                console.log("bug");
+                                _self.ajaxInit(id,index);
                             }
                         }
                     }

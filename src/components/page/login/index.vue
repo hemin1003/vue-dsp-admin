@@ -46,7 +46,7 @@ export default {
         _self.initLogin("密码不能为空");
       }else {
         // 传统写法 http://182.92.82.188:8280
-        _self.$axios.post('http://182.92.82.188:8280/manage/sys/user/admin/login?userName='+_self.datas.name+'&pwd='+md5(_self.datas.pwd)).then(function(res){
+        _self.$axios.post(_self.hostname+'/manage/sys/user/admin/login?userName='+_self.datas.name+'&pwd='+md5(_self.datas.pwd)).then(function(res){
             // 响应成功回调
             // console.log(res.data);
             if(res.data.resultCode != 200) {

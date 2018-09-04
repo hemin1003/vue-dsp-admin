@@ -14,9 +14,11 @@ Vue.use(VueCookies)
 Vue.use(ElementUI);
 Vue.use(VueResource);
 
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.withCredentials=true;
 Vue.prototype.$axios = axios;
-Vue.prototype.hostname = "http://182.92.82.188:8280";
+// 192.168.0.205
+Vue.prototype.hostname = "http://182.92.82.188:8280";  //http://182.92.82.188:8280
 // Vue.prototype.url_token = function() {
 // 	return "?token="+this.$cookies.get('token');
 // }

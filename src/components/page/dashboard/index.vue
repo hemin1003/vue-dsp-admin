@@ -65,7 +65,7 @@
                         on-color="#00D1B2"
                         off-color="#dadde5" 
                         :disabled="scope.row.btn_stauts"
-                        v-model="scope.row.onlineStatus"
+                        v-model="scope.row.Status"
                         >
 					  </el-switch>
 					  <el-tag type="success">{{scope.row.proveStatusTxt}}</el-tag>
@@ -153,9 +153,9 @@
 	                    }
 	                    // 上线状态
 	                    if(that.tableData[i].onlineStatus == 0) {
-	                    	that.tableData[i].onlineStatus == false
+	                    	that.tableData[i].Status = false
 	                    }else {
-	                    	that.tableData[i].onlineStatus == true
+	                    	that.tableData[i].Status = true
 	                    }
                     }
                 }, function(err){
