@@ -5,21 +5,21 @@
 			<div class="unit_o_right">
 				<div class="enter_btn" v-if="!btn_turn">
 					<el-button type="primary" @click="EditFn" plain><i class="el-icon-edit"></i><span>编辑</span></el-button>
-					<el-button type="danger" plain><i class="el-icon-delete"></i><span>删除</span></el-button>
-					<el-button type="primary" plain><i class="el-icon-document"></i><span>复制</span></el-button>
+					<!-- <el-button type="danger" plain><i class="el-icon-delete"></i><span>删除</span></el-button>
+					<el-button type="primary" plain><i class="el-icon-document"></i><span>复制</span></el-button> -->
 				</div>
 				<div class="out_btn" v-if="btn_turn">
 					<el-button type="primary" @click="saveFn"><span>保存</span></el-button>
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
-				<el-switch 
+				<!-- <el-switch 
 			        on-text ="上线"
                     off-text = "暂停"
                     on-color="#00D1B2"
                     off-color="#dadde5" 
                     v-model="turn"
                     >
-				</el-switch>
+				</el-switch> -->
 			</div>
 		</div>
 		<div class="unit_o_content">
@@ -35,9 +35,8 @@
 				</el-form-item>
 
 				<el-form-item label="类型" prop="action">
-					<el-select v-model="ruleForm.action" style="width: 100%;" :disabled="Disabled">
-				    	<el-option label="理财" value="action"></el-option>
-				    	<el-option label="哦哦哦" value="download"></el-option>
+					<el-select v-model="ruleForm.typeName" style="width: 100%;" @change="selectFn($event,item)" :disabled="Disabled">
+				    	<el-option v-for="items in selectType" :label="items.keyStr" :value="items.valueStr"></el-option>
 				    </el-select>
 					<span class="unit_infro">为广告主选择一个正确的类型，可以更好的获取到精准用户</span>
 				</el-form-item>
@@ -118,9 +117,9 @@
 					  on-text ="启用"
                       off-text = "禁用"
 					  :disabled="Disabled"
-					  v-model="ruleForm.isNotifyByEmailStauts"
-					  active-color="#13ce66"
-					  inactive-color="#ff4949">
+					  v-model="mailVal"
+					  on-color="#13ce66"
+					  off-color="#dadde5">
 					</el-switch>
 				</el-form-item>
 
@@ -151,7 +150,7 @@
 					ohtersPic: []
 				},
 				fileList: [],
-				mailVal: true,
+				mailVal: false,
 				msg: "返回列表",
 				turn: false,
 				btn_turn: false,
@@ -168,16 +167,18 @@
 		          action: [
 		            { required: true, message: '请填写活动形式', trigger: 'blur' }
 		          ]
-		        }
+		        },
+		        selectType: [],
+		        typeid: "",
+		        typename: ""
 		      }
 			},
 		mounted() {
-			this.Init();
+			this.Init(1);
 		},
 		methods: {
-			Init() {
+			Init(turn) {
 				var that = this;
-				console.log(this.$route.query.id);
 				var datas = {
 					id: this.$route.query.id
 				}
@@ -186,16 +187,37 @@
                     console.log(res.data);
                     that.ruleForm = res.data;
                     that.uploadDatas.ohtersPic = that.ruleForm.othersUrl.split(',');
-                    // 多张图片上传渲染
-                    for(var i = 0,L = that.ruleForm.othersUrl.split(',').length; i < L; i++) {
-                    	that.fileList.push({url: that.ruleForm.othersUrl.split(',')[i]});
-                    	// that.fileList = [{url: "http://peiema7sz.bkt.clouddn.com/mddsp-20180904174116@|@jiantou.png"},{url: "http://peiema7sz.bkt.clouddn.com/mddsp-20180904174116@|@jiantou.png"}];
+                    that.selectDataFn();
+                    if(turn == 1) {
+                    	// 多张图片上传渲染
+	                    for(var i = 0,L = that.ruleForm.othersUrl.split(',').length; i < L; i++) {
+	                    	that.fileList.push({url: that.ruleForm.othersUrl.split(',')[i]});
+	                    	// that.fileList = [{url: "http://peiema7sz.bkt.clouddn.com/mddsp-20180904174116@|@jiantou.png"},{url: "http://peiema7sz.bkt.clouddn.com/mddsp-20180904174116@|@jiantou.png"}];
+	                    }
                     }
-                    console.log(that.fileList);
                     // 邮箱是否通知
                     if(that.ruleForm.isNotifyByEmail == 0) {
-
+                    	that.mailVal = false;
+                    	that.ruleForm.isNotifyByEmailStauts = false;
+                    }else {
+                    	that.mailVal = true;
+                    	that.ruleForm.isNotifyByEmailStauts = true;
                     }
+                }, function(err){
+                    console.log(err);
+                })
+			},
+			// 下拉菜单Init
+			selectDataFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					busNum: "b001"
+				}
+				this.$axios.get(this.hostname+'/manage/dsp/param/listDspConfigData',{params: datas}).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+                    that.selectType = res.data;
                 }, function(err){
                     console.log(err);
                 })
@@ -261,35 +283,21 @@
 		    	}
 		    },
 		    mailStautsFn(val) {
+		    	console.log(val);
 		    	if(val){
-		    		that.ruleForm.isNotifyByEmail = 1
+		    		this.ruleForm.isNotifyByEmail = 1
 		    	}else {
-		    		that.ruleForm.isNotifyByEmail = 0
+		    		this.ruleForm.isNotifyByEmail = 0
 		    	}
 		    },
-		    upload(file) {
-		    	var that = this;
-		    	console.log(file.file);
-		    	var params = new URLSearchParams();
-				params.append('id', this.$route.query.id);
-				params.append('bucket', "mddsp");
-				params.append('fileName', file.file);
-                // console.log(formData);
-               	// var hostname = "http://192.168.0.205"
-                that.$axios.post(this.hostname+'/manage/sys/fileHandle/upload',params).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-                    that.ruleForm = res.data;
-
-                    // 邮箱是否通知
-                    if(that.ruleForm.isNotifyByEmail == 0) {
-                    	that.ruleForm.isNotifyByEmailStauts = false;
-                    }else {
-                    	that.ruleForm.isNotifyByEmailStauts = true;
-                    }
-                }, function(err){
-                    console.log(err);
-                })
+		    // 下拉选项选择
+		    selectFn(event, item) {
+		    	for(var i = 0, L = this.selectType.length; i < L; i++) {
+		    		if(this.selectType[i].valueStr == event) {
+		    			this.typeid = this.selectType[i].valueStr
+		    			this.typename = this.selectType[i].keyStr
+		    		}
+		    	}
 		    },
 		    // 保存操作
 			saveFn() {
@@ -298,6 +306,8 @@
 				params.append('id', this.$route.query.id);
 				params.append('name', that.ruleForm.name);
 				params.append('email', that.ruleForm.email);
+				params.append('typeId', that.typeid);
+				params.append('typeName', that.typename);
 				params.append('level', that.ruleForm.level);
 				params.append('contactName', that.ruleForm.contactName);
 				params.append('contactAddress', that.ruleForm.contactAddress);
