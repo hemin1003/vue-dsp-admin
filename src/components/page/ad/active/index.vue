@@ -37,7 +37,7 @@
 			    :cell-class-name="cell"
 			    style="width: 100%">
 			    <el-table-column
-			      prop="ID"
+			      prop="id"
 			      label="ID"
 			      >
 			    </el-table-column>
@@ -45,14 +45,14 @@
 			      label="名称"
 			    >
 			      <template scope="scope_name">
-			      	<router-link class="names" to="/ad_active">{{scope_name.row.name}}</router-link>
+			      	<router-link class="names" to="/ad_active">{{scope_name.row.base_name}}</router-link>
 			      </template>
 			    </el-table-column>
 			    <el-table-column
 			      label="所属广告项目"
 			      >
 			      <template scope="scope_ads">
-			      	<router-link class="names" to="/ad_active">{{scope_ads.row.alone_ads}}</router-link>
+			      	<router-link class="names" to="/ad_active">{{scope_ads.row.pName}}</router-link>
 			      </template>
 			    </el-table-column>
         		<!-- <el-popover
@@ -65,50 +65,50 @@
 				</el-popover> -->
 			    <el-table-column
 			      header-cell-class-name="special_cell"
-			      prop="requestNum"
+			      prop="reqNum"
 			      label="请求量"
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="exposureNum"
+			      prop="impressionNum"
 			      label="曝光量"
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="exposureNum"
+			      prop="clickNum"
 			      label="点击"
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="exposureNum"
+			      prop="ctr"
 			      label="点击率"
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="exposureNum"
+			      prop="ecpm"
 			      label="eCPM"
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="exposureNum"
+			      prop="acp"
 			      label="ACP"
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="Allprice"
+			      prop="consumption"
 			      label="消耗"
 			      >
 			    </el-table-column>
-			    <el-table-column property="turn" label="状态">
+			    <el-table-column label="状态">
 				    <template scope="scope">
-				    <!-- @change="change(scope.$index,scope.row)" -->
 				      <el-switch 
+				        @change="change(scope.$index,scope.row)"
                         v-if="scope.row.switch"
 				        on-text ="上线"
                         off-text = "暂停"
                         on-color="#00D1B2"
                         off-color="#dadde5" 
-                        v-model="scope.row.turn"
+                        v-model="scope.row.Status"
                         >
 					  </el-switch>
 					</template>
@@ -116,7 +116,7 @@
 				<el-table-column
 			    >
 			      <template scope="scope2" v-if="scope2.row.switch">
-			      	<router-link :to="scope2.row.link"><span class="table_detail">详情</span></router-link>
+			      	<router-link :to="{path: '/active_detail',query: {id: scope2.row.link}}"><span class="table_detail">详情</span></router-link>
 			      </template>
 			    </el-table-column>
 		  	</el-table>
@@ -126,7 +126,7 @@
             <el-pagination
                     @current-change ="handleCurrentChange"
                     layout="prev, pager, next"
-                    :total="100">
+                    :total="allPage">
             </el-pagination>
         </div>
 	</div>
@@ -141,51 +141,12 @@
 		          region: ''
 		        },
 		        timeVal: '',
-		        tableData: [{
-		          ID: "1108118799",
-		          Allprice: "",
-		          turn: true,
-		          name: '上海为行',
-		          link: "/login",
-		          alone_ads: "为行投资",
-		          requestNum: "",
-		          exposureNum: "",
-		          clickIng: "",
-		          clickRate: "",
-		          ecpm: "",
-		          acp: "",
-		          switch: true
-		        }, {
-		          ID: "1108118899",
-		          Allprice: "￥76179.42",
-		          turn: false,
-		          name: '幂动科技',
-		          link: "/active_detail",
-		          alone_ads: "为行投资",
-		          requestNum: "610604251",
-		          exposureNum: "4760230",
-		          clickIng: "158277",
-		          clickRate: "3.33%",
-		          ecpm: "16.01",
-		          acp: "0.49",
-		          switch: true
-		        }, {
-		          ID: "",
-		          turn: false,
-		          name: '',
-		          link: "/active_detail",
-		          alone_ads: "",
-		          switch: true,
-		          Allprice: "累计￥76179.42",
-		          requestNum: "累计610604251",
-		          exposureNum: "累计4760230",
-		          clickIng: "累计158277",
-		          clickRate: "平均3.33%",
-		          ecpm: "平均16.01",
-		          acp: "平均0.49",
-		          switch: false
-		        }]
+		        tableData: [],
+		        allPage: ''
 			}
+		},
+		mounted() {
+			this.Init();
 		},
 		methods: {
 			handleCurrentChange() {
@@ -195,7 +156,81 @@
 				if(columnIndex === 0) {
 					return "red"
 				}
-			}
+			},
+			// 数据初始化渲染
+			Init() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+					page: 1,
+					rows: 10
+				};
+				this.$axios.get(this.hostname+'/manage/dsp/activity/admin/list',{params: datas}).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data.rows)
+
+                    that.allPage = res.data.total;
+                    that.tableData = res.data.rows;
+                     
+                    // 特殊处理
+                    for(var i = 0, Len = that.tableData.length; i < Len; i++) {
+                    	that.tableData[i].switch = true;
+                    	// that.tableData[i+1].switch = false;
+                    	that.tableData[i].btn_stauts = true;
+                    	that.tableData[i].link = that.tableData[i].id;
+	                    // 上线状态
+	                    if(that.tableData[i].onlineStatus == 0) {
+	                    	that.tableData[i].Status = false
+	                    }else {
+	                    	that.tableData[i].Status = true
+	                    }
+                    }
+                    console.log(res.data);
+                }, function(err){
+                    console.log(err);
+                })
+			},
+			// 上线状态
+			change:function(index,row){
+				console.log(index,row.Status);
+				var Value;
+				if(row.Status) {
+					Value = 1
+				}else {
+					Value = 0
+				}
+				this.statusInitFn(this.tableData[index].id,Value);
+				setTimeout(this.Init,200);
+            	// console.log(index,row);
+            },
+            // 更新状态
+            statusInitFn(ids,val) {
+            	var that = this;
+				var params = new URLSearchParams();
+				params.append('id', ids);
+				params.append('onlineStatus', val);
+				this.$axios.post(this.hostname+'/manage/dsp/activity/admin/changeStatus',params).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+                    if(res.data.resultCode == 200) {
+                    	that.Disabled = "";
+						that.btn_turn = false;
+                    	that.$notify({
+				          title: '成功',
+				          message: res.data.message,
+				          type: 'success'
+				        });
+                    }else {
+                    	that.$notify.error({
+				          title: '错误',
+				          message: res.data.message
+				        });
+                    }
+                }, function(err){
+                    console.log(err);
+                })
+            }
 		}
 	}
 </script>

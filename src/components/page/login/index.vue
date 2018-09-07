@@ -11,7 +11,9 @@
   </div>
 </template>
 
+
 <script>
+import md5 from 'js-md5';
 export default {
   name: 'login',
   data () {
@@ -44,7 +46,7 @@ export default {
         _self.initLogin("密码不能为空");
       }else {
         // 传统写法 http://182.92.82.188:8280
-        _self.$axios.post('http://182.92.82.188:8280/manage/sys/user/admin/login?userName='+_self.datas.name+'&pwd='+_self.datas.pwd).then(function(res){
+        _self.$axios.post(_self.hostname+'/manage/sys/user/admin/login?userName='+_self.datas.name+'&pwd='+md5(_self.datas.pwd)).then(function(res){
             // 响应成功回调
             // console.log(res.data);
             if(res.data.resultCode != 200) {
@@ -53,7 +55,7 @@ export default {
                // _self.$cookies.set('qbsusername',_self.datas.name);
                 // _self.$cookies.set('qbsusername',_self.datas.name);
                localStorage.setItem('ms_username',_self.datas.name);
-              _self.$router.push('/index');
+              _self.$router.push('/ad_userinfo');
             }
         }, function(err){
             console.log(err);

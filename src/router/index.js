@@ -10,12 +10,16 @@ export default new Router({
             redirect: '/login'
         },
         {
-            path: '/index',
+            path: '/ad_userinfo',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
                 {
                     path: '/',
-                    component: resolve => require(['../components/page/dashboard'], resolve)
+                    component: resolve => require(['../components/page/dashboard/index.vue'], resolve),
+                },
+                {
+                    path: '/details',
+                    component: resolve => require(['../components/page/dashboard/details.vue'], resolve) 
                 },
                 {
                     path: '/basetable',
@@ -34,7 +38,7 @@ export default new Router({
                     component: resolve => require(['../components/page/BaseForm.vue'], resolve)
                 },
                 {
-                    path: '/ad_active',
+                    path: '/ad_activity',
                     component: resolve => require(['../components/page/ad/active'], resolve)     // vue-datasource组件
                 },
                 {
