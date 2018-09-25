@@ -18,6 +18,14 @@ export default new Router({
                     component: resolve => require(['../components/page/dashboard/index.vue'], resolve),
                 },
                 {
+                    path: '/ad_message',
+                    component: resolve => require(['../components/page/ad/ad_message/index.vue'], resolve)
+                },
+                {
+                    path: '/ad_report',
+                    component: resolve => require(['../components/page/ad/ad_report/index.vue'], resolve) 
+                },
+                {
                     path: '/details',
                     component: resolve => require(['../components/page/dashboard/details.vue'], resolve) 
                 },
