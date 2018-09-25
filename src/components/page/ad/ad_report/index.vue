@@ -178,17 +178,45 @@ import echarts from 'echarts'
                 //     }
                 // });
 								// 日期数据api
+								console.log(that.show_day);
 								var datas = {
-									// loginUserName: username,
-									page: that.paramdata.currentPage,
-									rows: that.paramdata.returnPage,
-									days: that.show_day
+									dayNum: that.show_day,
+									dateStart: '2018-09-15',
+									dateEnd: '2018-09-25'
 								};
-                that.$http.get(that.hostname+"/manage/htt/httReportAdsCustomChild/admin/list",{params: datas}).then(function(response){
-                    console.log(response);
+                that.$axios.get(that.hostname+"/manage/htt/httReportAdsCustomChild/admin/report",{params: datas}).then(function(response){
+										// response.data.length = 7;
+										console.log(response.data);
+										// object => array
+										var arr = [],
+												arr2 = [],
+												showNumArr = [],
+												clickNumArr = [],
+												consumptionArr = [],
+												Xarr = [];
+
+										for (let i in response.data) {
+												arr2.push(response.data[i]); //属性
+										}
+										for (let i in response.data) {
+												let o = {};
+												o[i] = response.data[i];
+												arr.push(o)
+										}
+										for(var i = 0; i < arr.length; i++) {
+											Xarr.push(Object.keys(arr[i])[0]);
+											if(arr2[i][0] != undefined) {
+												showNumArr.push(arr2[i][0].showNum);
+												clickNumArr.push(arr2[i][0].clickNum);
+												consumptionArr.push(arr2[i][0].consumption);
+											}
+
+											
+										}
+										
                     // x轴数据
-										// that.Xdate = response.data.data.date
-										that.Xdate = ["2018-08-27", "2018-08-28", "2018-08-29", "2018-08-30", "2018-08-31", "2018-09-01", "2018-09-02", "2018-09-03", "2018-09-04"];
+										that.Xdate = Xarr;
+										// that.Xdate = ["2018-08-27", "2018-08-28", "2018-08-29", "2018-08-30", "2018-08-31", "2018-09-01", "2018-09-02", "2018-09-03", "2018-09-04"];
                     // 图表val
 										// that.val_date = response.data.data.total
 										that.val_date = [5290.28, 6618.99, 4339.37, 6703.15, 4463.52, 5159.68, 5742.66, 4208.25, 5383.4, 5367.46]
@@ -251,19 +279,19 @@ import echarts from 'echarts'
 															name:'展示次数',
 															type:'line',
 															stack: '总量',
-															data:[120, 132, 101, 134, 90, 230, 210]
+															data: showNumArr
 													},
 													{
 															name:'点击次数',
 															type:'line',
 															stack: '总量',
-															data:[220, 182, 191, 234, 290, 330, 310]
+															data: clickNumArr
 													},
 													{
 															name:'消耗金额',
 															type:'line',
 															stack: '总量',
-															data:[150, 232, 201, 154, 190, 330, 410]
+															data: consumptionArr
 													},
 													// {
 													// 		name:'直接访问',
