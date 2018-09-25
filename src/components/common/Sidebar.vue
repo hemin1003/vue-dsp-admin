@@ -3,14 +3,14 @@
         <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
             <template v-for="(item,index) in items">
                 <template v-if="item.children">
-                    <el-submenu :index="item.id" @click.native="menuFn(index)">
+                    <el-submenu :index="item.id" @click.native="menuFn(index)" :key="index">
                         <template slot="title"><i :class="item.icon"></i>{{ item.menuName }}</template>
                         <el-menu-item v-for="(subItem,i) in item.children" @click="menuChildFn(index,i)" :key="i" :index="subItem.src">{{ subItem.menuName }}
                         </el-menu-item>
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item :index="item.id">
+                    <el-menu-item :index="item.id" :key="index">
                         <i :class="item.icon"></i>{{ item.menuName }}
                     </el-menu-item>
                 </template>

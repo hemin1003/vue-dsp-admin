@@ -107,7 +107,7 @@
 							<span class="unit_infro">每日单个用户最多能点击这个广告的次数</span>
 						</el-form-item>
 
-						<el-form-item label="排期">
+						<!-- <el-form-item label="排期">
 							<el-table
 							    :data="tableData3"
 							    height="250"
@@ -130,17 +130,113 @@
 							  </el-table>
 							  
 							<span class="unit_infro">选择一个具体的时间定向，只有在选中的时间内才会进行投放</span>
-						</el-form-item>
+						</el-form-item> -->
 					</el-form>
 				</el-collapse-item>
 				<el-collapse-item title="定向控制" name="3">
-			    	<div>简化流程：设计简洁直观的操作流程；</div>
-			    	<div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-			    	<div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
+						<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+
+						<el-form-item label="主题渠道">
+						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    	<el-radio label="now">不限</el-radio>
+						    	<el-radio label="static">自定义</el-radio>
+						    </el-radio-group>
+						    <!-- <div class="unit_infro">目前只支持竞价类型喔</div> -->
+						</el-form-item>
+
+						<el-form-item label="关键字">
+						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    	<el-radio label="now">不限</el-radio>
+						    	<el-radio label="static">自定义</el-radio>
+						    </el-radio-group>
+						    <!-- <div class="unit_infro">目前只支持竞价类型喔</div> -->
+						</el-form-item>
+
+						<el-form-item label="年龄">
+						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    	<el-radio label="now">不限</el-radio>
+						    	<el-radio label="static">自定义</el-radio>
+						    </el-radio-group>
+						    <!-- <div class="unit_infro">目前只支持竞价类型喔</div> -->
+						</el-form-item>
+
+						<el-form-item label="性别">
+						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    	<el-radio label="now">不限</el-radio>
+						    	<el-radio label="boy">男</el-radio>
+								<el-radio label="girl">女</el-radio>
+						    </el-radio-group>
+						    <!-- <div class="unit_infro">目前只支持竞价类型喔</div> -->
+						</el-form-item>
+
+						<el-form-item label="网络">
+						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    	<el-radio label="now">不限</el-radio>
+						    	<el-radio label="static">自定义</el-radio>
+						    </el-radio-group>
+						    <!-- <div class="unit_infro">目前只支持竞价类型喔</div> -->
+						</el-form-item>
+
+						<el-form-item label="新老用户">
+						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    	<el-radio label="now">不限</el-radio>
+						    	<el-radio label="new">新用户</el-radio>
+								<el-radio label="old">老用户</el-radio>
+						    </el-radio-group>
+						    <!-- <div class="unit_infro">目前只支持竞价类型喔</div> -->
+						</el-form-item>
+
+						<el-form-item label="操作系统">
+							<el-select v-model="and" style="width: 100%;" :disabled="Disabled">
+						    	<el-option label="安卓" value="and"></el-option>
+						    	<el-option label="苹果" value="apple"></el-option>
+						    	<el-option label="未知" value="noKonw"></el-option>
+						    </el-select>
+						</el-form-item>
+						
+						<el-form-item label="设备号">
+							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+						</el-form-item>
+	
+						<el-form-item label="排除设备号">
+							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+						</el-form-item>
+
+						<el-form-item label="手机品牌">
+							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+						</el-form-item>
+
+						<el-form-item label="排除手机品牌">
+							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+						</el-form-item>
+
+						<el-form-item label="IP">
+							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+						</el-form-item>
+				
+					</el-form>
+
 				</el-collapse-item>
 				<el-collapse-item title="预算控制" name="4">
-			    	<div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-			    	<div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+			    	<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+
+						<el-form-item label="交易类型" prop="name">
+							<el-select v-model="ruleForm.speed" style="width: 100%;" :disabled="Disabled">
+						    	<el-option label="CPC" value="up"></el-option>
+						    	<el-option label="CPM" value="uniform "></el-option>
+						    </el-select>
+						    <span class="unit_infro">选一个计费方式，我们将按这个来进行计算消耗</span>
+						</el-form-item>
+
+						<el-form-item label="单日预算" prop="frequency">
+							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+						</el-form-item>
+
+						<el-form-item label="出价" prop="Click_times">
+							<el-input v-model="ruleForm.Click_times" :disabled="Disabled"></el-input>
+							<span class="unit_infro">选择一个出价价格，不能低于目前底价哦 最低出价: 0.4, 建议出价: 0.57~0.95</span>
+						</el-form-item>
+					</el-form>
 				</el-collapse-item>
 			</el-collapse>
 			<!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
