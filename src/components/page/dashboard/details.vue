@@ -36,7 +36,7 @@
 
 				<el-form-item label="类型" prop="action">
 					<el-select v-model="ruleForm.typeName" style="width: 100%;" @change="selectFn($event,item)" :disabled="Disabled">
-				    	<el-option v-for="items in selectType" :label="items.keyStr" :value="items.valueStr"></el-option>
+				    	<el-option v-for="items in selectType" :label="items.keyStr" :value="items.valueStr" :key="items.index"></el-option>
 				    </el-select>
 					<span class="unit_infro">为广告主选择一个正确的类型，可以更好的获取到精准用户</span>
 				</el-form-item>
