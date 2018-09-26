@@ -6,9 +6,9 @@
         <div class="chart_nav">
             <span class="chart_title">{{echart_title}}</span>
 						<!-- <el-col :span="3"> -->
-	    			<el-select v-model="adsType.ids" placeholder="选择状态" style="margin-left: 15px;">
-	    				<el-option label="上线" value="321321"></el-option>
-	    				<el-option label="暂停" value="32131233"></el-option>
+	    			<el-select v-model="adVal" placeholder="选择状态" @change="adStatusFn" style="margin-left: 15px;">
+	    				<el-option v-for="ads in adsType" :key="ads.id" :label="ads.adsName" :value="ads.adsId"></el-option>
+	    				<!-- <el-option label="暂停" value="32131233"></el-option> -->
 	    			</el-select>
     			<!-- </el-col> -->
             <div class="all_btn">
@@ -32,7 +32,7 @@
         </el-row>
 
 	  	<el-row :gutter="20">
-			<el-form :inline="true" :model="formInline" label-width="500px">
+			<!-- <el-form :inline="true" :model="formInline" label-width="500px">
 				<el-col :span="14">
 					<el-input placeholder="查询广告主" icon="search"  class="search" ></el-input>
 				</el-col>
@@ -43,10 +43,9 @@
 	    			</el-select>
     			</el-col>
     			<el-col :span="7">
-	  				<!-- @click="onSubmit" -->
 	    			<el-button type="primary">查询</el-button>
 	    		</el-col>
-			</el-form>
+			</el-form> -->
 		</el-row>
 		<div class="tables">
 		 <el-form>
@@ -112,10 +111,8 @@ import echarts from 'echarts'
 	export default {
 		data() {
 			return {
-				msg: "6得飞起",
-				adsType: {
-					ids: '321321'
-				},
+				adVal: '',
+				adsType: {},
 				formInline: {
 		          user: '',
 		          region: ''
@@ -163,29 +160,19 @@ import echarts from 'echarts'
 		},
 		mounted() {
 			var that = this;
+			that.dropdownFn();
 			that.Init();
             // 初始化echarts
             let myChart = echarts.init(document.getElementById('mychart'));
             // 封装调用api
             that.fn = function () {
-                // 金额总计api
-                // that.$http.jsonp(that.hostname+"/api/dev/summary"+this.url_token()).then(function(response){
-                    
-                //     // 总计列表数据渲染
-                //     that.countdata = [response.data.data.incometoday,response.data.data.incomeyesterday,response.data.data.balance,response.data.data.totalbalance]
-                //     for(let i = 0;i < that.countdata.length; i++) {
-                //         that.arr[i].val = that.countdata[i]
-                //     }
-                // });
 								// 日期数据api
-								console.log(that.show_day);
 								var datas = {
 									dayNum: that.show_day,
-									dateStart: '2018-09-15',
-									dateEnd: '2018-09-25'
+									dateStart: that.startDate,
+									dateEnd: that.endDate
 								};
                 that.$axios.get(that.hostname+"/manage/htt/httReportAdsCustomChild/admin/report",{params: datas}).then(function(response){
-										// response.data.length = 7;
 										console.log(response.data);
 										// object => array
 										var arr = [],
@@ -203,23 +190,43 @@ import echarts from 'echarts'
 												o[i] = response.data[i];
 												arr.push(o)
 										}
+										console.log(arr2);
+										showNumArr.length = clickNumArr.length = consumptionArr.length = arr.length;
 										for(var i = 0; i < arr.length; i++) {
 											Xarr.push(Object.keys(arr[i])[0]);
-											if(arr2[i][0] != undefined) {
-												showNumArr.push(arr2[i][0].showNum);
-												clickNumArr.push(arr2[i][0].clickNum);
-												consumptionArr.push(arr2[i][0].consumption);
+											if(arr2[i].length > 0) {
+												for(var j = 0; j < arr2[i].length; j++) {
+													if(that.adVal == arr2[i][j].adsId) {
+														console.log(i+":"+j);
+															showNumArr.splice(i,0,arr2[i][j].showNum || 0);
+															clickNumArr.splice(i,0,arr2[i][j].clickNum || 0);
+															consumptionArr.splice(i,0,arr2[i][j].consumption || 0);
+													}else {
+														console.log(i);
+													}
+												}
+											}else {
+												// showNumArr.splice(i,0,null);
+												// clickNumArr.splice(i,0,null);
+												// consumptionArr.splice(i,0,null);
 											}
-
-											
+											// if(arr2[i][0] != undefined) {
+											// 	console.log(i);
+											// 	showNumArr.splice(i,0,arr2[i][0].showNum || 0);
+											// 	clickNumArr.splice(i,0,arr2[i][0].clickNum || 0);
+											// 	consumptionArr.splice(i,0,arr2[i][0].consumption || 0);
+											// }else {
+											// 	showNumArr.splice(i,0,null);
+											// 	clickNumArr.splice(i,0,null);
+											// 	consumptionArr.splice(i,0,null);
+											// }
 										}
-										
                     // x轴数据
 										that.Xdate = Xarr;
 										// that.Xdate = ["2018-08-27", "2018-08-28", "2018-08-29", "2018-08-30", "2018-08-31", "2018-09-01", "2018-09-02", "2018-09-03", "2018-09-04"];
                     // 图表val
 										// that.val_date = response.data.data.total
-										that.val_date = [5290.28, 6618.99, 4339.37, 6703.15, 4463.52, 5159.68, 5742.66, 4208.25, 5383.4, 5367.46]
+										// that.val_date = [5290.28, 6618.99, 4339.37, 6703.15, 4463.52, 5159.68, 5742.66, 4208.25, 5383.4, 5367.46]
                     // var len = response.data.data.date.length,obj;
                     // for(var i = 0; i < len; i++) {
                     //    obj = {dates: response.data.data.date[i],all_in: response.data.data.total[i],cpl_in: response.data.data.cpl[i], cpa_in: response.data.data.cpa[i], wx: response.data.data.mini[i], wakeup: response.data.data.wakeup[i]}
@@ -232,7 +239,7 @@ import echarts from 'echarts'
                         trigger: 'axis'
 										},
 										 legend: {
-											itemGap: 10,
+											// itemGap: 10,
 											data:['展示次数','点击次数','消耗金额']
 										},
                     // toolbox: {
@@ -278,33 +285,18 @@ import echarts from 'echarts'
 												 {
 															name:'展示次数',
 															type:'line',
-															stack: '总量',
 															data: showNumArr
 													},
 													{
 															name:'点击次数',
 															type:'line',
-															stack: '总量',
 															data: clickNumArr
 													},
 													{
 															name:'消耗金额',
 															type:'line',
-															stack: '总量',
 															data: consumptionArr
-													},
-													// {
-													// 		name:'直接访问',
-													// 		type:'line',
-													// 		stack: '总量',
-													// 		data:[320, 332, 301, 334, 390, 330, 320]
-													// },
-													// {
-													// 		name:'搜索引擎',
-													// 		type:'line',
-													// 		stack: '总量',
-													// 		data:[820, 932, 901, 934, 1290, 1330, 1320]
-													// }
+													}
                     ]
                     })
                 });
@@ -331,38 +323,20 @@ import echarts from 'echarts'
 
                     that.allPage = res.data.total;
                     that.tableData = res.data.rows;
-                     
-                    // 特殊处理
-                    for(var i = 0, Len = that.tableData.length; i < Len; i++) {
-
-                    	that.tableData[i].btn_stauts = true;
-                    	that.tableData[i].link = that.tableData[i].id;
-                    	// 审核状态判断
-                    	switch(that.tableData[i].proveStatus) {
-	                    	case 0:
-	                    		that.tableData[i].proveStatusTxt = "未提交";
-	                    		break;
-	                    	case 1:
-	                    		that.tableData[i].proveStatusTxt = "审核中";
-	                    		break;
-	                    	case 2:
-	                    		that.tableData[i].proveStatusTxt = "审核成功";
-	                    		that.tableData[i].btn_stauts = null
-	                    		break;
-	                    	case 3:
-	                    		that.tableData[i].proveStatusTxt = "审核失败";
-	                    		break;
-	                    }
-	                    // 上线状态
-	                    if(that.tableData[i].onlineStatus == 0) {
-	                    	that.tableData[i].Status = false
-	                    }else {
-	                    	that.tableData[i].Status = true
-	                    }
-                    }
                 }, function(err){
                     console.log(err);
-                })
+        })
+			},
+			dropdownFn() {
+				var that = this;
+				that.$axios.get(this.hostname+'/manage/htt/httReportAdsCustomChild/admin/getAdsIdList').then(function(res){
+							// 响应成功回调
+							console.log(res.data);
+							that.adsType = res.data;
+							that.adVal = res.data[0].adsId;
+							}, function(err){
+									console.log(err);
+        })
 			},
 			change:function(index,row){
 				console.log(index,row);
@@ -377,7 +351,7 @@ import echarts from 'echarts'
 					this.active = a
 					this.show_day = this.echart_btn[a].value
 					// 归零处理
-					this.tableData = []
+					// this.tableData = []
 					if(this.echart_btn[a].value == 'more') {
 								// this.$router.replace('/Income')  //路由跳转（暂时不要）
 							this.$notify.success({
@@ -389,10 +363,15 @@ import echarts from 'echarts'
 					}
 			},
 			SelectFn(val) {
+				  this.show_day = '';
 					this.startDate = val.split('至')[0];
 					this.endDate = val.split('至')[1];
 					this.fn();
 					console.log(this.endDate);
+			},
+			adStatusFn(val) {
+				this.fn();
+				console.log(this.adVal);
 			}
     }
 	}
