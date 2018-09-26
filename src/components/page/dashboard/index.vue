@@ -60,8 +60,10 @@
 			    <el-table-column property="turn" label="状态">
 				    <template scope="scope">
 				    <!-- @change="change(scope.$index,scope.row)" -->
-				      <el-switch on-text ="进行"
-                        off-text = "暂停"
+				      <el-switch
+												@change="change(scope.$index,scope.row)"
+												on-text ="上线"
+                        off-text = "下线"
                         on-color="#00D1B2"
                         off-color="#dadde5" 
                         :disabled="scope.row.btn_stauts"
@@ -163,8 +165,43 @@
                 })
 			},
             change:function(index,row){
-            	console.log(index,row);
+							var Value;
+							if(row.Status) {
+								Value = 1
+							}else {
+								Value = 0
+							}
+							this.statusInitFn(this.tableData[index].id,Value);
+							setTimeout(this.Init,200);
+								// console.log(index,row);
+						},
+						statusInitFn(ids,val) {
+            	var that = this;
+							var params = new URLSearchParams();
+							params.append('id', ids);
+							params.append('onlineStatus', val);
+							this.$axios.post(this.hostname+'/manage/dsp/userInfo/admin/changeStatus',params).then(function(res){
+													// 响应成功回调
+													console.log(res.data);
+													if(res.data.resultCode == 200) {
+														that.Disabled = "";
+									that.btn_turn = false;
+														that.$notify({
+												title: '成功',
+												message: res.data.message,
+												type: 'success'
+											});
+													}else {
+														that.$notify.error({
+												title: '错误',
+												message: res.data.message
+											});
+													}
+											}, function(err){
+													console.log(err);
+											})
             }
+						
         }
 	}
 </script>
