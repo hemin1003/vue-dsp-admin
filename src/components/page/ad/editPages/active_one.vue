@@ -25,31 +25,29 @@
 				<el-collapse-item title="基本信息" name="1">
 					<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 						<el-form-item label="名称" prop="name">
-							<el-input v-model="ruleForm.name" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.base_name" :disabled="Disabled"></el-input>
 							<span class="unit_infro">为您的广告项目取一个唯一的名称，格式如下：广告主名称_产品名称，10个字以内</span>
 						</el-form-item>
 						
 						<el-form-item label="出价类型" prop="name">
-						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
-						    	<el-radio label="now">实时出价</el-radio>
-						    	<el-radio label="static">固定出价</el-radio>
+						    <el-radio-group v-model="ruleForm.base_bidType" :disabled="Disabled">
+						    	<el-radio label="1">实时出价</el-radio>
+						    	<el-radio label="2">固定出价</el-radio>
 						    </el-radio-group>
 						    <div class="unit_infro">目前只支持竞价类型喔</div>
 						</el-form-item>
 
-						<el-form-item label="渠道" prop="name">
-							<el-select v-model="ruleForm.ads" style="width: 100%;" :disabled="Disabled">
-						    	<el-option label="悦头条" value="yyt"></el-option>
-						    	<el-option label="cpl" value="cpl"></el-option>
-						    	<el-option label="cpa" value="cpa"></el-option>
+						<el-form-item label="渠道" prop="prop_channel">
+							<el-select v-model="ruleForm.base_channel" style="width: 100%;" :disabled="Disabled">
+						    	<el-option v-for="items in channel" :label="items.keyStr" :value="items.valueStr" :key="items.descStr"></el-option>
+						    	<!-- <el-option label="cpl" value="cpl"></el-option>
+						    	<el-option label="cpa" value="cpa"></el-option> -->
 						    </el-select>
 						</el-form-item>
 
-						<el-form-item label="广告位" prop="name">
-							<el-select v-model="ruleForm.direction" style="width: 100%;" :disabled="Disabled">
-						    	<el-option label="信息流前两位随机" value="random"></el-option>
-						    	<el-option label="信息流前末尾" value="bottom"></el-option>
-						    	<el-option label="信息流前置顶" value="top"></el-option>
+						<el-form-item label="广告位" prop="prop_adsense">
+							<el-select v-model="ruleForm.base_showAdsId" style="width: 100%;" :disabled="Disabled">
+						    	<el-option v-for="items in adsense" :key="items.descStr" :label="items.keyStr" :value="items.valueStr"></el-option>
 						    </el-select>
 						    <span class="unit_infro">为您的活动选择一个想要投放的广告位</span>
 						</el-form-item>
@@ -65,7 +63,7 @@
 			    	<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 
 						<el-form-item label="速度控制" prop="name">
-							<el-select v-model="ruleForm.speed" style="width: 100%;" :disabled="Disabled">
+							<el-select v-model="ruleForm.time_speed" style="width: 100%;" :disabled="Disabled">
 						    	<el-option label="加速" value="up"></el-option>
 						    	<el-option label="匀速" value="uniform "></el-option>
 						    </el-select>
@@ -74,7 +72,7 @@
 
 						<el-form-item label="开始时间" prop="time">
 						    <el-date-picker
-						      v-model="Start_time"
+						      v-model="ruleForm.time_startTime"
 						      type="date"
 						      placeholder="请选择日期"
 						      @change="startTime">
@@ -83,7 +81,7 @@
 
 						<el-form-item label="结束时间">
 						    <el-date-picker
-						      v-model="End_time"
+						      v-model="ruleForm.time_endTime"
 						      type="date"
 						      placeholder="请选择日期">
 						    </el-date-picker>
@@ -91,19 +89,19 @@
 						</el-form-item>
 						
 						<el-form-item label="控制类型" prop="name">
-							<el-select v-model="ruleForm.userType" style="width: 100%;" :disabled="Disabled">
+							<el-select v-model="ruleForm.time_controlType" style="width: 100%;" :disabled="Disabled">
 						    	<el-option label="按IMEI识别用户" value="imei"></el-option>
 						    	<el-option label="按IP识别用户" value="ip"></el-option>
 						    </el-select>
 						</el-form-item>
 
 						<el-form-item label="曝光频次" prop="frequency">
-							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.time_impressionLimit" :disabled="Disabled"></el-input>
 							<span class="unit_infro">每日单个用户最多能看到这个广告的次数</span>
 						</el-form-item>
 
 						<el-form-item label="点击频次" prop="Click_times">
-							<el-input v-model="ruleForm.Click_times" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.time_clickLimit" :disabled="Disabled"></el-input>
 							<span class="unit_infro">每日单个用户最多能点击这个广告的次数</span>
 						</el-form-item>
 
@@ -137,15 +135,22 @@
 						<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 
 						<el-form-item label="主题渠道">
-						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
-						    	<el-radio label="now">不限</el-radio>
-						    	<el-radio label="static">自定义</el-radio>
+						    <el-radio-group v-model="ruleForm.target_theme" :disabled="Disabled">
+						    	<el-radio label="1">不限</el-radio>
+						    	<el-radio label="2">自定义</el-radio>
 						    </el-radio-group>
+							<!-- <div class="checkBoxes">
+								 <el-checkbox-group v-model="checkList">
+									<el-checkbox label="复选框 A"></el-checkbox>
+									<el-checkbox label="复选框 B"></el-checkbox>
+									<el-checkbox label="复选框 C"></el-checkbox>
+								</el-checkbox-group>
+							</div> -->
 						    <!-- <div class="unit_infro">目前只支持竞价类型喔</div> -->
 						</el-form-item>
 
 						<el-form-item label="关键字">
-						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    <el-radio-group v-model="ruleForm.target_keyword" :disabled="Disabled">
 						    	<el-radio label="now">不限</el-radio>
 						    	<el-radio label="static">自定义</el-radio>
 						    </el-radio-group>
@@ -153,7 +158,7 @@
 						</el-form-item>
 
 						<el-form-item label="年龄">
-						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    <el-radio-group v-model="ruleForm.target_age" :disabled="Disabled">
 						    	<el-radio label="now">不限</el-radio>
 						    	<el-radio label="static">自定义</el-radio>
 						    </el-radio-group>
@@ -161,7 +166,7 @@
 						</el-form-item>
 
 						<el-form-item label="性别">
-						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    <el-radio-group v-model="ruleForm.target_gender" :disabled="Disabled">
 						    	<el-radio label="now">不限</el-radio>
 						    	<el-radio label="boy">男</el-radio>
 								<el-radio label="girl">女</el-radio>
@@ -170,7 +175,7 @@
 						</el-form-item>
 
 						<el-form-item label="网络">
-						    <el-radio-group v-model="ruleForm.priceType" :disabled="Disabled">
+						    <el-radio-group v-model="ruleForm.target_network" :disabled="Disabled">
 						    	<el-radio label="now">不限</el-radio>
 						    	<el-radio label="static">自定义</el-radio>
 						    </el-radio-group>
@@ -187,7 +192,7 @@
 						</el-form-item>
 
 						<el-form-item label="操作系统">
-							<el-select v-model="and" style="width: 100%;" :disabled="Disabled">
+							<el-select v-model="ruleForm.target_os" style="width: 100%;" :disabled="Disabled">
 						    	<el-option label="安卓" value="and"></el-option>
 						    	<el-option label="苹果" value="apple"></el-option>
 						    	<el-option label="未知" value="noKonw"></el-option>
@@ -195,23 +200,23 @@
 						</el-form-item>
 						
 						<el-form-item label="设备号">
-							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.target_imei" :disabled="Disabled"></el-input>
 						</el-form-item>
 	
 						<el-form-item label="排除设备号">
-							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.target_excludeImei" :disabled="Disabled"></el-input>
 						</el-form-item>
 
 						<el-form-item label="手机品牌">
-							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.target_brand" :disabled="Disabled"></el-input>
 						</el-form-item>
 
 						<el-form-item label="排除手机品牌">
-							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.target_excludeBrand" :disabled="Disabled"></el-input>
 						</el-form-item>
 
 						<el-form-item label="IP">
-							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.target_ip" :disabled="Disabled"></el-input>
 						</el-form-item>
 				
 					</el-form>
@@ -221,7 +226,7 @@
 			    	<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 
 						<el-form-item label="交易类型" prop="name">
-							<el-select v-model="ruleForm.speed" style="width: 100%;" :disabled="Disabled">
+							<el-select v-model="ruleForm.budget_type" style="width: 100%;" :disabled="Disabled">
 						    	<el-option label="CPC" value="up"></el-option>
 						    	<el-option label="CPM" value="uniform "></el-option>
 						    </el-select>
@@ -229,11 +234,11 @@
 						</el-form-item>
 
 						<el-form-item label="单日预算" prop="frequency">
-							<el-input v-model="ruleForm.frequency" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.budget_dayLimit" :disabled="Disabled"></el-input>
 						</el-form-item>
 
 						<el-form-item label="出价" prop="Click_times">
-							<el-input v-model="ruleForm.Click_times" :disabled="Disabled"></el-input>
+							<el-input v-model="ruleForm.budget_bidPrice" :disabled="Disabled"></el-input>
 							<span class="unit_infro">选择一个出价价格，不能低于目前底价哦 最低出价: 0.4, 建议出价: 0.57~0.95</span>
 						</el-form-item>
 					</el-form>
@@ -262,6 +267,7 @@
 	export default {
 		data() {
 			return {
+				checkList: [],
 				msg: "返回列表",
 				turn: false,
 				btn_turn: false,
@@ -283,10 +289,10 @@
 		          // time: ''
 		        },
 		        rules: {
-		          name: [
+		          prop_channel: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
-		          num: [
+		          prop_adsense: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
 		          time: [
@@ -301,6 +307,11 @@
 		        }
 		      }
 			},
+		mounted() {
+			this.Init();
+			this.ListFn("b006","channel"); //渠道
+			this.ListFn("b007","adsense"); //广告位
+		},
 		methods: {
 			goBack() {
 				this.$router.go(-1);
@@ -325,7 +336,41 @@
 		    	// 	this.rules.time[0].trigger = 'blur';
 		    	// }
 
-		    }
+			},
+			// 初始渲染数据fn
+			Init() {
+				var that = this;
+				console.log(this.$route.query.id);
+				var datas = {
+					id: this.$route.query.id
+				}
+				that.$axios.get(this.hostname+'/manage/dsp/activity/admin/toEdit',{params: datas}).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+                    that.ruleForm = res.data;
+                    // if(that.ruleForm.onlineStatus == 0) {
+                    // 	that.ruleForm.turn = false;
+                    // }else {
+                    // 	that.ruleForm.turn = true;
+                    // }
+                }, function(err){
+                    console.log(err);
+                })
+			},
+			ListFn(num,contain) {
+				var that = this;
+				console.log(contain);
+				var datas = {
+					busNum: num
+				}
+				that.$axios.get(this.hostname+'/manage/dsp/param/listDspConfigData',{params: datas}).then(function(res){
+                    // 响应成功回调
+					console.log(res.data);
+					that[contain] = res.data;
+                }, function(err){
+                    console.log(err);
+                })
+			}
     	}
 	}
 </script>
