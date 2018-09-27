@@ -151,7 +151,7 @@
         },
         mounted(){
             var _self = this;
-            _self.$axios.get('http://182.92.82.188:8280/manage/sys/menu/getUserMenu?parentId=1&isUserMenuTree=true').then(function(res){
+            _self.$axios.get(_self.hostname+'/manage/sys/menu/getUserMenu?parentId=1&isUserMenuTree=true').then(function(res){
                 // 响应成功回调
                 if(typeof(res.data) != "object" ) {
                     _self.$router.push('/login');
