@@ -139,13 +139,11 @@
 						    	<el-radio label="1">不限</el-radio>
 						    	<el-radio label="2">自定义</el-radio>
 						    </el-radio-group>
-							<!-- <div class="checkBoxes">
+							<div class="checkBoxes">
 								 <el-checkbox-group v-model="checkList">
-									<el-checkbox label="复选框 A"></el-checkbox>
-									<el-checkbox label="复选框 B"></el-checkbox>
-									<el-checkbox label="复选框 C"></el-checkbox>
+									<el-checkbox style="text-align: left" v-for="(items,index) in ThemeChannel" :key="index" :label="items.keyStr" :disabled="Disabled"></el-checkbox>
 								</el-checkbox-group>
-							</div> -->
+							</div>
 						    <!-- <div class="unit_infro">目前只支持竞价类型喔</div> -->
 						</el-form-item>
 
@@ -311,6 +309,7 @@
 			this.Init();
 			this.ListFn("b006","channel"); //渠道
 			this.ListFn("b007","adsense"); //广告位
+			this.ListFn("b008","ThemeChannel");
 		},
 		methods: {
 			goBack() {
@@ -437,5 +436,13 @@
 		}
 		.el-collapse-item__header {
 			font-weight: bold;
+		}
+
+		.checkBoxes {
+			text-align: left;
+		}
+		.el-checkbox+.el-checkbox {
+			margin-right: 15px;
+			margin-left: 0px;
 		}
 </style>
