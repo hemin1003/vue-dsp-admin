@@ -2,13 +2,20 @@
 	<div class="ad_project">
 		<el-row :gutter="20">
 			<el-form :inline="true" :model="formInline" label-width="500px">
-				<el-col :span="12">
-					<el-input placeholder="查询广告主" icon="search"  class="search" ></el-input>
+				<el-col :span="4">
+	    			<el-select v-model="formInline.region2" placeholder="选择广告项目">
+	    				<el-option v-for="(items,index) in selectList" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
+	    			</el-select>
+    			</el-col>
+				<el-col :span="8">
+					<el-select v-model="formInline.region3" placeholder="查询广告活动">
+						<el-option v-for="(items,index) in activtyList" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
+					</el-select>
 				</el-col>
 				<el-col :span="3">
 	    			<el-select v-model="formInline.region" placeholder="选择状态">
-	    				<el-option label="上线" value="online"></el-option>
-	    				<el-option label="暂停" value="off"></el-option>
+	    				<el-option label="上线" value="1"></el-option>
+	    				<el-option label="暂停" value="2"></el-option>
 	    			</el-select>
     			</el-col>
 
@@ -28,6 +35,13 @@
 	    		</el-col>
 			</el-form>
 		</el-row>
+
+		<div class="tabs">
+		    <div class="tabs_btn">
+		    	<div class="tabs_btn_left"><i class="el-icon-plus"></i><span>新建</span></div>
+		    	<div class="tabs_btn_right"><span>下载数据</span></div>
+		    </div>
+		</div>
 
 		<div class="tables">
 		 <el-form>
@@ -135,6 +149,7 @@
 	export default {
 		data() {
 			return {
+				selectList: "",
 				msg: "广告项目",
 				formInline: {
 		          user: '',
@@ -147,6 +162,8 @@
 		},
 		mounted() {
 			this.Init();
+			this.selectFn();
+			this.activtyFn();
 		},
 		methods: {
 			handleCurrentChange() {
@@ -190,6 +207,40 @@
                 }, function(err){
                     console.log(err);
                 })
+			},
+			// 10.17新增下拉菜单初始化渲染
+			selectFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+				};
+				this.$axios.get(that.hostname+'/manage/dsp/sys/config/getDspProjectList',{params: datas}).then(function(res){
+          // 响应成功回调
+					console.log(res.data);
+					if(res.status == 200) {
+						that.selectList = res.data;
+					}
+				}, function(err){
+						console.log(err);
+				})
+			},
+			// 10.17广告活动init
+			activtyFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+				};
+				this.$axios.get(that.hostname+'/manage/dsp/sys/config/getDspActivityList',{params: datas}).then(function(res){
+          // 响应成功回调
+					console.log(res.data);
+					if(res.status == 200) {
+						that.activtyList = res.data;
+					}
+				}, function(err){
+						console.log(err);
+				})
 			},
 			// 上线状态
 			change:function(index,row){
@@ -264,4 +315,34 @@
 		.names {
 			color: #00D1B2;
 		}
+
+		.el-select {
+			width: 100%;
+		}
+
+		.tabs_btn {
+			float: right;
+			width: 200px;
+			height: 1.8vw;
+			text-align: center;
+			line-height: 1.8vw;
+		}
+			.tabs_btn_left,.tabs_btn_right {
+				float: left;
+				width: 45%;
+				height: 100%;
+				color: white;
+				font-size: .9rem;
+				background: #00D1B2;
+				cursor: pointer;
+			}
+			.tabs_btn_right {
+				float: right;
+				background: #DADDE5;
+				color: gray;
+			}
+				.tabs_btn_left i,.tabs_btn_right i {
+					font-size: .8rem;
+					margin-right: 4px;
+				}
 </style>

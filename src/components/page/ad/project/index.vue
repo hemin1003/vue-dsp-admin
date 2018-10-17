@@ -3,7 +3,10 @@
 		<el-row :gutter="20">
 			<el-form :inline="true" :model="formInline" label-width="500px">
 				<el-col :span="12">
-					<el-input placeholder="查询广告主" icon="search"  class="search" ></el-input>
+					<el-select v-model="formInline.region" placeholder="查询广告项目">
+	    				<el-option v-for="(items,index) in selectList" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
+	    			</el-select>
+					<!-- <el-input placeholder="查询广告主" icon="search"  class="search" ></el-input> -->
 				</el-col>
 				<el-col :span="3">
 	    			<el-select v-model="formInline.region" placeholder="选择状态">
@@ -28,6 +31,13 @@
 	    		</el-col>
 			</el-form>
 		</el-row>
+
+		<div class="tabs">
+		    <div class="tabs_btn">
+		    	<div class="tabs_btn_left"><i class="el-icon-plus"></i><span>新建</span></div>
+		    	<div class="tabs_btn_right"><span>下载数据</span></div>
+		    </div>
+		</div>
 
 		<div class="tables">
 		 <el-form>
@@ -92,6 +102,7 @@
 	export default {
 		data() {
 			return {
+				selectList: "",
 				msg: "广告项目",
 				formInline: {
 		          user: '',
@@ -104,6 +115,7 @@
 		},
 		mounted() {
 			this.dataInit();
+			this.selectFn();
 		},
 		methods: {
 			dataInit() {
@@ -134,6 +146,23 @@
 	                    }
                     }
                     console.log(res.data);
+                }, function(err){
+                    console.log(err);
+                })
+			},
+			// 10.17新增下拉菜单初始化渲染
+			selectFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+				};
+				this.$axios.get(this.hostname+'/manage/dsp/sys/config/getDspUserInfoList',{params: datas}).then(function(res){
+                    // 响应成功回调
+					console.log(res)
+					if(res.status == 200) {
+						that.selectList = res.data;
+					}
                 }, function(err){
                     console.log(err);
                 })
@@ -187,8 +216,8 @@
 			width: 50%;
 		}
 
-	.tables {
-		margin-top: 20px;
+	.tabs {
+		margin-top: 4vw;
 	}
 		.table_detail {
 			border: 1px solid gray;
@@ -206,4 +235,34 @@
 		.names {
 			color: #00D1B2;
 		}
+
+		.el-select {
+			width: 100%;
+		}
+
+		.tabs_btn {
+			float: right;
+			width: 200px;
+			height: 1.8vw;
+			text-align: center;
+			line-height: 1.8vw;
+		}
+			.tabs_btn_left,.tabs_btn_right {
+				float: left;
+				width: 45%;
+				height: 100%;
+				color: white;
+				font-size: .9rem;
+				background: #00D1B2;
+				cursor: pointer;
+			}
+			.tabs_btn_right {
+				float: right;
+				background: #DADDE5;
+				color: gray;
+			}
+				.tabs_btn_left i,.tabs_btn_right i {
+					font-size: .8rem;
+					margin-right: 4px;
+				}
 </style>
