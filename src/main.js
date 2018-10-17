@@ -18,7 +18,7 @@ Vue.use(VueResource);
 axios.defaults.withCredentials=true;
 Vue.prototype.$axios = axios;
 // 192.168.0.205
-Vue.prototype.hostname = "http://182.92.82.188:8280";  //http://182.92.82.188:8280  http://sys.midongtech.com
+Vue.prototype.hostname = "http://sys.midongtech.com";  //http://182.92.82.188:8280  http://sys.midongtech.com
 // Vue.prototype.url_token = function() {
 // 	return "?token="+this.$cookies.get('token');
 // }

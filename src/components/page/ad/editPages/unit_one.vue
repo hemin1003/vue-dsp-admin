@@ -99,7 +99,7 @@
 					  :disabled="Disabled"
 					  class="avatar-uploader"
 					  :data="uploadDatas"
-					  action="http://182.92.82.188:8280/manage/sys/fileHandle/upload"
+					  action="http://sys.midongtech.com/manage/sys/fileHandle/upload"
 					  :on-preview="handlePreview"
 					  list-type="text"
 					  :on-success="(value)=> handleAvatarSuccess(index, value)"
