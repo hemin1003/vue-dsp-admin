@@ -94,28 +94,31 @@
 				</el-form-item>
 
 				<el-form-item v-for="(items,index) in uploaderData" :key="index" :label="items" prop="title">
-					<!-- <el-upload
-					  :disabled="Disabled"
-					  class="avatar-uploader"
-					  action="https://jsonplaceholder.typicode.com/posts/"
-					  :show-file-list="false"
-					  :on-success="handleAvatarSuccess"
-					  :before-upload="beforeAvatarUpload">
-					  <img v-if="imageUrl" :src="imageUrl" class="avatar">
-					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-					</el-upload> -->
-					  
-					<!-- :on-remove="handleRemove" -->
+					<!-- http://sys.midongtech.com  http://182.92.82.188:8280 -->
 					<el-upload
 					  :disabled="Disabled"
 					  class="avatar-uploader"
 					  :data="uploadDatas"
-					  :action="'http://182.92.82.188:8280/manage/sys/fileHandle/upload'"
-					  :show-file-list="false"
+					  action="http://182.92.82.188:8280/manage/sys/fileHandle/upload"
+					  :on-preview="handlePreview"
+					  list-type="text"
 					  :on-success="(value)=> handleAvatarSuccess(index, value)"
-					  :before-upload="beforeAvatarUpload">
-					  <img v-if="ruleForm.imgUrl" :src="imgUrlArr[index]" class="avatar">
-					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					  :before-upload="beforeAvatarUpload"
+					  :on-remove="(value)=> handleRemove(index, value)"
+					  >
+					  <!-- <el-dialog visible.sync="dialogVisible"> -->
+						<div class="coverDialog" v-if="!btn_turn">
+							<div class="del">
+								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
+							</div>
+							<div class="layer" @click="handleFileEnlarge(index)">
+								<i class="el-icon-view"></i>
+							</div>
+						</div>
+					  	<img v-if="imgUrlArr[index]" :src="imgUrlArr[index]" class="avatar">
+						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					  <!-- </el-dialog> -->
+					  
 					</el-upload>
 				</el-form-item>
 
@@ -138,11 +141,6 @@
 				imageUrl: "",
 				Disabled: "",
 				uploaderData: ["图片一","图片二","图片三"],
-				// uploaderData: [
-				// 	{name: "图片一", url: ""},
-				// 	{name: "图片二", url: ""},
-				// 	{name: "图片三", url: ""},	
-				// ],
 				ruleForm: {
 		         
 		        },
@@ -235,7 +233,7 @@
 		    },
 		    beforeAvatarUpload(file) {
 				console.log('6666666');
-				this.ruleForm.imgUrl = [];
+				// this.imgUrlArr = [];
 		        // const isJPG = file.type === 'image/jpeg';
 		        // const isLt2M = file.size / 1024 / 1024 < 2;
 		        // if (!isJPG) {
@@ -246,6 +244,26 @@
 		        // }
 		        // return isJPG && isLt2M;
 			},
+			handlePreview(file) {
+				console.log(file);
+			},
+			handleFileRemove(a) {
+				console.log(a);
+			},
+			// 预览查看图片
+			handleFileEnlarge(indexs) {
+				window.open(this.imgUrlArr[indexs]);
+			},
+			// 删除上传图片
+		    handleRemove(index,file) {
+		    	console.log(file.url);
+		    	for(var i = 0, L = this.imgUrlArr.length; i < L; i++) {
+		    		if(file.url == this.imgUrlArr[i]) {
+		    			console.log(i);
+		    			this.imgUrlArr.splice(i,1);
+		    		}
+		    	}
+		    },
 			// 保存操作
 			saveFn() {
 				var that = this;
@@ -303,6 +321,14 @@
 			font-size: .9rem;
 			cursor: pointer;
 		}
+		.coverDialog {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: rgba(0,0,0,.5);
+			display: none;
+			color: white;
+		}
 		.unit_o_left_btn:hover {
 			font-weight: bold;
 		}
@@ -355,6 +381,9 @@
 		  .avatar-uploader .el-upload:hover {
 		    border-color: #409EFF;
 		  }
+		  .avatar-uploader .el-upload:hover .coverDialog {
+			display: block;
+		}
 		  .avatar-uploader-icon {
 		    font-size: 28px;
 		    color: #8c939d;
@@ -367,5 +396,19 @@
 		    width: 100%;
 		    height: 178px;
 		    display: block;
+		  }
+
+		  .del {
+			  float: left;
+			  width: 40%;
+			  font-size: 1.2vw;
+			  margin-top: 40%;
+			  margin-left: 12.5%;
+		  }
+		  .layer {
+			  float: left;
+			  width: 30%;
+			  font-size: 1.2vw;
+			  margin-top: 40%;
 		  }
 </style>
