@@ -4,32 +4,32 @@
 			<el-form :inline="true" :model="unitData" label-width="500px">
 				<el-col :span="3">
 	    			<el-select v-model="unitData.adProject" placeholder="选择广告项目">
-	    				<el-option v-for="items in selectMore.adProject" :label="items.name" :value="items.val"></el-option>
+	    				<el-option v-for="(items,index) in selectMore.adProject" :label="items.name" :key="index" :value="items.val"></el-option>
 	    			</el-select>
     			</el-col>
 				<el-col :span="3">
 	    			<el-select v-model="unitData.adActive" placeholder="选择广告活动">
-	    				<el-option v-for="items in selectMore.adActive" :label="items.name" :value="items.val"></el-option>
+	    				<el-option v-for="(items,index) in selectMore.adActive" :label="items.name" :key="index" :value="items.val"></el-option>
 	    			</el-select>
     			</el-col>
     			<el-col :span="3">
 	    			<el-select v-model="unitData.adUnit" placeholder="查询广告单元">
-	    				<el-option v-for="items in selectMore.adUnit" :label="items.name" :value="items.val"></el-option>
+	    				<el-option v-for="(items,index) in selectMore.adUnit" :label="items.name" :key="index" :value="items.val"></el-option>
 	    			</el-select>
     			</el-col>
 				<el-col :span="3">
 	    			<el-select v-model="unitData.adQd" placeholder="选择渠道">
-	    				<el-option v-for="items in selectMore.adUnit" :label="items.name" :value="items.val"></el-option>
+	    				<el-option v-for="(items,index) in selectMore.adUnit" :label="items.name" :key="index" :value="items.val"></el-option>
 	    			</el-select>
     			</el-col>
     			<el-col :span="3">
 	    			<el-select v-model="unitData.adRandom" placeholder="随机位置">
-	    				<el-option v-for="items in selectMore.adUnit" :label="items.name" :value="items.val"></el-option>
+	    				<el-option v-for="(items,index) in selectMore.adUnit" :label="items.name" :key="index" :value="items.val"></el-option>
 	    			</el-select>
     			</el-col>
     			<el-col :span="3">
 	    			<el-select v-model="unitData.status" placeholder="选择状态">
-	    				<el-option v-for="items in selectMore.status" :label="items.name" :value="items.val"></el-option>
+	    				<el-option v-for="(items,index) in selectMore.status" :label="items.name" :key="index" :value="items.val"></el-option>
 	    			</el-select>
     			</el-col>
 
@@ -266,7 +266,7 @@
 					rows: 10,
 					proveStatus: tabs
 				};
-				var hostname = "http://192.168.0.205";
+				// var hostname = "http://192.168.0.205";
 				this.$axios.get(this.hostname+'/manage/dsp/unit/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调
                     console.log(res.data.rows)

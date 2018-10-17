@@ -72,6 +72,14 @@
 					  :show-file-list="false"
 					  :on-success="yyleAvatarSuccess"
 					  :before-upload="beforeAvatarUpload">
+					  <div class="coverDialog" v-if="!btn_turn">
+							<div class="del">
+								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
+							</div>
+							<div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
+								<i class="el-icon-view"></i>
+							</div>
+					  </div>
 					  <img v-if="ruleForm.businessLicenseUrl" :src="ruleForm.businessLicenseUrl" class="avatar">
 					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
 					</el-upload>
@@ -88,6 +96,14 @@
 					  :on-remove="handleRemove"
 					  :on-success="handleAvatarSuccess"
 					  :before-upload="beforeAvatarUpload">
+					  <div class="coverDialog" v-if="!btn_turn">
+							<div class="del">
+								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
+							</div>
+							<div class="layer" @click="handleFileEnlarge(ruleForm.icpUrl)">
+								<i class="el-icon-view"></i>
+							</div>
+					  </div>
 					  <img v-if="ruleForm.icpUrl" :src="ruleForm.icpUrl" class="avatar">
 					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
 					</el-upload>
@@ -269,9 +285,13 @@
 		        // }
 		        // return isJPG && isLt2M;
 		    },
-		    UploadUrl() {
-
-		    },
+		    handleFileRemove(a) {
+				console.log(a);
+			},
+			// 预览查看图片
+			handleFileEnlarge(urls) {
+				window.open(urls);
+			},
 		    // 删除上传图片
 		    handleRemove(file) {
 		    	console.log(file.url);
@@ -281,7 +301,10 @@
 		    			this.uploadDatas.ohtersPic.splice(i,1);
 		    		}
 		    	}
-		    },
+			},
+			handlePictureCardPreview(val) {
+				window.open(val.url);
+			},
 		    mailStautsFn(val) {
 		    	console.log(val);
 		    	if(val){
@@ -426,5 +449,30 @@
 		    margin: auto;
 		    margin-top: 10px;
 		    display: block;
+		  }
+
+		  .coverDialog {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: rgba(0,0,0,.5);
+			display: none;
+			color: white;
+		}
+		.avatar-uploader .el-upload:hover .coverDialog {
+			display: block;
+		}
+		.del {
+			  float: left;
+			  width: 40%;
+			  font-size: 1.2vw;
+			  margin-top: 40%;
+			  margin-left: 12.5%;
+		  }
+		  .layer {
+			  float: left;
+			  width: 30%;
+			  font-size: 1.2vw;
+			  margin-top: 40%;
 		  }
 </style>

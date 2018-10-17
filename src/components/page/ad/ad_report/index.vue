@@ -1,8 +1,8 @@
 <template>
 	<div class="ad_report">
-	<!-- <el-row>
+				<el-row>
             <el-col :span="6" v-for="(item,index) in arr" :key="index"><div class="grid-content bg-purple" :class="item.class"><span>{{item.name}}</span><p>{{item.val}}</p></div></el-col>
-        </el-row> -->
+        </el-row>
         <div class="chart_nav">
             <span class="chart_title">{{echart_title}}</span>
 						<!-- <el-col :span="3"> -->
@@ -148,10 +148,10 @@ import echarts from 'echarts'
                 ],
                 countdata: [],
                 arr: [
-                    {name: "今天收入",val: "￥0.000",class: "count_special"},
-                    {name: "昨天收入",val: "￥0.000"},
-                    {name: "账户余额",val: "￥0.000"},
-                    {name: "总收入",val: "￥0.000"}
+                    {name: "今日总曝光",val: "￥0.000",class: "count_special"},
+                    {name: "今日总点击",val: "￥0.000"},
+                    {name: "今日总消耗",val: "￥0.000"},
+                    {name: "账户余额",val: "￥0.000"}
                ],
                tableData: [],
                 Xdate: null,

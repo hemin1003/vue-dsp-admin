@@ -9,7 +9,7 @@
 					<el-button type="primary" plain><i class="el-icon-document"></i><span>复制</span></el-button>
 				</div>
 				<div class="out_btn" v-if="btn_turn">
-					<el-button type="primary"><span>保存</span></el-button>
+					<el-button type="primary" @click="saveFn"><span>保存</span></el-button>
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
 				<el-switch 
@@ -25,46 +25,43 @@
 		<div class="unit_o_content">
 			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 				<el-form-item label="名称" prop="name">
-					<el-input v-model="ruleForm.name" :disabled="Disabled"></el-input>
+					<el-input v-model="ruleForm.base_name" :disabled="Disabled"></el-input>
 					<span class="unit_infro">为您的广告单元取一个唯一的名称，10个字以内，建议带上活动_物料信息等</span>
 				</el-form-item>
 				
-				<el-form-item label="点击链接" prop="url">
-					<el-input v-model="ruleForm.url" :disabled="Disabled"></el-input>
+				<el-form-item label="点击链接" prop="clickUrl">
+					<el-input v-model="ruleForm.clickUrl" :disabled="Disabled"></el-input>
 					<span class="unit_infro">请填写您的广告的跳转地址或者落地页地址，开头格式为http://，示例：http://www.adxhi.com</span>
 				</el-form-item>
 
-				<el-form-item label="点击动作" prop="url">
-					<el-select v-model="ruleForm.action" style="width: 100%;" :disabled="Disabled">
-				    	<el-option label="跳转" value="action"></el-option>
-				    	<el-option label="下载" value="download"></el-option>
+				<el-form-item label="点击动作" prop="desc">
+					<el-select v-model="ruleForm.clickAction" style="width: 100%;" :disabled="Disabled">
+				    	<el-option label="跳转" value="2"></el-option>
+				    	<el-option label="下载" value="1"></el-option>
 				    </el-select>
 					<span class="unit_infro">用来表示您的跳转地址点击后是直接下载的还是进行跳转的</span>
 				</el-form-item>
 
 				<el-form-item label="曝光监控类型">
-					<el-select v-model="ruleForm.types" style="width: 100%;" :disabled="Disabled">
-				    	<el-option label="秒针" value="miao"></el-option>
-				    	<el-option label="AdMaster" value="ad"></el-option>
-				    	<el-option label="无" value="no"></el-option>
+					<el-select v-model="ruleForm.impressionMonitorType" style="width: 100%;" :disabled="Disabled">
+				    	<el-option v-for="(items,index) in ExposureMonitoringType" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 				    </el-select>
 				</el-form-item>
 
 				<el-form-item label="曝光监控链接">
-					<el-input v-model="ruleForm.exposure" :disabled="Disabled"></el-input>
+					<el-input v-model="ruleForm.impressionMonitorUrl" :disabled="Disabled"></el-input>
 					<span class="unit_infro">可以支持第三方链接上报曝光</span>
 				</el-form-item>
 
 				<el-form-item label="点击监控类型">
-					<el-select v-model="ruleForm.Clicktypes" style="width: 100%;" :disabled="Disabled">
-				    	<el-option label="秒针" value="miao"></el-option>
-				    	<el-option label="AdMaster" value="ad"></el-option>
-				    	<el-option label="无" value="no"></el-option>
+					<el-select v-model="ruleForm.clickMonitorType" style="width: 100%;" :disabled="Disabled">
+				    	<el-option label="秒针" value="1"></el-option>
+				    	<el-option label="AdMaster" value="2"></el-option>
 				    </el-select>
 				</el-form-item>
 
 				<el-form-item label="点击监控链接">
-					<el-input v-model="ruleForm.Click" :disabled="Disabled"></el-input>
+					<el-input v-model="ruleForm.clickMonitorUrl" :disabled="Disabled"></el-input>
 					<span class="unit_infro">可以支持第三方链接上报点击</span>
 				</el-form-item>
   <!-- <el-form-item>
@@ -76,25 +73,18 @@
 
 		<div class="unit_o_content2">
 			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-				<el-form-item label="样式" prop="url">
-					<el-select v-model="ruleForm.message_ad" @change="getAds" style="width: 100%;" :disabled="Disabled">
-				    	<el-option label="信息流-三图" value="kinds"></el-option>
-				    	<el-option label="信息流-左图右文" value="direction"></el-option>
-				    	<el-option label="大图" value="big"></el-option>
+				<el-form-item label="样式">
+					<el-select v-model="ruleForm.showType" @change="getAds" style="width: 100%;" :disabled="Disabled">
+				    	<el-option label="信息流-三图" value="1"></el-option>
+				    	<el-option label="信息流-左图右文" value="2"></el-option>
+				    	<el-option label="大图" value="3"></el-option>
 				    </el-select>
 				    <span class="unit_infro">选择您想要的广告展示样式</span>
 				</el-form-item>
 
-				<el-form-item label="物料类型" prop="url">
-					<el-select v-model="ruleForm.M_type" style="width: 100%;" :disabled="Disabled">
-				    	<el-option label="其他" value="other"></el-option>
-				    	<el-option label="装修建材" value="building"></el-option>
-				    	<el-option label="教育" value="edu"></el-option>
-				    	<el-option label="美容整形" value="plastic"></el-option>
-				    	<el-option label="家居用品" value="Housewear"></el-option>
-				    	<el-option label="医疗健康" value="health"></el-option>
-				    	<el-option label="游戏" value="game"></el-option>
-				    	<el-option label="社交" value="Social"></el-option>
+				<el-form-item label="物料类型" >
+					<el-select v-model="ruleForm.materialType" style="width: 100%;" :disabled="Disabled">
+				    	<el-option v-for="(items,index) in MaterialType" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 				    </el-select>
 				    <span class="unit_infro">为您的物料选择正确的类型，方便您对物料库的调用</span>
 				</el-form-item>
@@ -103,16 +93,32 @@
 					<el-input v-model="ruleForm.title" :disabled="Disabled"></el-input>
 				</el-form-item>
 
-				<el-form-item v-for="items in uploaderData" :label="items" prop="title">
+				<el-form-item v-for="(items,index) in uploaderData" :key="index" :label="items" prop="title">
+					<!-- http://sys.midongtech.com  http://182.92.82.188:8280 -->
 					<el-upload
 					  :disabled="Disabled"
 					  class="avatar-uploader"
-					  action="https://jsonplaceholder.typicode.com/posts/"
-					  :show-file-list="false"
-					  :on-success="handleAvatarSuccess"
-					  :before-upload="beforeAvatarUpload">
-					  <img v-if="imageUrl" :src="imageUrl" class="avatar">
-					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					  :data="uploadDatas"
+					  action="http://sys.midongtech.com/manage/sys/fileHandle/upload"
+					  :on-preview="handlePreview"
+					  list-type="text"
+					  :on-success="(value)=> handleAvatarSuccess(index, value)"
+					  :before-upload="beforeAvatarUpload"
+					  :on-remove="(value)=> handleRemove(index, value)"
+					  >
+					  <!-- <el-dialog visible.sync="dialogVisible"> -->
+						<div class="coverDialog" v-if="!btn_turn">
+							<div class="del">
+								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
+							</div>
+							<div class="layer" @click="handleFileEnlarge(index)">
+								<i class="el-icon-view"></i>
+							</div>
+						</div>
+					  	<img v-if="imgUrlArr[index]" :src="imgUrlArr[index]" class="avatar">
+						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					  <!-- </el-dialog> -->
+					  
 					</el-upload>
 				</el-form-item>
 
@@ -124,6 +130,11 @@
 	export default {
 		data() {
 			return {
+				uploadDatas: {
+					bucket: "mddsp",
+					ohtersPic: []
+				},
+				imgUrlArr: [],
 				msg: "返回列表",
 				turn: false,
 				btn_turn: false,
@@ -131,20 +142,10 @@
 				Disabled: "",
 				uploaderData: ["图片一","图片二","图片三"],
 				ruleForm: {
-		          name: '',
-		          url: '',
-		          desc: '',
-		          action: 'action',
-		          types: 'no',
-		          exposure: '',
-		          Clicktypes: 'no',
-		          Click: '',
-		          message_ad: 'kinds',
-		          M_type: 'edu',
-		          title: ''
+		         
 		        },
 		        rules: {
-		          name: [
+		          clickUrl: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
 		          url: [
@@ -159,6 +160,11 @@
 		        }
 		      }
 			},
+		mounted() {
+			setTimeout(this.Init.bind(this),20);
+			this.ListFn("b019","ExposureMonitoringType"); //曝光监控类型
+			this.ListFn("b018","MaterialType"); // 物料类型
+		},
 		methods: {
 			goBack() {
 				this.$router.go(-1);
@@ -171,30 +177,131 @@
 				this.Disabled = "";
 				this.btn_turn = false;
 			},
+			// 获取下拉菜单fn
+			ListFn(num,contain) {
+				var that = this;
+				console.log(contain);
+				var datas = {
+					busNum: num
+				}
+				that.$axios.get(this.hostname+'/manage/dsp/param/listDspConfigData',{params: datas}).then(function(res){
+                    // 响应成功回调
+					console.log(res.data);
+					that[contain] = res.data;
+                }, function(err){
+                    console.log(err);
+                })
+			},
+			// 初始渲染数据fn
+			Init() {
+				var that = this;
+				var datas = {
+					id: that.$route.query.id
+				}
+				that.$axios.get(this.hostname+'/manage/dsp/unit/admin/toEdit',{params: datas}).then(function(res){
+					// 响应成功回调
+					console.log(res.data);
+					// that.$options.methods.test('646646');
+					that.ruleForm = res.data;
+					that.imgUrlArr = that.ruleForm.imgUrl.split(',');
+					console.log(that.imgUrlArr);
+                }, function(err){
+                    console.log(err);
+                })
+			},
 			getAds() {
-				let name = this.ruleForm.message_ad;
-				if(name == "kinds") {
+				let name = this.ruleForm.showType;
+				if(name == "1") {
 					this.uploaderData = ["图片一","图片二","图片三"];
-				}else if(name == "direction") {
+				}else if(name == "2") {
 					this.uploaderData = ["图片"];
-				}else if(name == "big") {
+				}else if(name == "3") {
 					this.uploaderData = ["大图"];
 				}
 			},
-			handleAvatarSuccess(res, file) {
-		        this.imageUrl = URL.createObjectURL(file.raw);
+			handleAvatarSuccess(i, res, file) {
+				if(res.resultCode == 200) {
+					this.imgUrlArr.splice(i,1,res.data);
+					this.ruleForm.imgUrl = this.imgUrlArr; 
+					console.log(this.ruleForm.imgUrl);
+				}
+		    },
+		    yyleAvatarSuccess(res) {
+		    	if(res.resultCode == 200) {
+					this.ruleForm.businessLicenseUrl = res.data;
+				}
 		    },
 		    beforeAvatarUpload(file) {
-		        const isJPG = file.type === 'image/jpeg';
-		        const isLt2M = file.size / 1024 / 1024 < 2;
-		        if (!isJPG) {
-		          this.$message.error('上传头像图片只能是 JPG 格式!');
-		        }
-		        if (!isLt2M) {
-		          this.$message.error('上传头像图片大小不能超过 2MB!');
-		        }
-		        return isJPG && isLt2M;
-		    }
+				console.log('6666666');
+				// this.imgUrlArr = [];
+		        // const isJPG = file.type === 'image/jpeg';
+		        // const isLt2M = file.size / 1024 / 1024 < 2;
+		        // if (!isJPG) {
+		        //   this.$message.error('上传头像图片只能是 JPG 格式!');
+		        // }
+		        // if (!isLt2M) {
+		        //   this.$message.error('上传头像图片大小不能超过 2MB!');
+		        // }
+		        // return isJPG && isLt2M;
+			},
+			handlePreview(file) {
+				console.log(file);
+			},
+			handleFileRemove(a) {
+				console.log(a);
+			},
+			// 预览查看图片
+			handleFileEnlarge(indexs) {
+				window.open(this.imgUrlArr[indexs]);
+			},
+			// 删除上传图片
+		    handleRemove(index,file) {
+		    	console.log(file.url);
+		    	for(var i = 0, L = this.imgUrlArr.length; i < L; i++) {
+		    		if(file.url == this.imgUrlArr[i]) {
+		    			console.log(i);
+		    			this.imgUrlArr.splice(i,1);
+		    		}
+		    	}
+		    },
+			// 保存操作
+			saveFn() {
+				var that = this;
+				var params = new URLSearchParams();
+				params.append('id', that.$route.query.id);
+				params.append('base_name', that.ruleForm.base_name);
+				params.append('clickUrl', that.ruleForm.clickUrl);
+				params.append('base_channel', that.ruleForm.base_channel);
+				params.append('clickAction', that.ruleForm.clickAction);
+				params.append('impressionMonitorUrl', that.ruleForm.impressionMonitorUrl);
+				params.append('clickMonitorType', that.ruleForm.clickMonitorType);
+				params.append('clickMonitorUrl', that.ruleForm.clickMonitorUrl);
+				params.append('showType', that.ruleForm.showType);
+				params.append('materialType', that.ruleForm.materialType);
+				params.append('title', that.ruleForm.title);
+				params.append('imgUrl', that.ruleForm.imgUrl);
+
+				this.$axios.post(this.hostname+'/manage/dsp/unit/admin/update',params).then(function(res){
+                    // 响应成功回调
+                    console.log(res.data);
+                    if(res.data.resultCode == 200) {
+                    	that.Disabled = "";
+						that.btn_turn = false;
+                    	that.$notify({
+				          title: '成功',
+				          message: res.data.message,
+				          type: 'success'
+				        });
+                    }else {
+                    	that.$notify.error({
+				          title: '错误',
+				          message: res.data.message
+				        });
+                    }
+                }, function(err){
+                    console.log(err);
+                })
+			},
     	}
 	}
 </script>
@@ -213,6 +320,14 @@
 			background: #D8D8D8;
 			font-size: .9rem;
 			cursor: pointer;
+		}
+		.coverDialog {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: rgba(0,0,0,.5);
+			display: none;
+			color: white;
 		}
 		.unit_o_left_btn:hover {
 			font-weight: bold;
@@ -266,6 +381,9 @@
 		  .avatar-uploader .el-upload:hover {
 		    border-color: #409EFF;
 		  }
+		  .avatar-uploader .el-upload:hover .coverDialog {
+			display: block;
+		}
 		  .avatar-uploader-icon {
 		    font-size: 28px;
 		    color: #8c939d;
@@ -275,8 +393,22 @@
 		    text-align: center;
 		  }
 		  .avatar {
-		    width: 178px;
+		    width: 100%;
 		    height: 178px;
 		    display: block;
+		  }
+
+		  .del {
+			  float: left;
+			  width: 40%;
+			  font-size: 1.2vw;
+			  margin-top: 40%;
+			  margin-left: 12.5%;
+		  }
+		  .layer {
+			  float: left;
+			  width: 30%;
+			  font-size: 1.2vw;
+			  margin-top: 40%;
 		  }
 </style>
