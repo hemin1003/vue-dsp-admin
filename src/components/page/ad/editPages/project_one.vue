@@ -80,49 +80,63 @@
 			saveFn() {
 				var that = this;
 				var params = new URLSearchParams();
-				params.append('id', this.$route.query.id);
+				let username = localStorage.getItem('ms_username');
+				let links;
+				params.append('id', that.$route.query.id);
 				params.append('name', that.ruleForm.name);
-				params.append('pId', that.ruleForm.pId);
-				this.$axios.post(this.hostname+'/manage/dsp/project/admin/update',params).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-                    if(res.data.resultCode == 200) {
-                    	that.Disabled = "";
+				params.append('contractId', that.ruleForm.pId);
+				if(that.$route.query.type == "add") {
+					params.append('pId', that.$route.query.id);
+					params.append('loginUserName', username);
+					links = "add";
+				}else {
+					links = "update";
+				}
+				that.$axios.post(that.hostname+'/manage/dsp/project/admin/'+links,params).then(function(res){
+					// 响应成功回调
+					console.log(res.data);
+					if(res.data.resultCode == 200) {
+						that.Disabled = "";
 						that.btn_turn = false;
-                    	that.$notify({
-				          title: '成功',
-				          message: res.data.message,
-				          type: 'success'
-				        });
-                    }else {
-                    	that.$notify.error({
-				          title: '错误',
-				          message: res.data.message
-				        });
-                    }
-                }, function(err){
-                    console.log(err);
-                })
+						that.$notify({
+						title: '成功',
+						message: res.data.message,
+						type: 'success'
+						});
+					}else {
+						that.$notify.error({
+						title: '错误',
+						message: res.data.message
+						});
+					}
+				}, function(err){
+					console.log(err);
+				})
 			},
 			// 初始渲染数据fn
 			Init() {
 				var that = this;
-				console.log(this.$route.query.id);
-				var datas = {
-					id: this.$route.query.id
+				console.log(this.$route.query.type);
+				if(that.$route.query.type == "add") {
+					that.Disabled = null;
+					that.btn_turn = true;
+				}else {
+					var datas = {
+						id: this.$route.query.id
+					}
+					that.$axios.get(this.hostname+'/manage/dsp/project/admin/toEdit',{params: datas}).then(function(res){
+						// 响应成功回调
+						console.log(res.data);
+						that.ruleForm = res.data;
+						if(that.ruleForm.onlineStatus == 0) {
+							that.ruleForm.turn = false;
+						}else {
+							that.ruleForm.turn = true;
+						}
+					}, function(err){
+						console.log(err);
+					})
 				}
-				this.$axios.get(this.hostname+'/manage/dsp/project/admin/toEdit',{params: datas}).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-                    that.ruleForm = res.data;
-                    if(that.ruleForm.onlineStatus == 0) {
-                    	that.ruleForm.turn = false;
-                    }else {
-                    	that.ruleForm.turn = true;
-                    }
-                }, function(err){
-                    console.log(err);
-                })
 			},
 			// 上下线操作
 			change(val) {

@@ -4,17 +4,17 @@
 			<el-form :inline="true" :model="unitData" label-width="500px">
 				<el-col :span="3">
 	    			<el-select v-model="unitData.adProject" placeholder="选择广告项目">
-	    				<el-option v-for="(items,index) in selectMore.adProject" :label="items.name" :key="index" :value="items.val"></el-option>
+	    				<el-option v-for="(items,index) in selectList" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 	    			</el-select>
     			</el-col>
 				<el-col :span="3">
 	    			<el-select v-model="unitData.adActive" placeholder="选择广告活动">
-	    				<el-option v-for="(items,index) in selectMore.adActive" :label="items.name" :key="index" :value="items.val"></el-option>
+	    				<el-option v-for="(items,index) in activtyList" :label="items.keyStr" :key="index" :value="items.valueStr"></el-option>
 	    			</el-select>
     			</el-col>
     			<el-col :span="3">
 	    			<el-select v-model="unitData.adUnit" placeholder="查询广告单元">
-	    				<el-option v-for="(items,index) in selectMore.adUnit" :label="items.name" :key="index" :value="items.val"></el-option>
+	    				<el-option v-for="(items,index) in unitList" :label="items.keyStr" :key="index" :value="items.valueStr"></el-option>
 	    			</el-select>
     			</el-col>
 				<el-col :span="3">
@@ -59,7 +59,7 @@
 		      <el-radio-button label="4"><span class="ant-badge-status-dot ant-badge-status-error"></span>审核失败</el-radio-button>
 		    </el-radio-group>
 		    <div class="tabs_btn">
-		    	<div class="tabs_btn_left"><i class="el-icon-plus"></i><span>新建</span></div>
+		    	<div class="tabs_btn_left" @click="dialogFormVisible = true"><i class="el-icon-plus"></i><span>新建</span></div>
 		    	<div class="tabs_btn_right"><span>下载数据</span></div>
 		    </div>
 		</div>
@@ -70,7 +70,8 @@
 			    :data="tableData"
 			    stripe
 			    :cell-class-name="cell"
-			    style="width: 100%">
+			    style="width: 100%"
+				row-style="height:60px">
 			    <el-table-column
 			      prop="id"
 			      label="ID"
@@ -80,14 +81,14 @@
 			      label="名称"
 			    >
 			      <template scope="scope_name">
-			      	<router-link class="names" to="/ad_active">{{scope_name.row.base_name}}</router-link>
+			      	<router-link class="names" to="/ad_activity">{{scope_name.row.base_name}}</router-link>
 			      </template>
 			    </el-table-column>
 			    <el-table-column
 			      label="所属广告项目"
 			      >
 			      <template scope="scope_ads">
-			      	<router-link class="names" to="/ad_active">{{scope_ads.row.pName}}</router-link>
+			      	<router-link class="names" to="/ad_activity">{{scope_ads.row.pName}}</router-link>
 			      </template>
 			    </el-table-column>
         		<!-- <el-popover
@@ -134,7 +135,7 @@
 			      label="消耗"
 			      >
 			    </el-table-column>
-			    <el-table-column property="turn" label="状态">
+			    <el-table-column property="turn" label="状态" width="200">
 				    <template scope="scope">
 				    <!-- @change="change(scope.$index,scope.row)" -->
 				      <el-switch 
@@ -147,6 +148,7 @@
                         v-model="scope.row.Status"
                         >
 					  </el-switch>
+					  <el-tag type="success">{{scope.row.proveStatusTxt}}</el-tag>
 					</template>
 			    </el-table-column>
 				<el-table-column
@@ -165,12 +167,32 @@
                     :total="allPage">
             </el-pagination>
         </div>
+
+			<!-- 弹窗 -->
+		<el-dialog :title="dialogTitle" style="100px" :visible.sync="dialogFormVisible">
+			<el-table
+				:data="activtyList"
+				row-style="height:60px"
+				@row-click="openDetails">
+				<el-table-column
+					prop="valueStr"
+					label="id"
+					>
+				</el-table-column>
+				<el-table-column
+					prop="keyStr"
+					label="名称">
+				</el-table-column>
+			</el-table>
+		</el-dialog>
 	</div>
 </template>
 <script>
 	export default {
 		data() {
 			return {
+				dialogTitle: '选择所属广告活动',
+				dialogFormVisible: false,
 				msg: "广告项目",
 				radioes: "0",
 				unitData: {
@@ -190,54 +212,14 @@
 		        	status: [{name:"上线", val: "on"},{name:"暂停", val: "off"}]
 		        },
 		        timeVal: '',
-		        tableData: [{
-		          ID: "1108118799",
-		          Allprice: "",
-		          turn: true,
-		          name: '上海为行',
-		          link: "/login",
-		          alone_ads: "为行投资",
-		          requestNum: "",
-		          exposureNum: "",
-		          clickIng: "",
-		          clickRate: "",
-		          ecpm: "",
-		          acp: "",
-		          switch: true
-		        }, {
-		          ID: "1108118899",
-		          Allprice: "￥76179.42",
-		          turn: false,
-		          name: '幂动科技',
-		          link: "/ad_detail?id=2313123",
-		          alone_ads: "为行投资",
-		          requestNum: "610604251",
-		          exposureNum: "4760230",
-		          clickIng: "158277",
-		          clickRate: "3.33%",
-		          ecpm: "16.01",
-		          acp: "0.49",
-		          switch: true
-		        }, {
-		          ID: "",
-		          turn: false,
-		          name: '',
-		          link: "/basetable",
-		          alone_ads: "",
-		          switch: true,
-		          Allprice: "累计￥76179.42",
-		          requestNum: "累计610604251",
-		          exposureNum: "累计4760230",
-		          clickIng: "累计158277",
-		          clickRate: "平均3.33%",
-		          ecpm: "平均16.01",
-		          acp: "平均0.49",
-		          switch: false
-		        }]
+		        tableData: []
 			}
 		},
 		mounted() {
-			this.Init()
+			this.Init();
+			this.selectFn();
+			this.activtyFn();
+			this.unitFn();
 		},
 		methods: {
 			handleCurrentChange() {
@@ -274,10 +256,9 @@
                     that.allPage = res.data.total;
                     that.tableData = res.data.rows;
                      
-                    // 特殊处理
+					// 特殊处理
                     for(var i = 0, Len = that.tableData.length; i < Len; i++) {
-                    	that.tableData[i].switch = true;
-                    	// that.tableData[i+1].switch = false;
+						that.tableData[i].switch = true;
                     	that.tableData[i].btn_stauts = true;
                     	that.tableData[i].link = that.tableData[i].id;
 	                    // 上线状态
@@ -285,12 +266,79 @@
 	                    	that.tableData[i].Status = false
 	                    }else {
 	                    	that.tableData[i].Status = true
+						}
+                    	// 审核状态判断
+                    	switch(that.tableData[i].proveStatus) {
+	                    	case 0:
+	                    		that.tableData[i].proveStatusTxt = "未提交";
+	                    		break;
+	                    	case 1:
+	                    		that.tableData[i].proveStatusTxt = "审核中";
+	                    		break;
+	                    	case 2:
+	                    		that.tableData[i].proveStatusTxt = "审核成功";
+	                    		that.tableData[i].btn_stauts = null
+	                    		break;
+	                    	case 3:
+	                    		that.tableData[i].proveStatusTxt = "审核失败";
+	                    		break;
 	                    }
                     }
                     console.log(res.data);
                 }, function(err){
                     console.log(err);
                 })
+			},
+			// 10.17新增下拉菜单初始化渲染
+			selectFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+				};
+				this.$axios.get(that.hostname+'/manage/dsp/sys/config/getDspProjectList',{params: datas}).then(function(res){
+          			// 响应成功回调
+					console.log(res.data);
+					if(res.status == 200) {
+						that.selectList = res.data;
+					}
+				}, function(err){
+						console.log(err);
+				})
+			},
+			// 10.17广告活动init
+			activtyFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+				};
+				this.$axios.get(that.hostname+'/manage/dsp/sys/config/getDspActivityList',{params: datas}).then(function(res){
+          // 响应成功回调
+					console.log(res.data);
+					if(res.status == 200) {
+						that.activtyList = res.data;
+					}
+				}, function(err){
+						console.log(err);
+				})
+			},
+			// 10.17 广告单元init
+			unitFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+				};
+				this.$axios.get(that.hostname+'/manage/dsp/sys/config/getDspUnitList',{params: datas}).then(function(res){
+          // 响应成功回调
+					console.log(res.data);
+					if(res.status == 200) {
+						that.unitList = res.data;
+					}
+				}, function(err){
+						console.log(err);
+				})
 			},
 			change:function(index,row){
 				console.log(index,row.Status);
@@ -329,7 +377,10 @@
                 }, function(err){
                     console.log(err);
                 })
-            }
+			},
+			openDetails(row) {
+				this.$router.push('/ad_detail?id='+row.valueStr+'&type=add');
+			}
 		}
 	}
 </script>

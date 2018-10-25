@@ -52,7 +52,8 @@
 			<el-table
 			    :data="tableData"
 			    stripe
-			    style="width: 100%">
+			    style="width: 100%"
+					row-style="height:60px">
 			    <el-table-column
 			      prop="date"
 			      label="日期"
