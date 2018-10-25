@@ -59,7 +59,7 @@
 		      <el-radio-button label="4"><span class="ant-badge-status-dot ant-badge-status-error"></span>审核失败</el-radio-button>
 		    </el-radio-group>
 		    <div class="tabs_btn">
-		    	<div class="tabs_btn_left"><i class="el-icon-plus"></i><span>新建</span></div>
+		    	<div class="tabs_btn_left" @click="dialogFormVisible = true"><i class="el-icon-plus"></i><span>新建</span></div>
 		    	<div class="tabs_btn_right"><span>下载数据</span></div>
 		    </div>
 		</div>
@@ -70,7 +70,8 @@
 			    :data="tableData"
 			    stripe
 			    :cell-class-name="cell"
-			    style="width: 100%">
+			    style="width: 100%"
+				row-style="height:60px">
 			    <el-table-column
 			      prop="id"
 			      label="ID"
@@ -80,14 +81,14 @@
 			      label="名称"
 			    >
 			      <template scope="scope_name">
-			      	<router-link class="names" to="/ad_active">{{scope_name.row.base_name}}</router-link>
+			      	<router-link class="names" to="/ad_activity">{{scope_name.row.base_name}}</router-link>
 			      </template>
 			    </el-table-column>
 			    <el-table-column
 			      label="所属广告项目"
 			      >
 			      <template scope="scope_ads">
-			      	<router-link class="names" to="/ad_active">{{scope_ads.row.pName}}</router-link>
+			      	<router-link class="names" to="/ad_activity">{{scope_ads.row.pName}}</router-link>
 			      </template>
 			    </el-table-column>
         		<!-- <el-popover
@@ -134,7 +135,7 @@
 			      label="消耗"
 			      >
 			    </el-table-column>
-			    <el-table-column property="turn" label="状态">
+			    <el-table-column property="turn" label="状态" width="200">
 				    <template scope="scope">
 				    <!-- @change="change(scope.$index,scope.row)" -->
 				      <el-switch 
@@ -147,6 +148,7 @@
                         v-model="scope.row.Status"
                         >
 					  </el-switch>
+					  <el-tag type="success">{{scope.row.proveStatusTxt}}</el-tag>
 					</template>
 			    </el-table-column>
 				<el-table-column
@@ -165,12 +167,32 @@
                     :total="allPage">
             </el-pagination>
         </div>
+
+			<!-- 弹窗 -->
+		<el-dialog :title="dialogTitle" style="100px" :visible.sync="dialogFormVisible">
+			<el-table
+				:data="activtyList"
+				row-style="height:60px"
+				@row-click="openDetails">
+				<el-table-column
+					prop="valueStr"
+					label="id"
+					>
+				</el-table-column>
+				<el-table-column
+					prop="keyStr"
+					label="名称">
+				</el-table-column>
+			</el-table>
+		</el-dialog>
 	</div>
 </template>
 <script>
 	export default {
 		data() {
 			return {
+				dialogTitle: '选择所属广告活动',
+				dialogFormVisible: false,
 				msg: "广告项目",
 				radioes: "0",
 				unitData: {
@@ -234,10 +256,9 @@
                     that.allPage = res.data.total;
                     that.tableData = res.data.rows;
                      
-                    // 特殊处理
+					// 特殊处理
                     for(var i = 0, Len = that.tableData.length; i < Len; i++) {
-                    	that.tableData[i].switch = true;
-                    	// that.tableData[i+1].switch = false;
+						that.tableData[i].switch = true;
                     	that.tableData[i].btn_stauts = true;
                     	that.tableData[i].link = that.tableData[i].id;
 	                    // 上线状态
@@ -245,6 +266,22 @@
 	                    	that.tableData[i].Status = false
 	                    }else {
 	                    	that.tableData[i].Status = true
+						}
+                    	// 审核状态判断
+                    	switch(that.tableData[i].proveStatus) {
+	                    	case 0:
+	                    		that.tableData[i].proveStatusTxt = "未提交";
+	                    		break;
+	                    	case 1:
+	                    		that.tableData[i].proveStatusTxt = "审核中";
+	                    		break;
+	                    	case 2:
+	                    		that.tableData[i].proveStatusTxt = "审核成功";
+	                    		that.tableData[i].btn_stauts = null
+	                    		break;
+	                    	case 3:
+	                    		that.tableData[i].proveStatusTxt = "审核失败";
+	                    		break;
 	                    }
                     }
                     console.log(res.data);
@@ -340,7 +377,10 @@
                 }, function(err){
                     console.log(err);
                 })
-            }
+			},
+			openDetails(row) {
+				this.$router.push('/ad_detail?id='+row.valueStr+'&type=add');
+			}
 		}
 	}
 </script>

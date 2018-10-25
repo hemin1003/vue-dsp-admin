@@ -42,7 +42,7 @@
 					<span class="unit_infro">用来表示您的跳转地址点击后是直接下载的还是进行跳转的</span>
 				</el-form-item>
 
-				<el-form-item label="曝光监控类型">
+				<!-- <el-form-item label="曝光监控类型">
 					<el-select v-model="ruleForm.impressionMonitorType" style="width: 100%;" :disabled="Disabled">
 				    	<el-option v-for="(items,index) in ExposureMonitoringType" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 				    </el-select>
@@ -63,7 +63,7 @@
 				<el-form-item label="点击监控链接">
 					<el-input v-model="ruleForm.clickMonitorUrl" :disabled="Disabled"></el-input>
 					<span class="unit_infro">可以支持第三方链接上报点击</span>
-				</el-form-item>
+				</el-form-item> -->
   <!-- <el-form-item>
     <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
     <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -170,8 +170,17 @@
 				this.$router.go(-1);
 			},
 			EditFn() {
-				this.Disabled = null;
-				this.btn_turn = true;
+				// 10.25新增状态判断是否可编辑
+				if(this.ruleForm.proveStatus == 1 || this.ruleForm.proveStatus == 2) {
+					 this.$message({
+						message: '当前审核状态不可编辑！',
+						type: 'warning'
+					});
+				}else {
+					this.Disabled = null;
+					this.btn_turn = true;
+				}
+				
 			},
 			cancelFn() {
 				this.Disabled = "";
@@ -195,19 +204,24 @@
 			// 初始渲染数据fn
 			Init() {
 				var that = this;
-				var datas = {
-					id: that.$route.query.id
+				if(that.$route.query.type == "add") {
+					that.Disabled = null;
+					that.btn_turn = true;
+				}else {
+					var datas = {
+						id: that.$route.query.id
+					}
+					that.$axios.get(this.hostname+'/manage/dsp/unit/admin/toEdit',{params: datas}).then(function(res){
+						// 响应成功回调
+						console.log(res.data);
+						// that.$options.methods.test('646646');
+						that.ruleForm = res.data;
+						that.imgUrlArr = that.ruleForm.imgUrl.split(',');
+						console.log(that.imgUrlArr);
+					}, function(err){
+						console.log(err);
+					})
 				}
-				that.$axios.get(this.hostname+'/manage/dsp/unit/admin/toEdit',{params: datas}).then(function(res){
-					// 响应成功回调
-					console.log(res.data);
-					// that.$options.methods.test('646646');
-					that.ruleForm = res.data;
-					that.imgUrlArr = that.ruleForm.imgUrl.split(',');
-					console.log(that.imgUrlArr);
-                }, function(err){
-                    console.log(err);
-                })
 			},
 			getAds() {
 				let name = this.ruleForm.showType;
@@ -267,21 +281,29 @@
 			// 保存操作
 			saveFn() {
 				var that = this;
+				let username = localStorage.getItem('ms_username');
+				let links;
 				var params = new URLSearchParams();
 				params.append('id', that.$route.query.id);
 				params.append('base_name', that.ruleForm.base_name);
 				params.append('clickUrl', that.ruleForm.clickUrl);
-				params.append('base_channel', that.ruleForm.base_channel);
+				// params.append('base_channel', that.ruleForm.base_channel);
 				params.append('clickAction', that.ruleForm.clickAction);
-				params.append('impressionMonitorUrl', that.ruleForm.impressionMonitorUrl);
-				params.append('clickMonitorType', that.ruleForm.clickMonitorType);
-				params.append('clickMonitorUrl', that.ruleForm.clickMonitorUrl);
+				// params.append('impressionMonitorUrl', that.ruleForm.impressionMonitorUrl);  //曝光监控类型
+				// params.append('clickMonitorType', that.ruleForm.clickMonitorType);  //点击监控类型
+				// params.append('clickMonitorUrl', that.ruleForm.clickMonitorUrl);  //点击监控链接
 				params.append('showType', that.ruleForm.showType);
 				params.append('materialType', that.ruleForm.materialType);
 				params.append('title', that.ruleForm.title);
 				params.append('imgUrl', that.ruleForm.imgUrl);
-
-				this.$axios.post(this.hostname+'/manage/dsp/unit/admin/update',params).then(function(res){
+				if(that.$route.query.type == "add") {
+					params.append('pId', that.$route.query.id);
+					params.append('loginUserName', username);
+					links = "add";
+				}else {
+					links = "update";
+				}
+				that.$axios.post(that.hostname+'/manage/dsp/unit/admin/'+links,params).then(function(res){
                     // 响应成功回调
                     console.log(res.data);
                     if(res.data.resultCode == 200) {

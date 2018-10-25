@@ -34,7 +34,7 @@
 
 		<div class="tabs">
 		    <div class="tabs_btn">
-		    	<div class="tabs_btn_left"><i class="el-icon-plus"></i><span>新建</span></div>
+		    	<div class="tabs_btn_left" @click="dialogFormVisible = true"><i class="el-icon-plus"></i><span>新建</span></div>
 		    	<div class="tabs_btn_right"><span>下载数据</span></div>
 		    </div>
 		</div>
@@ -44,7 +44,9 @@
 			<el-table
 			    :data="tableData"
 			    stripe
-			    style="width: 100%">
+			    style="width: 100%"
+				row-style="height:60px"
+				>
 			    <el-table-column
 			      prop="id"
 			      label="ID"
@@ -96,12 +98,33 @@
                     :total="allPage">
             </el-pagination>
         </div>
+
+		<!-- 弹窗 -->
+		<el-dialog :title="dialogTitle" style="100px" :visible.sync="dialogFormVisible">
+			<el-table
+				:data="selectList"
+				style="width: 100%"
+				row-style="height:60px"
+				@row-click="openDetails">
+				<el-table-column
+					prop="valueStr"
+					label="id"
+					>
+				</el-table-column>
+				<el-table-column
+					prop="keyStr"
+					label="名称">
+				</el-table-column>
+			</el-table>
+		</el-dialog>
 	</div>
 </template>
 <script>
 	export default {
 		data() {
 			return {
+				dialogTitle: '选择广告主',
+				dialogFormVisible: false,
 				selectList: "",
 				msg: "广告项目",
 				formInline: {
@@ -204,7 +227,11 @@
                 }, function(err){
                     console.log(err);
                 })
-            }
+			},
+			openDetails(row) {
+				this.$router.push('/pro_detail?id='+row.valueStr+'&type=add');
+				// console.log(row.valueStr);
+			}
 		}
 	}
 </script>
@@ -265,4 +292,13 @@
 					font-size: .8rem;
 					margin-right: 4px;
 				}
+
+
+			.el-dialog--small {
+				width: 30%;
+			}
+			.el-dialog__header {
+				border-bottom: 1px solid rgb(223, 236, 235);
+				padding-bottom: .8vw;
+			}
 </style>

@@ -29,13 +29,13 @@
 							<span class="unit_infro">为您的广告项目取一个唯一的名称，格式如下：广告主名称_产品名称，10个字以内</span>
 						</el-form-item>
 						
-						<el-form-item label="出价类型" prop="name">
+						<!-- <el-form-item label="出价类型" prop="name">
 						    <el-radio-group v-model="ruleForm.base_bidType" :disabled="Disabled">
 						    	<el-radio label="1">实时出价</el-radio>
 						    	<el-radio label="2">固定出价</el-radio>
 						    </el-radio-group>
 						    <div class="unit_infro">目前只支持竞价类型喔</div>
-						</el-form-item>
+						</el-form-item> -->
 
 						<el-form-item label="渠道" prop="prop_channel">
 							<el-select v-model="ruleForm.base_channel" style="width: 100%;" :disabled="Disabled">
@@ -45,12 +45,12 @@
 						    </el-select>
 						</el-form-item>
 
-						<el-form-item label="广告位" prop="prop_adsense">
+						<!-- <el-form-item label="广告位" prop="prop_adsense">
 							<el-select v-model="ruleForm.base_showAdsId" style="width: 100%;" :disabled="Disabled">
 						    	<el-option v-for="(items,index) in adsense" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 						    </el-select>
 						    <span class="unit_infro">为您的活动选择一个想要投放的广告位</span>
-						</el-form-item>
+						</el-form-item> -->
 
 						<el-form-item label="广告位示例">
 							<div><img src="./images/example.png" width="30%" alt="example"></div>
@@ -62,13 +62,13 @@
 				<el-collapse-item title="时间控制" name="2">
 			    	<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 
-						<el-form-item label="速度控制" prop="name">
+						<!-- <el-form-item label="速度控制" prop="name">
 							<el-select v-model="ruleForm.time_speed" style="width: 100%;" :disabled="Disabled">
 						    	<el-option label="加速" value="2"></el-option>
 						    	<el-option label="匀速" value="1"></el-option>
 						    </el-select>
 						    <span class="unit_infro">为您的活动选择一个想要投放的广告位</span>
-						</el-form-item>
+						</el-form-item> -->
 
 						<el-form-item label="开始时间" prop="time">
 						    <el-date-picker
@@ -91,7 +91,7 @@
 						    <div class="unit_infro">结束时间不填写表示不限制结束时间</div>
 						</el-form-item>
 						
-						<el-form-item label="控制类型" prop="name">
+						<!-- <el-form-item label="控制类型" prop="name">
 							<el-select v-model="ruleForm.time_controlType" style="width: 100%;" :disabled="Disabled">
 						    	<el-option label="按IMEI识别用户" value="1"></el-option>
 						    	<el-option label="按IP识别用户" value="2"></el-option>
@@ -106,7 +106,7 @@
 						<el-form-item label="点击频次" prop="Click_times">
 							<el-input v-model="ruleForm.time_clickLimit" :disabled="Disabled"></el-input>
 							<span class="unit_infro">每日单个用户最多能点击这个广告的次数</span>
-						</el-form-item>
+						</el-form-item> -->
 
 						<!-- <el-form-item label="排期">
 							<el-table
@@ -134,57 +134,9 @@
 						</el-form-item> -->
 					</el-form>
 				</el-collapse-item>
-				<el-collapse-item title="定向控制" name="3">
-						<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 
-						<el-form-item label="主题渠道">
-						    <el-radio-group @change="RadioFn($event,'checkBoxTurn','checkBoxTurn_obj')" v-model="themeVal" :disabled="Disabled">
-						    	<el-radio label="1">不限</el-radio>
-						    	<el-radio label="2">自定义</el-radio>
-						    </el-radio-group>
-							<div class="checkBoxes" v-if="checkBoxTurn">
-								 <el-checkbox-group v-model="checkBoxTurn_checkList">
-									 <!-- @change="checkboxFn('checkBoxTurn_obj','checkBoxTurn_checkList')" -->
-									<el-checkbox v-for="(items,index) in ThemeChannel" :disabled="Disabled" :key="index" :label="items.keyStr"></el-checkbox>
-								</el-checkbox-group>
-							</div>
-						    <!-- <div class="unit_infro">目前只支持竞价类型喔</div> -->
-						</el-form-item>
 
-						<el-form-item label="关键字">
-						    <el-radio-group @change="RadioFn($event,'checkBoxTurn2','checkBoxTurn2_obj')" v-model="keywordVal" :disabled="Disabled">
-						    	<el-radio label="1">不限</el-radio>
-						    	<el-radio label="2">自定义</el-radio>
-						    </el-radio-group>
-							<div class="checkBoxes" v-if="checkBoxTurn2">
-								 <el-checkbox-group v-model="checkBoxTurn2_checkList">
-									 <!-- @change="checkboxFn('checkBoxTurn2_obj','checkBoxTurn2_checkList')" -->
-									<el-checkbox v-for="(items,index) in keyWord" :disabled="Disabled" :key="index" :label="items.keyStr"></el-checkbox>
-								</el-checkbox-group>
-							</div>
-						</el-form-item>
-						<el-form-item label="年龄">
-						    <el-radio-group @change="RadioFn($event,'checkBoxTurn3','checkBoxTurn3_obj')" v-model="ageVal" :disabled="Disabled">
-						    	<el-radio label="1">不限</el-radio>
-						    	<el-radio label="2">自定义</el-radio>
-						    </el-radio-group>
-						    <div class="checkBoxes" v-if="checkBoxTurn3">
-								 <el-checkbox-group v-model="checkBoxTurn3_checkList">
-									 <!-- @change="checkboxFn('checkBoxTurn3_obj','checkBoxTurn3_checkList')" -->
-									<el-checkbox v-for="(items,index) in ageArray" :disabled="Disabled" :key="index" :label="items.keyStr"></el-checkbox>
-								</el-checkbox-group>
-							</div>
-						</el-form-item>
-
-						<el-form-item label="性别">
-						    <el-radio-group v-model="ruleForm.target_gender" :disabled="Disabled">
-						    	<el-radio label="0">不限</el-radio>
-						    	<el-radio label="1">男</el-radio>
-								<el-radio label="2">女</el-radio>
-						    </el-radio-group>
-						</el-form-item>
-
-						<!-- <el-form-item label="网络">
+				<!-- <el-form-item label="网络">
 						    <el-radio-group v-model="ruleForm.target_network" :disabled="Disabled">
 						    	<el-radio label="now">不限</el-radio>
 						    	<el-radio label="static">自定义</el-radio>
@@ -198,6 +150,51 @@
 								<el-radio label="old">老用户</el-radio>
 						    </el-radio-group>
 						</el-form-item> -->
+
+				<!-- <el-collapse-item title="定向控制" name="3">
+						<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+						<el-form-item label="主题渠道">
+						    <el-radio-group @change="RadioFn($event,'checkBoxTurn','checkBoxTurn_obj')" v-model="themeVal" :disabled="Disabled">
+						    	<el-radio label="1">不限</el-radio>
+						    	<el-radio label="2">自定义</el-radio>
+						    </el-radio-group>
+							<div class="checkBoxes" v-if="checkBoxTurn">
+								 <el-checkbox-group v-model="checkBoxTurn_checkList">
+									<el-checkbox v-for="(items,index) in ThemeChannel" :disabled="Disabled" :key="index" :label="items.keyStr"></el-checkbox>
+								</el-checkbox-group>
+							</div>
+						</el-form-item>
+
+						<el-form-item label="关键字">
+						    <el-radio-group @change="RadioFn($event,'checkBoxTurn2','checkBoxTurn2_obj')" v-model="keywordVal" :disabled="Disabled">
+						    	<el-radio label="1">不限</el-radio>
+						    	<el-radio label="2">自定义</el-radio>
+						    </el-radio-group>
+							<div class="checkBoxes" v-if="checkBoxTurn2">
+								 <el-checkbox-group v-model="checkBoxTurn2_checkList">
+									<el-checkbox v-for="(items,index) in keyWord" :disabled="Disabled" :key="index" :label="items.keyStr"></el-checkbox>
+								</el-checkbox-group>
+							</div>
+						</el-form-item>
+						<el-form-item label="年龄">
+						    <el-radio-group @change="RadioFn($event,'checkBoxTurn3','checkBoxTurn3_obj')" v-model="ageVal" :disabled="Disabled">
+						    	<el-radio label="1">不限</el-radio>
+						    	<el-radio label="2">自定义</el-radio>
+						    </el-radio-group>
+						    <div class="checkBoxes" v-if="checkBoxTurn3">
+								 <el-checkbox-group v-model="checkBoxTurn3_checkList">
+									<el-checkbox v-for="(items,index) in ageArray" :disabled="Disabled" :key="index" :label="items.keyStr"></el-checkbox>
+								</el-checkbox-group>
+							</div>
+						</el-form-item>
+
+						<el-form-item label="性别">
+						    <el-radio-group v-model="ruleForm.target_gender" :disabled="Disabled">
+						    	<el-radio label="0">不限</el-radio>
+						    	<el-radio label="1">男</el-radio>
+								<el-radio label="2">女</el-radio>
+						    </el-radio-group>
+						</el-form-item>
 
 						<el-form-item label="操作系统">
 							<el-select v-model="ruleForm.target_os" style="width: 100%;" placeholder="不限" :disabled="Disabled">
@@ -223,7 +220,6 @@
 
 						<el-form-item label="排除手机品牌">
 							<el-select v-model="delPhoneArray" style="width: 100%;" placeholder="" multiple filterable allow-create default-first-option :disabled="Disabled">
-						    	<!-- valueStr -->
 								<el-option v-for="(items,index) in phoneBrand" :key="index" :label="items.keyStr" :value="items.keyStr"></el-option>
 						    </el-select>
 						</el-form-item>
@@ -236,25 +232,27 @@
 				
 					</el-form>
 
-				</el-collapse-item>
+				</el-collapse-item> -->
+
+
 				<el-collapse-item title="预算控制" name="4">
 			    	<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 
-						<el-form-item label="交易类型" prop="name">
+						<!-- <el-form-item label="交易类型" prop="name">
 							<el-select v-model="ruleForm.budget_type" style="width: 100%;" :disabled="Disabled">
 						    	<el-option v-for="(items,index) in TransactionTypes" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 						    </el-select>
 						    <span class="unit_infro">选一个计费方式，我们将按这个来进行计算消耗</span>
-						</el-form-item>
+						</el-form-item> -->
 
 						<el-form-item label="单日预算" prop="frequency">
 							<el-input v-model="ruleForm.budget_dayLimit" type="number" :disabled="Disabled"></el-input>
 						</el-form-item>
 
-						<el-form-item label="出价" prop="Click_times">
+						<!-- <el-form-item label="出价" prop="Click_times">
 							<el-input v-model="ruleForm.budget_bidPrice" type="number" :disabled="Disabled"></el-input>
 							<span class="unit_infro">选择一个出价价格，不能低于目前底价哦 最低出价: 0.4, 建议出价: 0.57~0.95</span>
-						</el-form-item>
+						</el-form-item> -->
 					</el-form>
 				</el-collapse-item>
 			</el-collapse>
@@ -372,60 +370,67 @@
 			// 初始渲染数据fn
 			Init() {
 				var that = this;
-				var datas = {
-					id: that.$route.query.id
+				//10.24 新增type字段判断
+				if(that.$route.query.type == "add") {
+					that.Disabled = null;
+					that.btn_turn = true;
+				}else {
+					var datas = {
+						id: that.$route.query.id
+					}
+					that.$axios.get(this.hostname+'/manage/dsp/activity/admin/toEdit',{params: datas}).then(function(res){
+						// 响应成功回调
+						console.log(res.data);
+						// that.$options.methods.test('646646');
+						that.ruleForm = res.data;
+						// that.$options.methods.LengthFn(that.ruleForm.target_theme,that.checkBoxTurn_checkList,that.themeVal);
+						// console.log(that.themeVal)
+						// that.$options.methods.LengthFn(that.ruleForm.target_keyword,that.checkBoxTurn2_checkList,that.keywordVal);
+						if(that.ruleForm.target_theme.length > 1) {
+							that.themeVal = "2";
+							that.checkBoxTurn_checkList = that.ruleForm.target_theme.split(',');
+						}else {
+							that.themeVal = "1";
+						}
+						// console.log(that.checkBoxTurn_checkList);
+						if(that.ruleForm.target_keyword.length > 1) {
+							that.keywordVal = "2";
+							that.checkBoxTurn2_checkList = that.ruleForm.target_keyword.split(',');
+						}else {
+							that.keywordVal = "1";
+						}
+						// console.log(that.checkBoxTurn2_checkList);
+						if(that.ruleForm.target_age.length > 1) {
+							that.ageVal = "2";
+							that.checkBoxTurn3_checkList = that.ruleForm.target_age.split(',');
+						}else {
+							that.ageVal = "1";
+						}
+
+						if(that.ruleForm.target_brand.length > 1) {
+							that.phoneArray = that.ruleForm.target_brand.split(',');
+							console.log(that.phoneArray);
+						}
+
+						if(that.ruleForm.target_excludeBrand.length > 1) {
+							that.delPhoneArray = that.ruleForm.target_excludeBrand.split(',');
+						}
+
+						// 将number => string
+						that.ruleForm.base_bidType = that.ruleForm.base_bidType.toString();
+						that.ruleForm.time_speed = that.ruleForm.time_speed.toString();
+						that.ruleForm.time_controlType = that.ruleForm.time_controlType.toString();
+						that.ruleForm.target_gender = that.ruleForm.target_gender.toString();
+						// if(that.ruleForm.onlineStatus == 0) {
+						// 	that.ruleForm.turn = false;
+						// }else {
+						// 	that.ruleForm.turn = true;
+						// }
+					}, function(err){
+						console.log(err);
+					})
 				}
-				that.$axios.get(this.hostname+'/manage/dsp/activity/admin/toEdit',{params: datas}).then(function(res){
-                    // 响应成功回调
-					console.log(res.data);
-					// that.$options.methods.test('646646');
-					that.ruleForm = res.data;
-					// that.$options.methods.LengthFn(that.ruleForm.target_theme,that.checkBoxTurn_checkList,that.themeVal);
-					// console.log(that.themeVal)
-					// that.$options.methods.LengthFn(that.ruleForm.target_keyword,that.checkBoxTurn2_checkList,that.keywordVal);
-					if(that.ruleForm.target_theme.length > 1) {
-						that.themeVal = "2";
-						that.checkBoxTurn_checkList = that.ruleForm.target_theme.split(',');
-					}else {
-						that.themeVal = "1";
-					}
-					// console.log(that.checkBoxTurn_checkList);
-					if(that.ruleForm.target_keyword.length > 1) {
-						that.keywordVal = "2";
-						that.checkBoxTurn2_checkList = that.ruleForm.target_keyword.split(',');
-					}else {
-						that.keywordVal = "1";
-					}
-					// console.log(that.checkBoxTurn2_checkList);
-					if(that.ruleForm.target_age.length > 1) {
-						that.ageVal = "2";
-						that.checkBoxTurn3_checkList = that.ruleForm.target_age.split(',');
-					}else {
-						that.ageVal = "1";
-					}
-
-					if(that.ruleForm.target_brand.length > 1) {
-						that.phoneArray = that.ruleForm.target_brand.split(',');
-						console.log(that.phoneArray);
-					}
-
-					if(that.ruleForm.target_excludeBrand.length > 1) {
-						that.delPhoneArray = that.ruleForm.target_excludeBrand.split(',');
-					}
-
-					// 将number => string
-					that.ruleForm.base_bidType = that.ruleForm.base_bidType.toString();
-					that.ruleForm.time_speed = that.ruleForm.time_speed.toString();
-					that.ruleForm.time_controlType = that.ruleForm.time_controlType.toString();
-					that.ruleForm.target_gender = that.ruleForm.target_gender.toString();
-                    // if(that.ruleForm.onlineStatus == 0) {
-                    // 	that.ruleForm.turn = false;
-                    // }else {
-                    // 	that.ruleForm.turn = true;
-                    // }
-                }, function(err){
-                    console.log(err);
-                })
+				
 			},
 			ListFn(num,contain) {
 				var that = this;
@@ -455,32 +460,41 @@
 			// 保存操作
 			saveFn() {
 				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var links;
 				var params = new URLSearchParams();
 				params.append('id', that.$route.query.id);
 				params.append('base_name', that.ruleForm.base_name);
-				params.append('base_bidType', that.ruleForm.base_bidType);
+				// params.append('base_bidType', that.ruleForm.base_bidType);   //出价类型
 				params.append('base_channel', that.ruleForm.base_channel);
-				params.append('base_showAdsId', that.ruleForm.base_showAdsId);
-				params.append('time_speed', that.ruleForm.time_speed);
+				// params.append('base_showAdsId', that.ruleForm.base_showAdsId);  //要投放的广告位
+				// params.append('time_speed', that.ruleForm.time_speed);  //速度控制
 				params.append('time_startTime', that.startTimes);
 				params.append('time_endTime', that.endTimes);
-				params.append('time_controlType', that.ruleForm.time_controlType);
-				params.append('time_impressionLimit', that.ruleForm.time_impressionLimit);
-				params.append('time_clickLimit', that.ruleForm.time_clickLimit);
-				params.append('target_theme', that.checkBoxTurn_checkList);
-				params.append('target_keyword', that.checkBoxTurn2_checkList);
-				params.append('target_age', that.checkBoxTurn3_checkList);
-				params.append('target_gender', that.ruleForm.target_gender);
-				params.append('target_os', that.ruleForm.target_os);
-				params.append('target_imei', that.ruleForm.target_imei);
-				params.append('target_excludeImei', that.ruleForm.target_excludeImei);
-				params.append('target_brand', that.phoneArray);
-				params.append('target_excludeBrand', that.delPhoneArray);
-				params.append('budget_type', that.ruleForm.budget_type);
+				// params.append('time_controlType', that.ruleForm.time_controlType);  //频次控制类型
+				// params.append('time_impressionLimit', that.ruleForm.time_impressionLimit);  //单个用户曝光频次
+				// params.append('time_clickLimit', that.ruleForm.time_clickLimit);  //单个用户点击频次
+				// params.append('target_theme', that.checkBoxTurn_checkList);  //主题渠道
+				// params.append('target_keyword', that.checkBoxTurn2_checkList);  //关键字
+				// params.append('target_age', that.checkBoxTurn3_checkList);  //年龄
+				// params.append('target_gender', that.ruleForm.target_gender);  //性别
+				// params.append('target_os', that.ruleForm.target_os);  //操作系统
+				// params.append('target_imei', that.ruleForm.target_imei);  //设备号
+				// params.append('target_excludeImei', that.ruleForm.target_excludeImei);  //排除设备号
+				// params.append('target_brand', that.phoneArray);  //手机品牌
+				// params.append('target_excludeBrand', that.delPhoneArray);  //排除手机品牌
+				// params.append('budget_type', that.ruleForm.budget_type);  //交易类型
 				params.append('budget_dayLimit', that.ruleForm.budget_dayLimit);
-				params.append('budget_bidPrice', that.ruleForm.budget_bidPrice);
+				// params.append('budget_bidPrice', that.ruleForm.budget_bidPrice);  //出价
 
-				this.$axios.post(this.hostname+'/manage/dsp/activity/admin/update',params).then(function(res){
+				if(that.$route.query.type == "add") {
+					params.append('pId', that.$route.query.id);
+					params.append('loginUserName', username);
+					links = "add";
+				}else {
+					links = "update";
+				}
+				that.$axios.post(that.hostname+'/manage/dsp/activity/admin/'+links,params).then(function(res){
                     // 响应成功回调
                     console.log(res.data);
                     if(res.data.resultCode == 200) {

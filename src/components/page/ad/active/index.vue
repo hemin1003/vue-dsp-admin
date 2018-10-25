@@ -38,7 +38,7 @@
 
 		<div class="tabs">
 		    <div class="tabs_btn">
-		    	<div class="tabs_btn_left"><i class="el-icon-plus"></i><span>新建</span></div>
+		    	<div class="tabs_btn_left" @click="dialogFormVisible = true"><i class="el-icon-plus"></i><span>新建</span></div>
 		    	<div class="tabs_btn_right"><span>下载数据</span></div>
 		    </div>
 		</div>
@@ -49,7 +49,8 @@
 			    :data="tableData"
 			    stripe
 			    :cell-class-name="cell"
-			    style="width: 100%">
+			    style="width: 100%"
+					row-style="height:60px">
 			    <el-table-column
 			      prop="id"
 			      label="ID"
@@ -59,14 +60,14 @@
 			      label="名称"
 			    >
 			      <template scope="scope_name">
-			      	<router-link class="names" to="/ad_active">{{scope_name.row.base_name}}</router-link>
+			      	<router-link class="names" to="/ad_activity">{{scope_name.row.base_name}}</router-link>
 			      </template>
 			    </el-table-column>
 			    <el-table-column
 			      label="所属广告项目"
 			      >
 			      <template scope="scope_ads">
-			      	<router-link class="names" to="/ad_active">{{scope_ads.row.pName}}</router-link>
+			      	<router-link class="names" to="/ad_activity">{{scope_ads.row.pName}}</router-link>
 			      </template>
 			    </el-table-column>
         		<!-- <el-popover
@@ -135,7 +136,7 @@
 			    </el-table-column>
 		  	</el-table>
 		</el-form>
-		</div>
+		</div>	
 		<div class="pagination">
             <el-pagination
                     @current-change ="handleCurrentChange"
@@ -143,12 +144,34 @@
                     :total="allPage">
             </el-pagination>
         </div>
+
+				<!-- 弹窗 -->
+		<el-dialog :title="dialogTitle" style="100px" :visible.sync="dialogFormVisible">
+			<el-table
+				:data="selectList"
+				row-style="height:60px"
+				@row-click="openDetails">
+				<el-table-column
+					prop="valueStr"
+					label="id"
+					>
+				</el-table-column>
+				<el-table-column
+					prop="keyStr"
+					label="名称">
+				</el-table-column>
+			</el-table>
+		</el-dialog>
+
 	</div>
 </template>
 <script>
 	export default {
 		data() {
 			return {
+				activtyList: '',
+				dialogTitle: '选择所属广告项目',
+				dialogFormVisible: false,
 				selectList: "",
 				msg: "广告项目",
 				formInline: {
@@ -186,7 +209,6 @@
 				this.$axios.get(this.hostname+'/manage/dsp/activity/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调
                     console.log(res.data.rows)
-
                     that.allPage = res.data.total;
                     that.tableData = res.data.rows;
                      
@@ -254,10 +276,10 @@
 				this.statusInitFn(this.tableData[index].id,Value);
 				setTimeout(this.Init,200);
             	// console.log(index,row);
-            },
-            // 更新状态
-            statusInitFn(ids,val) {
-            	var that = this;
+      },
+      // 更新状态
+			statusInitFn(ids,val) {
+				var that = this;
 				var params = new URLSearchParams();
 				params.append('id', ids);
 				params.append('onlineStatus', val);
@@ -280,8 +302,11 @@
                     }
                 }, function(err){
                     console.log(err);
-                })
-            }
+					})
+			},
+			openDetails(row) {
+				this.$router.push('/active_detail?id='+row.valueStr+'&type=add');
+			}
 		}
 	}
 </script>
@@ -345,4 +370,13 @@
 					font-size: .8rem;
 					margin-right: 4px;
 				}
+
+
+				.el-dialog--small {
+				width: 30%;
+			}
+			.el-dialog__header {
+				border-bottom: 1px solid rgb(223, 236, 235);
+				padding-bottom: .8vw;
+			}
 </style>
