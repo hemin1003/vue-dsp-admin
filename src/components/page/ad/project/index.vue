@@ -69,7 +69,7 @@
 			      label="消耗"
 			      >
 			    </el-table-column>
-			    <el-table-column label="状态">
+			    <!-- <el-table-column label="状态">
 				    <template scope="scope">
 				      <el-switch 
 						@change="change(scope.$index,scope.row)"
@@ -81,7 +81,7 @@
                         >
 					  </el-switch>
 					</template>
-			    </el-table-column>
+			    </el-table-column> -->
 				<el-table-column
 			    >
 			      <template scope="scope2">

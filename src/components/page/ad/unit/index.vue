@@ -135,7 +135,7 @@
 			      label="消耗"
 			      >
 			    </el-table-column>
-			    <el-table-column property="turn" label="状态" width="200">
+			    <el-table-column property="turn" label="状态" width="170">
 				    <template scope="scope">
 				    <!-- @change="change(scope.$index,scope.row)" -->
 				      <el-switch 
@@ -151,8 +151,7 @@
 					  <el-tag type="success">{{scope.row.proveStatusTxt}}</el-tag>
 					</template>
 			    </el-table-column>
-				<el-table-column
-			    >
+				<el-table-column width="100">
 			      <template scope="scope2" v-if="scope2.row.switch">
 			      	<router-link :to="{path: '/ad_detail',query: {id: scope2.row.link}}"><span class="table_detail">详情</span></router-link>
 			      </template>
