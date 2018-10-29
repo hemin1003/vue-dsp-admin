@@ -296,7 +296,7 @@
 				params.append('materialType', that.ruleForm.materialType);
 				params.append('title', that.ruleForm.title);
 				params.append('imgUrl', that.ruleForm.imgUrl);
-				params.append('proveStatus', 0);
+				params.append('proveStatus', 1);
 				if(that.$route.query.type == "add") {
 					params.append('pId', that.$route.query.id);
 					params.append('loginUserName', username);
