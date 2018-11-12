@@ -1,5 +1,5 @@
 <template>
-	<div class="ad_message">
+	<div class="ad_message" v-loading="loading" element-loading-text="数据加载中">
 		<div class="ad_title">广告主信息</div>
 		<!-- v-model="search" -->
 		
@@ -74,6 +74,7 @@
 	export default {
 		data() {
 			return {
+				loading: true,
 				msg: "6得飞起",
 				formInline: {
 		          user: '',
@@ -107,7 +108,8 @@
 				this.$axios.get(this.hostname+'/manage/htt/httAdvertiserInfoNew/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调
                     console.log(res.data);
-
+										that.loading = false;
+										
                     that.allPage = res.data.total;
                     that.tableData = res.data.rows;
                 }, function(err){

@@ -1,5 +1,5 @@
 <template>
-	<div class="ad_unit">
+	<div class="ad_unit" v-loading="loading" element-loading-text="数据加载中">
 		<el-row :gutter="10">
 			<el-form :inline="true" :model="unitData" label-width="500px">
 				<el-col :span="3">
@@ -190,6 +190,7 @@
 	export default {
 		data() {
 			return {
+				loading: true,
 				dialogTitle: '选择所属广告活动',
 				dialogFormVisible: false,
 				msg: "广告项目",
@@ -251,7 +252,8 @@
 				this.$axios.get(this.hostname+'/manage/dsp/unit/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调
                     console.log(res.data.rows)
-
+					that.loading = false;
+					
                     that.allPage = res.data.total;
                     that.tableData = res.data.rows;
                      
