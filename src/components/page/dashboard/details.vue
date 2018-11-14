@@ -73,11 +73,11 @@
 					  :on-success="yyleAvatarSuccess"
 					  :before-upload="beforeAvatarUpload">
 					  <div class="coverDialog" v-if="!btn_turn">
+						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
+								<i class="el-icon-view"></i>
+							</div>
 							<div class="del">
 								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
-							<div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
-								<i class="el-icon-view"></i>
 							</div>
 					  </div>
 					  <img v-if="ruleForm.businessLicenseUrl" :src="ruleForm.businessLicenseUrl" class="avatar">
@@ -97,11 +97,11 @@
 					  :on-success="handleAvatarSuccess"
 					  :before-upload="beforeAvatarUpload">
 					  <div class="coverDialog" v-if="!btn_turn">
+						  <div class="layer" @click="handleFileEnlarge(ruleForm.icpUrl)">
+								<i class="el-icon-view"></i>
+							</div>
 							<div class="del">
 								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
-							<div class="layer" @click="handleFileEnlarge(ruleForm.icpUrl)">
-								<i class="el-icon-view"></i>
 							</div>
 					  </div>
 					  <img v-if="ruleForm.icpUrl" :src="ruleForm.icpUrl" class="avatar">
@@ -462,16 +462,17 @@
 		.avatar-uploader .el-upload:hover .coverDialog {
 			display: block;
 		}
-		.del {
+		
+		 .layer {
 			  float: left;
 			  width: 40%;
 			  font-size: 1.2vw;
 			  margin-top: 40%;
-			  margin-left: 12.5%;
+			  margin-left: 15%;
 		  }
-		  .layer {
+		  .del {
 			  float: left;
-			  width: 30%;
+			  width: 20%;
 			  font-size: 1.2vw;
 			  margin-top: 40%;
 		  }

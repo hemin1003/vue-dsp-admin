@@ -12,12 +12,12 @@
 			<el-form :inline="true" :model="formInline" label-width="500px">
 				<el-col :span="14">
 					<!-- <el-input placeholder="查询广告主" icon="search"  class="search" ></el-input> -->
-					<el-select v-model="formInline.id" placeholder="查询广告主">
+					<el-select clearable v-model="formInline.id" placeholder="查询广告主">
 	    				<el-option v-for="(items,index) in home_project" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 	    			</el-select>
 				</el-col>
 				<el-col :span="3">
-	    			<el-select v-model="formInline.staus" placeholder="选择状态">
+	    			<el-select clearable v-model="formInline.staus" placeholder="选择状态">
 	    				<el-option label="上线" value=1></el-option>
 	    				<el-option label="暂停" value=0></el-option>
 	    			</el-select>
@@ -170,41 +170,41 @@
                 })
 			},
             change:function(index,row){
-							var Value;
-							if(row.Status) {
-								Value = 1
-							}else {
-								Value = 0
-							}
-							this.statusInitFn(this.tableData[index].id,Value);
-							setTimeout(this.Init,200);
-								// console.log(index,row);
-						},
-						statusInitFn(ids,val) {
+				var Value;
+				if(row.Status) {
+					Value = 1
+				}else {
+					Value = 0
+				}
+				this.statusInitFn(this.tableData[index].id,Value);
+				setTimeout(this.Init,200);
+					// console.log(index,row);
+			},
+			statusInitFn(ids,val) {
             	var that = this;
-							var params = new URLSearchParams();
-							params.append('id', ids);
-							params.append('onlineStatus', val);
-							this.$axios.post(this.hostname+'/manage/dsp/userInfo/admin/changeStatus',params).then(function(res){
-													// 响应成功回调
-													console.log(res.data);
-													if(res.data.resultCode == 200) {
-														that.Disabled = "";
-									that.btn_turn = false;
-														that.$notify({
-												title: '成功',
-												message: res.data.message,
-												type: 'success'
-											});
-													}else {
-														that.$notify.error({
-												title: '错误',
-												message: res.data.message
-											});
-													}
-											}, function(err){
-													console.log(err);
-											})
+				var params = new URLSearchParams();
+				params.append('id', ids);
+				params.append('onlineStatus', val);
+				this.$axios.post(this.hostname+'/manage/dsp/userInfo/admin/changeStatus',params).then(function(res){
+					// 响应成功回调
+					console.log(res.data);
+					if(res.data.resultCode == 200) {
+						that.Disabled = "";
+						that.btn_turn = false;
+								that.$notify({
+									title: '成功',
+									message: res.data.message,
+									type: 'success'
+								});
+					}else {
+						that.$notify.error({
+							title: '错误',
+							message: res.data.message
+						});
+					}
+				}, function(err){
+						console.log(err);
+				})
 			},
 			// 11.12 - 3.0主页下拉菜单选项
 			home_project_Fn() {
@@ -226,7 +226,6 @@
 			//搜索查询fn
 			searchFn() {
 				var that = this;
-				console.log(that.formInline.id);
 				that.loading = true;
 				if((that.formInline.id != undefined) || (that.formInline.staus != undefined)) {
 					let username = localStorage.getItem('ms_username');
@@ -276,6 +275,7 @@
 						console.log(err);
 					})
 				}else {
+					that.loading = false;
 					that.$notify.error({
 						title: '错误',
 						message: "请选择过滤条件！"
