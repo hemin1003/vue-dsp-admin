@@ -93,7 +93,7 @@
 			      label="所属广告活动"
 			      >
 			      <template scope="scope_ads">
-			      	<router-link class="names" to="/ad_activity">{{scope_ads.row.pName}}</router-link>
+			      	<router-link class="names" :to="{path: '/ad_detail',query: {id: scope_ads.row.link}}">{{scope_ads.row.pName}}</router-link>
 			      </template>
 			    </el-table-column>
         		<!-- <el-popover
@@ -345,12 +345,13 @@
 				}else {
 					Value = 0
 				}
-				this.statusInitFn(this.tableData[index].id,Value);
+				this.publicFn.statusInitFn(this,this.tableData[index].id,Value,'/manage/dsp/unit/admin/changeStatus');
 				setTimeout(this.Init,200);
             	// console.log(index,row);
             },
             statusInitFn(ids,val) {
-            	var that = this;
+				var that = this;
+				console.log(this);
 				var params = new URLSearchParams();
 				params.append('id', ids);
 				params.append('onlineStatus', val);
@@ -396,7 +397,7 @@
 			searchFn() {
 				var that = this;
 				that.loading = true;
-				if((that.formInline.adProjectId != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
+				if((that.formInline.adProjectId != undefined) || (that.formInline.adActiveId != undefined) || (that.formInline.adUnitId != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
 					let username = localStorage.getItem('ms_username');
 					var datas = {
 						loginUserName: username,

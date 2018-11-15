@@ -9,6 +9,8 @@ import '../static/css/theme-green/index.css';       // 浅绿色主题
 import "babel-polyfill";
 import VueCookies from 'vue-cookies';
 
+import InitFn from './components/commonFn/initFn.js'
+
 Vue.use(VueCookies)
 
 Vue.use(ElementUI);
@@ -22,6 +24,8 @@ Vue.prototype.hostname = "http://182.92.82.188:8280";  //http://182.92.82.188:82
 // Vue.prototype.url_token = function() {
 // 	return "?token="+this.$cookies.get('token');
 // }
+// Vue.use(InitFn);
+Vue.prototype.publicFn = InitFn;
 new Vue({
     router,
     render: h => h(App)
