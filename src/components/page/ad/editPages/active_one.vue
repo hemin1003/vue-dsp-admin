@@ -29,13 +29,13 @@
 							<span class="unit_infro">为您的广告项目取一个唯一的名称，格式如下：广告主名称_产品名称，10个字以内</span>
 						</el-form-item>
 						
-						<!-- <el-form-item label="出价类型" prop="name">
+						<el-form-item label="出价类型" prop="name">
 						    <el-radio-group v-model="ruleForm.base_bidType" :disabled="Disabled">
 						    	<el-radio label="1">实时出价</el-radio>
 						    	<el-radio label="2">固定出价</el-radio>
 						    </el-radio-group>
 						    <div class="unit_infro">目前只支持竞价类型喔</div>
-						</el-form-item> -->
+						</el-form-item>
 
 						<el-form-item label="渠道" prop="prop_channel">
 							<el-select v-model="ruleForm.base_channel" style="width: 100%;" :disabled="Disabled">
@@ -96,7 +96,7 @@
 						    	<el-option label="按IMEI识别用户" value="1"></el-option>
 						    	<el-option label="按IP识别用户" value="2"></el-option>
 						    </el-select>
-						</el-form-item>
+						</el-form-item> -->
 
 						<el-form-item label="曝光频次" prop="frequency">
 							<el-input v-model="ruleForm.time_impressionLimit" type="number" :disabled="Disabled"></el-input>
@@ -106,7 +106,7 @@
 						<el-form-item label="点击频次" prop="Click_times">
 							<el-input v-model="ruleForm.time_clickLimit" :disabled="Disabled"></el-input>
 							<span class="unit_infro">每日单个用户最多能点击这个广告的次数</span>
-						</el-form-item> -->
+						</el-form-item>
 
 						<!-- <el-form-item label="排期">
 							<el-table
@@ -238,21 +238,21 @@
 				<el-collapse-item title="预算控制" name="4">
 			    	<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 
-						<!-- <el-form-item label="交易类型" prop="name">
+						<el-form-item label="交易类型" prop="name">
 							<el-select v-model="ruleForm.budget_type" style="width: 100%;" :disabled="Disabled">
 						    	<el-option v-for="(items,index) in TransactionTypes" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 						    </el-select>
 						    <span class="unit_infro">选一个计费方式，我们将按这个来进行计算消耗</span>
-						</el-form-item> -->
+						</el-form-item>
 
 						<el-form-item label="单日预算" prop="frequency">
 							<el-input v-model="ruleForm.budget_dayLimit" type="number" :disabled="Disabled"></el-input>
 						</el-form-item>
 
-						<!-- <el-form-item label="出价" prop="Click_times">
+						<el-form-item label="出价" prop="Click_times">
 							<el-input v-model="ruleForm.budget_bidPrice" type="number" :disabled="Disabled"></el-input>
 							<span class="unit_infro">选择一个出价价格，不能低于目前底价哦 最低出价: 0.4, 建议出价: 0.57~0.95</span>
-						</el-form-item> -->
+						</el-form-item>
 					</el-form>
 				</el-collapse-item>
 			</el-collapse>
