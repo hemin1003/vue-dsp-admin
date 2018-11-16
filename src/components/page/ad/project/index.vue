@@ -36,8 +36,8 @@
 		<div class="tabs">
 		    <div class="tabs_btn">
 				<!-- tabs_btn_left -->
-		    	<div class="tabs_btn_right" @click="dialogFormVisible = true"><i class="el-icon-plus"></i><span>新建</span></div>
-		    	<!-- <div class="tabs_btn_right"><span>下载数据</span></div> -->
+		    	<div class="tabs_btn_left" @click="dialogFormVisible = true"><i class="el-icon-plus"></i><span>新建</span></div>
+		    	<div class="tabs_btn_right"><span>下载数据</span></div>
 		    </div>
 		</div>
 
@@ -304,7 +304,7 @@
 		}
 	}
 </script>
-<style>
+<style scoped>
 	.cols3 {
 		float: left;
 	}
@@ -313,7 +313,10 @@
 		}
 
 	.tabs {
-		margin-top: 4vw;
+		width: 100%;
+		height: 2.4vw;
+		margin-top: 2vw;
+		margin-bottom: .5vw;
 	}
 		.table_detail {
 			border: 1px solid gray;
@@ -354,8 +357,8 @@
 			}
 			.tabs_btn_right {
 				float: right;
-				/* background: #DADDE5; */
-				/* color: gray; */
+				background: #DADDE5;
+				color: gray;
 			}
 				.tabs_btn_left i,.tabs_btn_right i {
 					font-size: .8rem;

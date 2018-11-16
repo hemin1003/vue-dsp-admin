@@ -10,7 +10,7 @@
 	  	</el-form-item> -->
 	  	<el-row :gutter="20">
 			<el-form :inline="true" :model="formInline" label-width="500px">
-				<el-col :span="14">
+				<el-col :span="12">
 					<!-- <el-input placeholder="查询广告主" icon="search"  class="search" ></el-input> -->
 					<el-select clearable v-model="formInline.id" placeholder="查询广告主">
 	    				<el-option v-for="(items,index) in home_project" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
@@ -35,7 +35,8 @@
 				element-loading-text="数据加载中"
 			    :data="tableData"
 			    stripe
-			    style="width: 100%">
+			    style="width: 100%"
+				row-style="height:60px">
 			    <el-table-column
 			      prop="id"
 			      label="ID"
@@ -260,7 +261,7 @@
         }
 	}
 </script>
-<style>
+<style scoped>
 	.tables {
 		margin-top: 20px;
 	}
@@ -279,5 +280,8 @@
 		}
 		.table_detail:focus {
 			color: gray;
+		}
+		.el-select {
+			width: 100%;
 		}
 </style>

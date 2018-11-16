@@ -359,7 +359,7 @@
 		}
 	}
 </script>
-<style>
+<style scoped>
 	.cols3 {
 		float: left;
 	}
@@ -369,6 +369,12 @@
 
 	.tables {
 		margin-top: 20px;
+	}
+	.tabs {
+		width: 100%;
+		height: 2.4vw;
+		margin-top: 2vw;
+		margin-bottom: .3vw;
 	}
 		.tables tr {
 			height: 50px;

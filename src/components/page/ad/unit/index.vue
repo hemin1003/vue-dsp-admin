@@ -464,7 +464,7 @@
 		}
 	}
 </script>
-<style>
+<style scoped>
 	.cols3 {
 		float: left;
 	}
