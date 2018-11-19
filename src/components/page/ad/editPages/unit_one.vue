@@ -6,13 +6,15 @@
 				<div class="enter_btn" v-if="!btn_turn">
 					<el-button type="primary" @click="EditFn" plain><i class="el-icon-edit"></i><span>编辑</span></el-button>
 					<el-button type="danger" plain><i class="el-icon-delete"></i><span>删除</span></el-button>
-					<el-button type="primary" plain><i class="el-icon-document"></i><span>复制</span></el-button>
+					<!-- <el-button type="primary" plain><i class="el-icon-document"></i><span>复制</span></el-button> -->
 				</div>
 				<div class="out_btn" v-if="btn_turn">
 					<el-button type="primary" @click="saveFn"><span>保存</span></el-button>
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
 				<el-switch 
+					@change="changeFn"
+					:disabled="isDisable"
 			        on-text ="上线"
                     off-text = "暂停"
                     on-color="#00D1B2"
@@ -20,6 +22,7 @@
                     v-model="turn"
                     >
 				</el-switch>
+				<el-tag type="success" style="float: right; margin-right: 1vw; margin-top:5px">{{statusInfo}}</el-tag>
 			</div>
 		</div>
 		<div class="unit_o_content">
@@ -108,11 +111,11 @@
 					  >
 					  <!-- <el-dialog visible.sync="dialogVisible"> -->
 						<div class="coverDialog" v-if="!btn_turn">
-							<div class="del">
-								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
 							<div class="layer" @click="handleFileEnlarge(index)">
 								<i class="el-icon-view"></i>
+							</div>
+							<div class="del">
+								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
 							</div>
 						</div>
 					  	<img v-if="imgUrlArr[index]" :src="imgUrlArr[index]" class="avatar">
@@ -136,14 +139,12 @@
 				},
 				imgUrlArr: [],
 				msg: "返回列表",
-				turn: false,
+				turn: true,
 				btn_turn: false,
 				imageUrl: "",
 				Disabled: "",
 				uploaderData: ["图片一","图片二","图片三"],
-				ruleForm: {
-		         
-		        },
+				ruleForm: {},
 		        rules: {
 		          clickUrl: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
@@ -157,7 +158,8 @@
 		          title: [
 		          	{ required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ]
-		        }
+				},
+				isDisable: true
 		      }
 			},
 		mounted() {
@@ -217,7 +219,28 @@
 						// that.$options.methods.test('646646');
 						that.ruleForm = res.data;
 						that.imgUrlArr = that.ruleForm.imgUrl.split(',');
-						console.log(that.imgUrlArr);
+						
+						if(res.data.onlineStatus == 1) {
+							that.turn = true
+						}else {
+							that.turn = false
+						}
+						// 审核状态判断
+                    	switch(res.data.proveStatus) {
+	                    	case 0:
+	                    		that.statusInfo = "未提交";
+	                    		break;
+	                    	case 1:
+	                    		that.statusInfo = "审核中";
+	                    		break;
+	                    	case 2:
+	                    		that.statusInfo = "审核成功";
+	                    		that.isDisable = null
+	                    		break;
+	                    	case 3:
+	                    		that.statusInfo = "审核失败";
+	                    		break;
+	                    }
 					}, function(err){
 						console.log(err);
 					})
@@ -325,6 +348,16 @@
                     console.log(err);
                 })
 			},
+			// 上下线
+			changeFn(val) {
+				var Values;
+				if(val) {
+					Values = 1
+				}else {
+					Values = 0
+				}
+				this.publicFn.statusInitFn(this,this.ruleForm.id,Values,'/manage/dsp/unit/admin/changeStatus');
+			}
     	}
 	}
 </script>
@@ -421,16 +454,16 @@
 		    display: block;
 		  }
 
-		  .del {
+		  .layer {
 			  float: left;
 			  width: 40%;
 			  font-size: 1.2vw;
 			  margin-top: 40%;
-			  margin-left: 12.5%;
+			  margin-left: 15%;
 		  }
-		  .layer {
+		  .del {
 			  float: left;
-			  width: 30%;
+			  width: 20%;
 			  font-size: 1.2vw;
 			  margin-top: 40%;
 		  }

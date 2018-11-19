@@ -1,5 +1,5 @@
 <template>
-	<div class="ad_report">
+	<div class="ad_report" v-loading="loading" element-loading-text="数据加载中">
 				<el-row>
             <el-col :span="6" v-for="(item,index) in arr" :key="index"><div class="grid-content bg-purple" :class="item.class"><span>{{item.name}}</span><p>{{item.val}}</p></div></el-col>
         </el-row>
@@ -112,6 +112,7 @@ import echarts from 'echarts'
 	export default {
 		data() {
 			return {
+				loading: true,
 				adVal: '',
 				adsType: {},
 				formInline: {
@@ -321,7 +322,8 @@ import echarts from 'echarts'
 				this.$axios.get(this.hostname+'/manage/htt/httReportAdsCustomChild/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调
                     console.log(res.data);
-
+										that.loading = false;
+										
                     that.allPage = res.data.total;
                     that.tableData = res.data.rows;
                 }, function(err){

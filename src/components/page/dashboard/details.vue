@@ -12,14 +12,17 @@
 					<el-button type="primary" @click="saveFn"><span>保存</span></el-button>
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
-				<!-- <el-switch 
+				<el-switch 
+					@change="changeFn"
+					:disabled="isDisable"
 			        on-text ="上线"
                     off-text = "暂停"
                     on-color="#00D1B2"
                     off-color="#dadde5" 
-                    v-model="turn"
+                    v-model="statusRadio"
                     >
-				</el-switch> -->
+				</el-switch>
+				<el-tag type="success" style="float: right; margin-right: 1vw; margin-top:5px">{{statusInfo}}</el-tag>
 			</div>
 		</div>
 		<div class="unit_o_content">
@@ -73,11 +76,11 @@
 					  :on-success="yyleAvatarSuccess"
 					  :before-upload="beforeAvatarUpload">
 					  <div class="coverDialog" v-if="!btn_turn">
+						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
+								<i class="el-icon-view"></i>
+							</div>
 							<div class="del">
 								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
-							<div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
-								<i class="el-icon-view"></i>
 							</div>
 					  </div>
 					  <img v-if="ruleForm.businessLicenseUrl" :src="ruleForm.businessLicenseUrl" class="avatar">
@@ -97,11 +100,11 @@
 					  :on-success="handleAvatarSuccess"
 					  :before-upload="beforeAvatarUpload">
 					  <div class="coverDialog" v-if="!btn_turn">
+						  <div class="layer" @click="handleFileEnlarge(ruleForm.icpUrl)">
+								<i class="el-icon-view"></i>
+							</div>
 							<div class="del">
 								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
-							<div class="layer" @click="handleFileEnlarge(ruleForm.icpUrl)">
-								<i class="el-icon-view"></i>
 							</div>
 					  </div>
 					  <img v-if="ruleForm.icpUrl" :src="ruleForm.icpUrl" class="avatar">
@@ -186,7 +189,9 @@
 		        },
 		        selectType: [],
 		        typeid: "",
-		        typename: ""
+				typename: "",
+				isDisable: true,
+				statusRadio: true
 		      }
 			},
 		mounted() {
@@ -201,7 +206,30 @@
 				this.$axios.get(this.hostname+'/manage/dsp/userInfo/admin/toEdit',{params: datas}).then(function(res){
                     // 响应成功回调
                     console.log(res.data);
-                    that.ruleForm = res.data;
+					that.ruleForm = res.data;
+
+					//状态开关
+					if(that.ruleForm.onlineStatus == 1) {
+						that.statusRadio = true
+					}else {
+						that.statusRadio = false
+					}
+					// 审核状态判断
+					switch(res.data.proveStatus) {
+						case 0:
+							that.statusInfo = "未提交";
+							break;
+						case 1:
+							that.statusInfo = "审核中";
+							break;
+						case 2:
+							that.statusInfo = "审核成功";
+							that.isDisable = null
+							break;
+						case 3:
+							that.statusInfo = "审核失败";
+							break;
+					}
                     that.uploadDatas.ohtersPic = that.ruleForm.othersUrl.split(',');
                     that.selectDataFn();
                     if(turn == 1) {
@@ -363,6 +391,16 @@
                     console.log(err);
                 })
 			},
+			//公用函数=>改变状态fn
+			changeFn(val) {
+				var Values;
+				if(val) {
+					Values = 1
+				}else {
+					Values = 0
+				}
+				this.publicFn.statusInitFn(this,this.ruleForm.id,Values,'/manage/dsp/userInfo/admin/changeStatus');
+			}
     	}
 	}
 </script>
@@ -462,16 +500,17 @@
 		.avatar-uploader .el-upload:hover .coverDialog {
 			display: block;
 		}
-		.del {
+		
+		 .layer {
 			  float: left;
 			  width: 40%;
 			  font-size: 1.2vw;
 			  margin-top: 40%;
-			  margin-left: 12.5%;
+			  margin-left: 15%;
 		  }
-		  .layer {
+		  .del {
 			  float: left;
-			  width: 30%;
+			  width: 20%;
 			  font-size: 1.2vw;
 			  margin-top: 40%;
 		  }

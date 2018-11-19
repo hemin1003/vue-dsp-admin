@@ -1,35 +1,36 @@
 <template>
 	<div class="ad_unit">
 		<el-row :gutter="10">
-			<el-form :inline="true" :model="unitData" label-width="500px">
+			<el-form :inline="true" :model="formInline" label-width="500px">
 				<el-col :span="3">
-	    			<el-select v-model="unitData.adProject" placeholder="选择广告项目">
+	    			<el-select clearable v-model="formInline.adProjectId" placeholder="选择广告项目">
 	    				<el-option v-for="(items,index) in selectList" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 	    			</el-select>
     			</el-col>
 				<el-col :span="3">
-	    			<el-select v-model="unitData.adActive" placeholder="选择广告活动">
+	    			<el-select clearable v-model="formInline.adActiveId" placeholder="选择广告活动">
 	    				<el-option v-for="(items,index) in activtyList" :label="items.keyStr" :key="index" :value="items.valueStr"></el-option>
 	    			</el-select>
     			</el-col>
     			<el-col :span="3">
-	    			<el-select v-model="unitData.adUnit" placeholder="查询广告单元">
+	    			<el-select clearable v-model="formInline.adUnitId" placeholder="查询广告单元">
 	    				<el-option v-for="(items,index) in unitList" :label="items.keyStr" :key="index" :value="items.valueStr"></el-option>
 	    			</el-select>
     			</el-col>
 				<el-col :span="3">
-	    			<el-select v-model="unitData.adQd" placeholder="选择渠道">
-	    				<el-option v-for="(items,index) in selectMore.adUnit" :label="items.name" :key="index" :value="items.val"></el-option>
+	    			<el-select clearable v-model="formInline.adChannel" placeholder="选择渠道">
+	    				<el-option v-for="(items,index) in Channel" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 	    			</el-select>
     			</el-col>
     			<el-col :span="3">
-	    			<el-select v-model="unitData.adRandom" placeholder="随机位置">
-	    				<el-option v-for="(items,index) in selectMore.adUnit" :label="items.name" :key="index" :value="items.val"></el-option>
+	    			<el-select clearable v-model="formInline.adPosition" placeholder="广告位">
+	    				<el-option v-for="(items,index) in adsense" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 	    			</el-select>
     			</el-col>
     			<el-col :span="3">
-	    			<el-select v-model="unitData.status" placeholder="选择状态">
-	    				<el-option v-for="(items,index) in selectMore.status" :label="items.name" :key="index" :value="items.val"></el-option>
+	    			<el-select clearable v-model="formInline.staus" placeholder="选择状态">
+	    				<el-option label="上线" value="1"></el-option>
+	    				<el-option label="暂停" value="0"></el-option>
 	    			</el-select>
     			</el-col>
 
@@ -38,6 +39,7 @@
 			      span="3"
 			      v-model="timeVal"
 			      type="daterange"
+				  @change="dateChange"
 			      range-separator="至"
 			      start-placeholder="开始日期"
 			      end-placeholder="结束日期">
@@ -45,7 +47,7 @@
 
     			<el-col class="cols4" :span="2">
 	  				<!-- @click="onSubmit" -->
-	    			<el-button type="primary">查询</el-button>
+	    			<el-button @click="searchFn" type="primary">查询</el-button>
 	    		</el-col>
 			</el-form>
 		</el-row>
@@ -67,6 +69,8 @@
 		<div class="tables">
 		 <el-form>
 			<el-table
+				v-loading="loading"
+				element-loading-text="数据加载中"
 			    :data="tableData"
 			    stripe
 			    :cell-class-name="cell"
@@ -79,16 +83,17 @@
 			    </el-table-column>
 			    <el-table-column
 			      label="名称"
+				  prop="base_name"
 			    >
-			      <template scope="scope_name">
+			      <!-- <template scope="scope_name">
 			      	<router-link class="names" to="/ad_activity">{{scope_name.row.base_name}}</router-link>
-			      </template>
+			      </template> -->
 			    </el-table-column>
 			    <el-table-column
-			      label="所属广告项目"
+			      label="所属广告活动"
 			      >
 			      <template scope="scope_ads">
-			      	<router-link class="names" to="/ad_activity">{{scope_ads.row.pName}}</router-link>
+			      	<router-link class="names" :to="{path: '/ad_detail',query: {id: scope_ads.row.link}}">{{scope_ads.row.pName}}</router-link>
 			      </template>
 			    </el-table-column>
         		<!-- <el-popover
@@ -137,10 +142,10 @@
 			    </el-table-column>
 			    <el-table-column property="turn" label="状态" width="170">
 				    <template scope="scope">
-				    <!-- @change="change(scope.$index,scope.row)" -->
+				    <!-- @change="change(scope.$index,scope.row)" v-if="scope.row.switch" -->
 				      <el-switch 
 				        @change="change(scope.$index,scope.row)"
-                        v-if="scope.row.switch"
+						:disabled="scope.row.btn_stauts"
 				        on-text ="进行"
                         off-text = "暂停"
                         on-color="#00D1B2"
@@ -152,7 +157,8 @@
 					</template>
 			    </el-table-column>
 				<el-table-column width="100">
-			      <template scope="scope2" v-if="scope2.row.switch">
+					<!-- v-if="scope2.row.switch" -->
+			      <template scope="scope2">
 			      	<router-link :to="{path: '/ad_detail',query: {id: scope2.row.link}}"><span class="table_detail">详情</span></router-link>
 			      </template>
 			    </el-table-column>
@@ -190,25 +196,14 @@
 	export default {
 		data() {
 			return {
+				loading: true,
 				dialogTitle: '选择所属广告活动',
 				dialogFormVisible: false,
 				msg: "广告项目",
 				radioes: "0",
-				unitData: {
-		          adName: '',
-		          adActive: '',
-		          adUnit: '',
-		          adQd: '',
-		          adRandom: '',
-		          status: ''
-		        },
+				formInline: {},
 		        selectMore: {
-		        	adProject: [{name:"为行投资", val: "one"},{name:"没有更多", val: "t"}],
-		        	adActive: [{name:"上海为行", val: "one"},{name:"为行投资", val: "two"},{name:"没有更多", val: "t"}],
-		        	adUnit: [{name:"上海为行", val: "one"},{name:"为行投资", val: "two"},{name:"没有更多", val: "t"}],
-		        	adQd: [{name:"上海为行", val: "one"},{name:"为行投资", val: "two"},{name:"没有更多", val: "t"}],
-		        	adRandom: [{name:"上海为行", val: "one"},{name:"为行投资", val: "two"},{name:"没有更多", val: "t"}],
-		        	status: [{name:"上线", val: "on"},{name:"暂停", val: "off"}]
+		        	
 		        },
 		        timeVal: '',
 		        tableData: []
@@ -219,6 +214,8 @@
 			this.selectFn();
 			this.activtyFn();
 			this.unitFn();
+			this.ListFn("b007","adsense"); //广告位
+			this.ListFn("b008","Channel"); //渠道
 		},
 		methods: {
 			handleCurrentChange() {
@@ -251,7 +248,8 @@
 				this.$axios.get(this.hostname+'/manage/dsp/unit/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调
                     console.log(res.data.rows)
-
+					that.loading = false;
+					
                     that.allPage = res.data.total;
                     that.tableData = res.data.rows;
                      
@@ -347,12 +345,13 @@
 				}else {
 					Value = 0
 				}
-				this.statusInitFn(this.tableData[index].id,Value);
+				this.publicFn.statusInitFn(this,this.tableData[index].id,Value,'/manage/dsp/unit/admin/changeStatus');
 				setTimeout(this.Init,200);
             	// console.log(index,row);
             },
             statusInitFn(ids,val) {
-            	var that = this;
+				var that = this;
+				console.log(this);
 				var params = new URLSearchParams();
 				params.append('id', ids);
 				params.append('onlineStatus', val);
@@ -379,11 +378,93 @@
 			},
 			openDetails(row) {
 				this.$router.push('/ad_detail?id='+row.valueStr+'&type=add');
+			},
+			ListFn(num,contain) {
+				var that = this;
+				console.log(contain);
+				var datas = {
+					busNum: num
+				}
+				that.$axios.get(this.hostname+'/manage/dsp/param/listDspConfigData',{params: datas}).then(function(res){
+                    // 响应成功回调
+					console.log(res.data);
+					that[contain] = res.data;
+                }, function(err){
+                    console.log(err);
+                })
+			},
+			//搜索查询fn
+			searchFn() {
+				var that = this;
+				that.loading = true;
+				if((that.formInline.adProjectId != undefined) || (that.formInline.adActiveId != undefined) || (that.formInline.adUnitId != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
+					let username = localStorage.getItem('ms_username');
+					var datas = {
+						loginUserName: username,
+						id: that.formInline.adUnitId,
+						pId: that.formInline.adActiveId,
+						ppId: that.formInline.adProjectId,
+						onlineStatus: that.formInline.staus,
+						startDate: that.timeVal[0],
+						endDate: that.timeVal[1]
+					};
+					this.$axios.get(that.hostname+'/manage/dsp/unit/admin/list',{params: datas}).then(function(res){
+						// 响应成功回调
+						console.log(res.data);
+						that.loading = false;
+
+						that.allPage = res.data.total;
+						that.tableData = res.data.rows;
+						
+						// 特殊处理
+						for(var i = 0, Len = that.tableData.length; i < Len; i++) {
+
+							that.tableData[i].btn_stauts = true;
+							that.tableData[i].link = that.tableData[i].id;
+							// 审核状态判断
+							switch(that.tableData[i].proveStatus) {
+								case 0:
+									that.tableData[i].proveStatusTxt = "未提交";
+									break;
+								case 1:
+									that.tableData[i].proveStatusTxt = "审核中";
+									break;
+								case 2:
+									that.tableData[i].proveStatusTxt = "审核成功";
+									that.tableData[i].btn_stauts = null
+									break;
+								case 3:
+									that.tableData[i].proveStatusTxt = "审核失败";
+									break;
+							}
+							// 上线状态
+							if(that.tableData[i].onlineStatus == 0) {
+								that.tableData[i].Status = false
+							}else {
+								that.tableData[i].Status = true
+							}
+						}
+                     
+					}, function(err){
+						console.log(err);
+					})
+				}else {
+					that.loading = false;
+					that.$notify.error({
+						title: '错误',
+						message: "请选择过滤条件！"
+					});
+				}
+			},
+			// 格式化时间
+			dateChange(val) {
+				var timeArr = val.split('至');
+				this.timeVal = timeArr;
 			}
 		}
 	}
 </script>
-<style>
+<style scoped>
 	.cols3 {
 		float: left;
 	}
