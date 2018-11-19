@@ -47,6 +47,8 @@
 				v-loading="loading" element-loading-text="数据加载中"
 			    :data="tableData"
 			    stripe
+				:summary-method="getSummaries"
+				show-summary
 			    style="width: 100%"
 				row-style="height:60px"
 				>
@@ -304,6 +306,33 @@
 			dateChange(val) {
 				var timeArr = val.split('至');
 				this.timeVal = timeArr;
+			},
+			// 合计fn
+			getSummaries(param) {
+				const { columns, data } = param;
+				const sums = [];
+				columns.forEach((column, index) => {
+				if (index === 0) {
+					sums[index] = '';
+					return;
+				}
+				const values = data.map(item => Number(item[column.property]));
+				if (!values.every(value => isNaN(value))) {
+					sums[index] = values.reduce((prev, curr) => {
+					const value = Number(curr);
+					if (!isNaN(value)) {
+						return prev + curr;
+					} else {
+						return prev;
+					}
+					}, 0);
+					sums[index] = '￥'+sums[index];
+				} else {
+					// sums[index] = 'N/A';
+				}
+				});
+
+				return sums;
 			}
 		}
 	}
