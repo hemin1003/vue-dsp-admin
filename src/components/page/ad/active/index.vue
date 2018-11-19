@@ -66,6 +66,7 @@
 			    </el-table-column>
 			    <el-table-column
 			      label="所属广告项目"
+				  width="200"
 			      >
 			      <template scope="scope_ads">
 			      	<router-link class="names" to="/ad_project">{{scope_ads.row.pName}}</router-link>
