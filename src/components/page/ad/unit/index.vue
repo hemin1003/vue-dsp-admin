@@ -91,6 +91,7 @@
 			    </el-table-column>
 			    <el-table-column
 			      label="所属广告活动"
+				  width="200"
 			      >
 			      <template scope="scope_ads">
 			      	<router-link class="names" :to="{path: '/ad_detail',query: {id: scope_ads.row.link}}">{{scope_ads.row.pName}}</router-link>
@@ -215,7 +216,7 @@
 			this.activtyFn();
 			this.unitFn();
 			this.ListFn("b007","adsense"); //广告位
-			this.ListFn("b008","Channel"); //渠道
+			this.ListFn("b006","Channel"); //渠道
 		},
 		methods: {
 			handleCurrentChange() {
@@ -397,7 +398,7 @@
 			searchFn() {
 				var that = this;
 				that.loading = true;
-				if((that.formInline.adProjectId != undefined) || (that.formInline.adActiveId != undefined) || (that.formInline.adUnitId != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
+				if((that.formInline.adProjectId != undefined) || (that.formInline.adActiveId != undefined) || (that.formInline.adUnitId != undefined) || (that.formInline.adChannel != undefined) || (that.formInline.adPosition != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
 					let username = localStorage.getItem('ms_username');
 					var datas = {
 						loginUserName: username,
@@ -406,7 +407,9 @@
 						ppId: that.formInline.adProjectId,
 						onlineStatus: that.formInline.staus,
 						startDate: that.timeVal[0],
-						endDate: that.timeVal[1]
+						endDate: that.timeVal[1],
+						channel: that.formInline.adChannel,
+						showAdsId: that.formInline.adPosition
 					};
 					this.$axios.get(that.hostname+'/manage/dsp/unit/admin/list',{params: datas}).then(function(res){
 						// 响应成功回调
