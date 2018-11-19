@@ -91,6 +91,7 @@
 			    </el-table-column>
 			    <el-table-column
 			      label="所属广告活动"
+				  width="200"
 			      >
 			      <template scope="scope_ads">
 			      	<router-link class="names" :to="{path: '/ad_detail',query: {id: scope_ads.row.link}}">{{scope_ads.row.pName}}</router-link>
@@ -215,7 +216,7 @@
 			this.activtyFn();
 			this.unitFn();
 			this.ListFn("b007","adsense"); //广告位
-			this.ListFn("b008","Channel"); //渠道
+			this.ListFn("b006","Channel"); //渠道
 		},
 		methods: {
 			handleCurrentChange() {

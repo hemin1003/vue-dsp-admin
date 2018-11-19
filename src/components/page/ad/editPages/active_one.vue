@@ -45,12 +45,12 @@
 						    </el-select>
 						</el-form-item>
 
-						<!-- <el-form-item label="广告位" prop="prop_adsense">
+						<el-form-item label="广告位" prop="prop_adsense">
 							<el-select v-model="ruleForm.base_showAdsId" style="width: 100%;" :disabled="Disabled">
 						    	<el-option v-for="(items,index) in adsense" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 						    </el-select>
 						    <span class="unit_infro">为您的活动选择一个想要投放的广告位</span>
-						</el-form-item> -->
+						</el-form-item>
 
 						<el-form-item label="广告位示例">
 							<div><img src="./images/example.png" width="30%" alt="example"></div>
@@ -465,15 +465,15 @@
 				var params = new URLSearchParams();
 				params.append('id', that.$route.query.id);
 				params.append('base_name', that.ruleForm.base_name);
-				// params.append('base_bidType', that.ruleForm.base_bidType);   //出价类型
+				params.append('base_bidType', that.ruleForm.base_bidType);   //出价类型
 				params.append('base_channel', that.ruleForm.base_channel);
-				// params.append('base_showAdsId', that.ruleForm.base_showAdsId);  //要投放的广告位
+				params.append('base_showAdsId', that.ruleForm.base_showAdsId);  //要投放的广告位
 				// params.append('time_speed', that.ruleForm.time_speed);  //速度控制
 				params.append('time_startTime', that.startTimes);
 				params.append('time_endTime', that.endTimes);
 				// params.append('time_controlType', that.ruleForm.time_controlType);  //频次控制类型
 				// params.append('time_impressionLimit', that.ruleForm.time_impressionLimit);  //单个用户曝光频次
-				// params.append('time_clickLimit', that.ruleForm.time_clickLimit);  //单个用户点击频次
+				params.append('time_clickLimit', that.ruleForm.time_clickLimit);  //单个用户点击频次
 				// params.append('target_theme', that.checkBoxTurn_checkList);  //主题渠道
 				// params.append('target_keyword', that.checkBoxTurn2_checkList);  //关键字
 				// params.append('target_age', that.checkBoxTurn3_checkList);  //年龄
@@ -483,9 +483,9 @@
 				// params.append('target_excludeImei', that.ruleForm.target_excludeImei);  //排除设备号
 				// params.append('target_brand', that.phoneArray);  //手机品牌
 				// params.append('target_excludeBrand', that.delPhoneArray);  //排除手机品牌
-				// params.append('budget_type', that.ruleForm.budget_type);  //交易类型
+				params.append('budget_type', that.ruleForm.budget_type);  //交易类型
 				params.append('budget_dayLimit', that.ruleForm.budget_dayLimit);
-				// params.append('budget_bidPrice', that.ruleForm.budget_bidPrice);  //出价
+				params.append('budget_bidPrice', that.ruleForm.budget_bidPrice);  //出价
 
 				if(that.$route.query.type == "add") {
 					params.append('pId', that.$route.query.id);
