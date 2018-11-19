@@ -22,9 +22,9 @@
 	    				<el-option label="暂停" value=0></el-option>
 	    			</el-select>
     			</el-col>
-    			<el-col :span="7">
+    			<el-col :span="2">
 	  				<!-- @click="onSubmit" -->
-	    			<el-button @click="searchFn" type="primary">查询</el-button>
+	    			<el-button style="width: 100%" @click="searchFn" type="primary">查询</el-button>
 	    		</el-col>
 			</el-form>
 		</el-row>
@@ -128,7 +128,9 @@
 				var datas = {
 					loginUserName: username,
 					page: 1,
-					rows: 10
+					rows: 10,
+					id: that.formInline.id,
+					onlineStatus: that.formInline.staus
 				};
 				this.$axios.get(this.hostname+'/manage/dsp/userInfo/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调

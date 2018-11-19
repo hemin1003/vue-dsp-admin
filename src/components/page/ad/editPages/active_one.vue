@@ -31,8 +31,8 @@
 						
 						<el-form-item label="出价类型" prop="name">
 						    <el-radio-group v-model="ruleForm.base_bidType" :disabled="Disabled">
-						    	<el-radio label="1">实时出价</el-radio>
-						    	<el-radio label="2">固定出价</el-radio>
+						    	<el-radio label=1>实时出价</el-radio>
+						    	<el-radio label=2>固定出价</el-radio>
 						    </el-radio-group>
 						    <div class="unit_infro">目前只支持竞价类型喔</div>
 						</el-form-item>
@@ -46,14 +46,14 @@
 						</el-form-item>
 
 						<el-form-item label="广告位" prop="prop_adsense">
-							<el-select v-model="ruleForm.base_showAdsId" style="width: 100%;" :disabled="Disabled">
+							<el-select @change="adPositionFn" v-model="ruleForm.base_showAdsId" style="width: 100%;" :disabled="Disabled">
 						    	<el-option v-for="(items,index) in adsense" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 						    </el-select>
 						    <span class="unit_infro">为您的活动选择一个想要投放的广告位</span>
 						</el-form-item>
 
 						<el-form-item label="广告位示例">
-							<div><img src="./images/example.png" width="30%" alt="example"></div>
+							<div><img :src="exampleImg" width="30%" alt="example"></div>
 							<span class="unit_infro">您的广告会显示在图示红框位置</span>
 						</el-form-item>
 					</el-form>
@@ -316,7 +316,8 @@
 		          Click_times: [
 		            { required: true, message: '这一项是必填的', trigger: 'focus' }
 		          ]
-				}
+				},
+				exampleImg: require('./images/example.png')
 		      }
 			},
 		mounted() {
@@ -386,41 +387,43 @@
 						// that.$options.methods.LengthFn(that.ruleForm.target_theme,that.checkBoxTurn_checkList,that.themeVal);
 						// console.log(that.themeVal)
 						// that.$options.methods.LengthFn(that.ruleForm.target_keyword,that.checkBoxTurn2_checkList,that.keywordVal);
-						if(that.ruleForm.target_theme.length > 1) {
-							that.themeVal = "2";
-							that.checkBoxTurn_checkList = that.ruleForm.target_theme.split(',');
-						}else {
-							that.themeVal = "1";
-						}
+						// if(that.ruleForm.target_theme.length > 1) {
+						// 	that.themeVal = "2";
+						// 	that.checkBoxTurn_checkList = that.ruleForm.target_theme.split(',');
+						// }else {
+						// 	that.themeVal = "1";
+						// }
 						// console.log(that.checkBoxTurn_checkList);
-						if(that.ruleForm.target_keyword.length > 1) {
-							that.keywordVal = "2";
-							that.checkBoxTurn2_checkList = that.ruleForm.target_keyword.split(',');
-						}else {
-							that.keywordVal = "1";
-						}
+						// if(that.ruleForm.target_keyword.length > 1) {
+						// 	that.keywordVal = "2";
+						// 	that.checkBoxTurn2_checkList = that.ruleForm.target_keyword.split(',');
+						// }else {
+						// 	that.keywordVal = "1";
+						// }
 						// console.log(that.checkBoxTurn2_checkList);
-						if(that.ruleForm.target_age.length > 1) {
-							that.ageVal = "2";
-							that.checkBoxTurn3_checkList = that.ruleForm.target_age.split(',');
-						}else {
-							that.ageVal = "1";
-						}
+						// if(that.ruleForm.target_age.length > 1) {
+						// 	that.ageVal = "2";
+						// 	that.checkBoxTurn3_checkList = that.ruleForm.target_age.split(',');
+						// }else {
+						// 	that.ageVal = "1";
+						// }
 
-						if(that.ruleForm.target_brand.length > 1) {
-							that.phoneArray = that.ruleForm.target_brand.split(',');
-							console.log(that.phoneArray);
-						}
+						// if(that.ruleForm.target_brand.length > 1) {
+						// 	that.phoneArray = that.ruleForm.target_brand.split(',');
+						// 	console.log(that.phoneArray);
+						// }
 
-						if(that.ruleForm.target_excludeBrand.length > 1) {
-							that.delPhoneArray = that.ruleForm.target_excludeBrand.split(',');
-						}
+						// if(that.ruleForm.target_excludeBrand.length > 1) {
+						// 	that.delPhoneArray = that.ruleForm.target_excludeBrand.split(',');
+						// }
 
 						// 将number => string
 						that.ruleForm.base_bidType = that.ruleForm.base_bidType.toString();
 						that.ruleForm.time_speed = that.ruleForm.time_speed.toString();
 						that.ruleForm.time_controlType = that.ruleForm.time_controlType.toString();
 						that.ruleForm.target_gender = that.ruleForm.target_gender.toString();
+						console.log(that.ruleForm.base_bidType)
+						// if(that.ruleForm.base_bidType == )
 						// if(that.ruleForm.onlineStatus == 0) {
 						// 	that.ruleForm.turn = false;
 						// }else {
@@ -456,6 +459,16 @@
 					that[turn] = false;
 					that[checked] = 1;
 				}
+			},
+			// 广告位fn
+			adPositionFn(val) {
+				var adIndex;
+				for(var i = 0; i < this.adsense.length; i++) {
+					if(val == this.adsense[i].valueStr) {
+						adIndex = i;
+					}
+				}
+				this.exampleImg = this.adsense[adIndex].urlStr;
 			},
 			// 保存操作
 			saveFn() {

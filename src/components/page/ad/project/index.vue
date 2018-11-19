@@ -148,7 +148,11 @@
 				var datas = {
 					loginUserName: username,
 					page: 1,
-					rows: 10
+					rows: 10,
+					id: that.formInline.id,
+					onlineStatus: that.formInline.staus,
+					startDate: that.timeVal[0],
+					endDate: that.timeVal[1]
 				};
 				this.$axios.get(this.hostname+'/manage/dsp/project/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调

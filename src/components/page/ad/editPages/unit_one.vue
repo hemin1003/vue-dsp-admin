@@ -5,7 +5,7 @@
 			<div class="unit_o_right">
 				<div class="enter_btn" v-if="!btn_turn">
 					<el-button type="primary" @click="EditFn" plain><i class="el-icon-edit"></i><span>编辑</span></el-button>
-					<el-button type="danger" plain><i class="el-icon-delete"></i><span>删除</span></el-button>
+					<el-button type="danger" @click="DelFn" plain><i class="el-icon-delete"></i><span>删除</span></el-button>
 					<!-- <el-button type="primary" plain><i class="el-icon-document"></i><span>复制</span></el-button> -->
 				</div>
 				<div class="out_btn" v-if="btn_turn">
@@ -357,6 +357,27 @@
 					Values = 0
 				}
 				this.publicFn.statusInitFn(this,this.ruleForm.id,Values,'/manage/dsp/unit/admin/changeStatus');
+			},
+			// 删除操作
+			DelFn() {
+				let that = this;
+				var datas = {
+					id: that.$route.query.id
+				}
+				that.$axios.post(this.hostname+'/manage/dsp/unit/admin/deleteById',{params: datas}).then(function(res){
+                    // 响应成功回调
+					console.log(res.data);
+					if(res.data.resultCode == 200) {
+
+					}else {
+						that.$notify.error({
+							title: '错误',
+							message: "删除失败！"
+						});
+					}
+                }, function(err){
+                    console.log(err);
+                })
 			}
     	}
 	}

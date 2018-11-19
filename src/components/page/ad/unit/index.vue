@@ -243,7 +243,15 @@
 					loginUserName: username,
 					page: 1,
 					rows: 10,
-					proveStatus: tabs
+					proveStatus: tabs,
+					id: that.formInline.adUnitId,
+					pId: that.formInline.adActiveId,
+					ppId: that.formInline.adProjectId,
+					onlineStatus: that.formInline.staus,
+					startDate: that.timeVal[0],
+					endDate: that.timeVal[1],
+					channel: that.formInline.adChannel,
+					showAdsId: that.formInline.adPosition
 				};
 				// var hostname = "http://192.168.0.205";
 				this.$axios.get(this.hostname+'/manage/dsp/unit/admin/list',{params: datas}).then(function(res){
