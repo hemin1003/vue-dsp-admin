@@ -61,14 +61,14 @@
 			      label="名称"
 			    >
 			      <template scope="scope_name">
-			      	<router-link class="names" to="/ad_activity">{{scope_name.row.base_name}}</router-link>
+			      	<router-link class="names" to="/ad_unit">{{scope_name.row.base_name}}</router-link>
 			      </template>
 			    </el-table-column>
 			    <el-table-column
 			      label="所属广告项目"
 			      >
 			      <template scope="scope_ads">
-			      	<router-link class="names" to="/ad_activity">{{scope_ads.row.pName}}</router-link>
+			      	<router-link class="names" to="/ad_project">{{scope_ads.row.pName}}</router-link>
 			      </template>
 			    </el-table-column>
         		<!-- <el-popover
