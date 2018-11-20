@@ -186,18 +186,18 @@
 									<el-radio label="3">站外</el-radio>
 								</el-radio-group> -->
 								<div class="checkBoxes" v-if="Inside">
-									<el-checkbox-group @change="InsideFn" v-model="checkBoxTurn2_checkList">
+									<el-checkbox-group @change="InsideFn" v-model="InsideVal">
 										<el-checkbox v-for="(items,index) in InsideList" :disabled="Disabled" :key="index" :label="items.valueStr">{{items.keyStr}}</el-checkbox>
 									</el-checkbox-group>
 								</div>
 
-								<el-radio-group v-show="openType" v-model="keywordVal" :disabled="Disabled">
-									<el-radio label="1">图片</el-radio>
-									<el-radio label="2">视频</el-radio>
+								<el-radio-group v-if="openType" v-model="ruleForm.base_openScreenType" :disabled="Disabled">
+									<el-radio label=1>图片</el-radio>
+									<el-radio label=2>视频</el-radio>
 								</el-radio-group>
 
 								<div class="checkBoxes" v-if="Outside">
-										<el-checkbox-group v-model="checkBoxTurn1_checkList">
+										<el-checkbox-group v-model="OutsideVal">
 										<el-checkbox v-for="(items,index) in OutsideList" :disabled="Disabled" :key="index" :label="items.valueStr">{{items.keyStr}}</el-checkbox>
 									</el-checkbox-group>
 								</div>
@@ -369,7 +369,9 @@
 				Inside: false,
 				Outside: false,
 				openType: false,
-				throwReport: []
+				throwReport: [],
+				InsideVal: [],
+				OutsideVal: []
 		      }
 			},
 		mounted() {
@@ -413,9 +415,6 @@
 			// 	this[obj] = this[list];
 			// 	// this.checkBoxTurn_obj = this.checkBoxTurn_checkList;
 			// },
-			test(a) {
-				alert(a);
-			},
 			// 根据长度来判断是否进行处理
 			LengthFn(dom1,dom2,values) {
 				console.log(values);
@@ -444,6 +443,12 @@
 						that.ruleForm = res.data;
 						that.StartTime =  new Date();
 						console.log(that.StartTime);
+
+						that.throwReport = that.ruleForm.base_positionType.split(",");
+						that.InsideVal = that.ruleForm.base_insidePosition.split(",");
+						that.OutsideVal = that.ruleForm.base_outsidePosition.split(",");
+						
+						console.log(that.ruleForm.base_openScreenType)
 						// that.$options.methods.LengthFn(that.ruleForm.target_theme,that.checkBoxTurn_checkList,that.themeVal);
 						// console.log(that.themeVal)
 						// that.$options.methods.LengthFn(that.ruleForm.target_keyword,that.checkBoxTurn2_checkList,that.keywordVal);
@@ -479,6 +484,7 @@
 
 						// 将number => string
 						that.ruleForm.base_bidType = that.ruleForm.base_bidType.toString();
+						that.ruleForm.base_openScreenType = that.ruleForm.base_openScreenType.toString();
 						// that.ruleForm.time_speed = that.ruleForm.time_speed.toString();
 						// that.ruleForm.time_controlType = that.ruleForm.time_controlType.toString();
 						// that.ruleForm.target_gender = that.ruleForm.target_gender.toString();
@@ -533,10 +539,14 @@
 					}else {
 						this.Inside = false;
 						this.Outside = true;
+
+						this.openType = false;
 					}
 				}else if(val.length == 0){
 					this.Inside = false;
 					this.Outside = false;
+
+					this.openType = false;
 				}else {
 					this.Inside = true;
 					this.Outside = true;
@@ -571,6 +581,7 @@
 				let username = localStorage.getItem('ms_username');
 				var links;
 				var params = new URLSearchParams();
+				console.log(that.ruleForm.base_openScreenType);
 				params.append('id', that.$route.query.id);
 				params.append('base_name', that.ruleForm.base_name);
 				params.append('base_bidType', that.ruleForm.base_bidType);   //出价类型
@@ -585,8 +596,9 @@
 				params.append('time_clickLimit', that.ruleForm.time_clickLimit);  //单个用户点击频次
 
 				params.append('base_positionType',that.throwReport); // 投放站内外区域
-				// params.append('base_insidePosition',that.ruleForm.base_insidePosition); // 站内广告位置
-				// params.append('base_outsidePosition',that.ruleForm.base_outsidePosition); // 站内/外网页中广告投放位置
+				params.append('base_insidePosition',that.InsideVal); // 站内广告位置
+				params.append('base_outsidePosition',that.OutsideVal); // 站内/外网页中广告投放位置
+				params.append('base_openScreenType',that.ruleForm.base_openScreenType);
 
 				// params.append('target_theme', that.checkBoxTurn_checkList);  //主题渠道
 				// params.append('target_keyword', that.checkBoxTurn2_checkList);  //关键字
