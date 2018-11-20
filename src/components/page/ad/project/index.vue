@@ -188,7 +188,7 @@
 				var datas = {
 					loginUserName: username,
 				};
-				this.$axios.get(this.hostname+'/manage/dsp/sys/config/getDspProjectList',{params: datas}).then(function(res){
+				this.$axios.get(this.hostname+'/manage/dsp/sys/config/getDspUserInfoList',{params: datas}).then(function(res){
                     // 响应成功回调
 					console.log(res)
 					if(res.status == 200) {
