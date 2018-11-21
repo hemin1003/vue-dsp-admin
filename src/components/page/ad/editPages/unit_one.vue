@@ -32,16 +32,30 @@
 					<span class="unit_infro">为您的广告单元取一个唯一的名称，10个字以内，建议带上活动_物料信息等</span>
 				</el-form-item>
 				
-				<el-form-item label="点击链接" prop="clickUrl">
-					<el-input v-model="ruleForm.clickUrl" :disabled="Disabled"></el-input>
-					<span class="unit_infro">请填写您的广告的跳转地址或者落地页地址，开头格式为http://，示例：http://www.adxhi.com</span>
-				</el-form-item>
-
 				<el-form-item label="点击动作" prop="desc">
 					<el-select v-model="ruleForm.clickAction" style="width: 100%;" :disabled="Disabled">
 						<el-option v-for="(items,index) in ClickTypes" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 				    </el-select>
 					<span class="unit_infro">用来表示您的跳转地址点击后是直接下载的还是进行跳转的</span>
+				</el-form-item>
+
+				<el-form-item label="点击链接" prop="clickUrl">
+					<el-input v-model="ruleForm.clickUrl" :disabled="Disabled"></el-input>
+					<span class="unit_infro">请填写您的广告的跳转地址或者落地页地址，开头格式为http://，示例：http://www.adxhi.com</span>
+				</el-form-item>
+
+				<el-form-item label="曝光频次" prop="frequency">
+					<el-input v-model="ruleForm.userExposureNumBudget" type="number" :disabled="Disabled"></el-input>
+					<span class="unit_infro">每日单个用户最多能看到这个广告的次数</span>
+				</el-form-item>
+
+				<el-form-item label="点击频次" prop="Click_times">
+					<el-input v-model="ruleForm.userClickNumBudget" :disabled="Disabled"></el-input>
+					<span class="unit_infro">每日单个用户最多能点击这个广告的次数</span>
+				</el-form-item>
+
+				<el-form-item label="单日预算">
+					<el-input v-model="ruleForm.base_dayBudget" type="number" :disabled="Disabled"></el-input>
 				</el-form-item>
 
 				<!-- <el-form-item label="曝光监控类型">
@@ -248,9 +262,9 @@
 			},
 			getAds() {
 				let name = this.ruleForm.showType;
-				if(name == "1") {
+				if(name == "2") {
 					this.uploaderData = ["图片一","图片二","图片三"];
-				}else if(name == "2") {
+				}else if(name == "1") {
 					this.uploaderData = ["图片"];
 				}else if(name == "3") {
 					this.uploaderData = ["大图"];
@@ -315,6 +329,11 @@
 				// params.append('impressionMonitorUrl', that.ruleForm.impressionMonitorUrl);  //曝光监控类型
 				// params.append('clickMonitorType', that.ruleForm.clickMonitorType);  //点击监控类型
 				// params.append('clickMonitorUrl', that.ruleForm.clickMonitorUrl);  //点击监控链接
+
+				params.append('userExposureNumBudget', that.ruleForm.userExposureNumBudget);  //单个用户曝光频次
+				params.append('userClickNumBudget', that.ruleForm.userClickNumBudget);  //单个用户点击频次
+				params.append('base_dayBudget', that.ruleForm.base_dayBudget);  //当日预算金额
+
 				params.append('showType', that.ruleForm.showType);
 				params.append('materialType', that.ruleForm.materialType);
 				params.append('title', that.ruleForm.title);

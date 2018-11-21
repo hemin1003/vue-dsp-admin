@@ -85,7 +85,6 @@
 							  :disabled="Disabled"
 						      v-model="StartTime"
 						      placeholder="请选择时间"
-							  @change="startTime"
 						      >
 						    </el-time-picker>
 						</el-form-item>
@@ -93,19 +92,18 @@
 						<el-form-item label="结束日期">
 						    <el-date-picker
 							  :disabled="Disabled"
-						      v-model="ruleForm.time_endTime"
+						      v-model="ruleForm.time_endDate"
 						      type="date"
 						      placeholder="请选择日期"
-							  @change="endTimeFn">
+							  @change="endDateFn">
 						    </el-date-picker>
 						</el-form-item>
 
 						<el-form-item label="结束时间">
 						    <el-time-picker
 							  :disabled="Disabled"
-						      v-model="StartTime"
+						      v-model="EndTime"
 						      placeholder="请选择时间"
-							  @change="startTime"
 						      >
 						    </el-time-picker>
 							<div class="unit_infro">结束时间不填写表示不限制结束时间</div>
@@ -337,6 +335,7 @@
 	export default {
 		data() {
 			return {
+				times1: '',
 				ageVal: '',
 				keywordVal: '',
 				themeVal: '',
@@ -382,7 +381,9 @@
 				openType: false,
 				throwReport: [],
 				InsideVal: [],
-				OutsideVal: []
+				OutsideVal: [],
+				StartTime: '',
+				EndTime: '',
 		      }
 			},
 		mounted() {
@@ -416,11 +417,8 @@
 		    startDate(val) {
 		    	this.startDates = val;
 			},
-			startTime(val) {
-				this.startTimes = val;
-			},
-			endTimeFn(val) {
-				this.endTimes = val;
+			endDateFn(val) {
+				this.endDates = val;
 			},
 			// checkboxFn(obj,list) {
 			// 	this[obj] = this[list];
@@ -450,10 +448,16 @@
 					that.$axios.get(this.hostname+'/manage/dsp/activity/admin/toEdit',{params: datas}).then(function(res){
 						// 响应成功回调
 						console.log(res.data);
-						// that.$options.methods.test('646646');
 						that.ruleForm = res.data;
-						that.StartTime =  new Date();
-						console.log(that.StartTime);
+						if(that.ruleForm.time_startTime != "undefined") {
+							let dataArray = that.ruleForm.time_startTime.split(":");
+							that.StartTime =  new Date(1995,11,9,dataArray[0],dataArray[1],dataArray[2]);
+						}
+
+						if(that.ruleForm.time_endTime != "undefined") {
+							let dataArray2 = that.ruleForm.time_endTime.split(":");
+							that.EndTime = new Date(1995,11,9,dataArray2[0],dataArray2[1],dataArray2[2]);
+						}
 
 						that.Pids = that.ruleForm.pId;
 						that.Ppids = that.ruleForm.ppId;
@@ -461,8 +465,14 @@
 						that.throwReport = that.ruleForm.base_positionType.split(",");
 						that.InsideVal = that.ruleForm.base_insidePosition.split(",");
 						that.OutsideVal = that.ruleForm.base_outsidePosition.split(",");
-						that.areaArray = that.ruleForm.target_area.split(",");
-						that.DelAreaArray = that.ruleForm.target_excludeArea.split(",");
+
+						if(that.ruleForm.target_area != "") {
+							that.areaArray = that.ruleForm.target_area.split(",");
+						}
+						if(that.ruleForm.target_excludeArea != "") {
+							that.DelAreaArray = that.ruleForm.target_excludeArea.split(",");
+						}
+						
 						
 						console.log(that.ruleForm.base_openScreenType)
 						// that.$options.methods.LengthFn(that.ruleForm.target_theme,that.checkBoxTurn_checkList,that.themeVal);
@@ -607,7 +617,11 @@
 				let username = localStorage.getItem('ms_username');
 				var links;
 				var params = new URLSearchParams();
-				console.log(that.ruleForm.base_openScreenType);
+				let date = new Date(that.EndTime);
+				let date2 = new Date(that.StartTime);
+				var endTimeStr = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+				var startTimeStr = date2.getHours() + ':' + date2.getMinutes() + ':' + date2.getSeconds();
+				console.log(endTimeStr);
 				params.append('id', that.$route.query.id);
 				params.append('pId',that.Pids);
 				params.append('ppId',that.Ppids);
@@ -616,9 +630,10 @@
 				params.append('base_channel', that.ruleForm.base_channel);
 				// params.append('base_showAdsId', that.ruleForm.base_showAdsId);  //要投放的广告位
 				// params.append('time_speed', that.ruleForm.time_speed);  //速度控制
-				params.append('time_startDate', that.startDates);
-				params.append('time_startTime',that.startTimes)
-				params.append('time_endTime', that.endTimes);
+				params.append('time_startDate', that.startDates); //开始日期
+				params.append('time_startTime',startTimeStr) //开始时间
+				params.append('time_endTime', endTimeStr); // 结束时间
+				params.append('time_endDate', that.endDates); //结束日期
 				// params.append('time_controlType', that.ruleForm.time_controlType);  //频次控制类型
 				// params.append('time_impressionLimit', that.ruleForm.time_impressionLimit);  //单个用户曝光频次
 				params.append('time_clickLimit', that.ruleForm.time_clickLimit);  //单个用户点击频次
