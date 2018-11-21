@@ -11,6 +11,7 @@
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
 				<el-switch 
+					@change="changeFn"
 			        on-text ="上线"
                     off-text = "暂停"
                     on-color="#00D1B2"
@@ -32,7 +33,7 @@
 						<el-form-item label="出价类型" prop="name">
 						    <el-radio-group v-model="ruleForm.base_bidType" :disabled="Disabled">
 						    	<el-radio label=1>实时出价</el-radio>
-						    	<el-radio label=2>固定出价</el-radio>
+						    	<!-- <el-radio label=2>固定出价</el-radio> -->
 						    </el-radio-group>
 						    <div class="unit_infro">目前只支持竞价类型喔</div>
 						</el-form-item>
@@ -45,7 +46,7 @@
 						    </el-select>
 						</el-form-item>
 
-						<el-form-item label="广告位" prop="prop_adsense">
+						<!-- <el-form-item label="广告位" prop="prop_adsense">
 							<el-select @change="adPositionFn" v-model="ruleForm.base_showAdsId" style="width: 100%;" :disabled="Disabled">
 						    	<el-option v-for="(items,index) in adsense" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 						    </el-select>
@@ -55,7 +56,7 @@
 						<el-form-item label="广告位示例">
 							<div><img :src="exampleImg" width="30%" alt="example"></div>
 							<span class="unit_infro">您的广告会显示在图示红框位置</span>
-						</el-form-item>
+						</el-form-item> -->
 					</el-form>
 
 				</el-collapse-item>
@@ -69,18 +70,27 @@
 						    </el-select>
 						    <span class="unit_infro">为您的活动选择一个想要投放的广告位</span>
 						</el-form-item> -->
-
-						<el-form-item label="开始时间" prop="time">
+						<el-form-item label="开始日期">
 						    <el-date-picker
 							  :disabled="Disabled"
-						      v-model="ruleForm.time_startTime"
+						      v-model="ruleForm.time_startDate"
 						      type="date"
 						      placeholder="请选择日期"
-						      @change="startTime">
+						      @change="startDate">
 						    </el-date-picker>
 						</el-form-item>
 
-						<el-form-item label="结束时间">
+						<el-form-item label="开始时间">
+						    <el-time-picker
+							  :disabled="Disabled"
+						      v-model="StartTime"
+						      placeholder="请选择时间"
+							  @change="startTime"
+						      >
+						    </el-time-picker>
+						</el-form-item>
+
+						<el-form-item label="结束日期">
 						    <el-date-picker
 							  :disabled="Disabled"
 						      v-model="ruleForm.time_endTime"
@@ -89,6 +99,16 @@
 							  @change="endTimeFn">
 						    </el-date-picker>
 						    <div class="unit_infro">结束时间不填写表示不限制结束时间</div>
+						</el-form-item>
+
+						<el-form-item label="结束时间">
+						    <el-time-picker
+							  :disabled="Disabled"
+						      v-model="StartTime"
+						      placeholder="请选择时间"
+							  @change="startTime"
+						      >
+						    </el-time-picker>
 						</el-form-item>
 						
 						<!-- <el-form-item label="控制类型" prop="name">
@@ -134,7 +154,8 @@
 						</el-form-item> -->
 					</el-form>
 				</el-collapse-item>
-
+				
+				
 
 				<!-- <el-form-item label="网络">
 						    <el-radio-group v-model="ruleForm.target_network" :disabled="Disabled">
@@ -151,9 +172,47 @@
 						    </el-radio-group>
 						</el-form-item> -->
 
-				<!-- <el-collapse-item title="定向控制" name="3">
+				<el-collapse-item title="定向控制" name="3">
 						<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-						<el-form-item label="主题渠道">
+							<el-form-item label="投放区域">
+								<!-- ($event,'checkBoxTurn2','checkBoxTurn2_obj') -->
+								<el-checkbox-group @change="throwFn" v-model="throwReport">
+									<el-checkbox  :disabled="Disabled" label="1">全部</el-checkbox>
+									<el-checkbox  :disabled="Disabled" label="2">站内</el-checkbox>
+									<el-checkbox  :disabled="Disabled" label="3">站外</el-checkbox>
+								</el-checkbox-group>
+								<!-- <el-radio-group @change="throwFn" v-model="keywordVal" :disabled="Disabled">
+									<el-radio label="1">全部</el-radio>
+									<el-radio label="2">站内</el-radio>
+									<el-radio label="3">站外</el-radio>
+								</el-radio-group> -->
+								<div class="checkBoxes" v-if="Inside">
+									<el-checkbox-group @change="InsideFn" v-model="InsideVal">
+										<el-checkbox v-for="(items,index) in InsideList" :disabled="Disabled" :key="index" :label="items.valueStr">{{items.keyStr}}</el-checkbox>
+									</el-checkbox-group>
+								</div>
+
+								<el-radio-group v-if="openType" v-model="ruleForm.base_openScreenType" :disabled="Disabled">
+									<el-radio label=1>图片</el-radio>
+									<el-radio label=2>视频</el-radio>
+								</el-radio-group>
+
+								<div class="checkBoxes" v-if="Outside">
+										<el-checkbox-group v-model="OutsideVal">
+										<el-checkbox v-for="(items,index) in OutsideList" :disabled="Disabled" :key="index" :label="items.valueStr">{{items.keyStr}}</el-checkbox>
+									</el-checkbox-group>
+								</div>
+							</el-form-item>
+							<el-form-item label="投放地区">
+								<el-select v-model="delPhoneArray" style="width: 100%;" multiple filterable allow-create default-first-option :disabled="Disabled"></el-select>
+								<span class="unit_infro">填写：市</span>
+							</el-form-item>
+							<el-form-item label="排除手机品牌">
+							<el-select v-model="delPhoneArray" style="width: 100%;" placeholder="" multiple filterable allow-create default-first-option :disabled="Disabled">
+								<el-option v-for="(items,index) in phoneBrand" :key="index" :label="items.keyStr" :value="items.keyStr"></el-option>
+						    </el-select>
+						</el-form-item>
+						<!-- <el-form-item label="主题渠道">
 						    <el-radio-group @change="RadioFn($event,'checkBoxTurn','checkBoxTurn_obj')" v-model="themeVal" :disabled="Disabled">
 						    	<el-radio label="1">不限</el-radio>
 						    	<el-radio label="2">自定义</el-radio>
@@ -228,11 +287,11 @@
 							<el-select v-model="ipArr" style="width: 100%;" placeholder="不限" multiple filterable remote reserve-keyword :remote-method="remoteMethod" :disabled="Disabled">
 						    	<el-option v-for="(items,index) in ipItems" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 						    </el-select>
-						</el-form-item>
+						</el-form-item> -->
 				
 					</el-form>
 
-				</el-collapse-item> -->
+				</el-collapse-item>
 
 
 				<el-collapse-item title="预算控制" name="4">
@@ -283,10 +342,10 @@
 				keywordVal: '',
 				themeVal: '',
 				endTimes: '',
-				startTimes: '',
 				ipArr: [],
 				phoneArray: [],
 				delPhoneArray: [],
+				areaArray: [],
 				checkBoxTurn3: false,
 				checkBoxTurn2: false,
 				checkBoxTurn: false,
@@ -317,7 +376,13 @@
 		            { required: true, message: '这一项是必填的', trigger: 'focus' }
 		          ]
 				},
-				exampleImg: require('./images/example.png')
+				exampleImg: require('./images/example.png'),
+				Inside: false,
+				Outside: false,
+				openType: false,
+				throwReport: [],
+				InsideVal: [],
+				OutsideVal: []
 		      }
 			},
 		mounted() {
@@ -329,6 +394,9 @@
 			this.ListFn("b010", "ageArray"); //年龄
 			this.ListFn("b014", "phoneBrand"); //手机品牌
 			this.ListFn("b015", "TransactionTypes"); //交易类型
+			this.ListFn("b020","throwList"); // 投放站内外区域
+			this.ListFn("b021","InsideList"); // 站内广告位置
+			this.ListFn("b022","OutsideList"); // 站内/外网页中广告投放位置
 		},
 		methods: {
 			goBack() {
@@ -345,8 +413,11 @@
 			handleChange(val) {
 		        console.log(val);
 		    },
-		    startTime(val) {
-		    	this.startTimes = val;
+		    startDate(val) {
+		    	this.startDates = val;
+			},
+			startTime(val) {
+				this.startTimes = val;
 			},
 			endTimeFn(val) {
 				this.endTimes = val;
@@ -355,9 +426,6 @@
 			// 	this[obj] = this[list];
 			// 	// this.checkBoxTurn_obj = this.checkBoxTurn_checkList;
 			// },
-			test(a) {
-				alert(a);
-			},
 			// 根据长度来判断是否进行处理
 			LengthFn(dom1,dom2,values) {
 				console.log(values);
@@ -384,6 +452,14 @@
 						console.log(res.data);
 						// that.$options.methods.test('646646');
 						that.ruleForm = res.data;
+						that.StartTime =  new Date();
+						console.log(that.StartTime);
+
+						that.throwReport = that.ruleForm.base_positionType.split(",");
+						that.InsideVal = that.ruleForm.base_insidePosition.split(",");
+						that.OutsideVal = that.ruleForm.base_outsidePosition.split(",");
+						
+						console.log(that.ruleForm.base_openScreenType)
 						// that.$options.methods.LengthFn(that.ruleForm.target_theme,that.checkBoxTurn_checkList,that.themeVal);
 						// console.log(that.themeVal)
 						// that.$options.methods.LengthFn(that.ruleForm.target_keyword,that.checkBoxTurn2_checkList,that.keywordVal);
@@ -419,9 +495,10 @@
 
 						// 将number => string
 						that.ruleForm.base_bidType = that.ruleForm.base_bidType.toString();
-						that.ruleForm.time_speed = that.ruleForm.time_speed.toString();
-						that.ruleForm.time_controlType = that.ruleForm.time_controlType.toString();
-						that.ruleForm.target_gender = that.ruleForm.target_gender.toString();
+						that.ruleForm.base_openScreenType = that.ruleForm.base_openScreenType.toString();
+						// that.ruleForm.time_speed = that.ruleForm.time_speed.toString();
+						// that.ruleForm.time_controlType = that.ruleForm.time_controlType.toString();
+						// that.ruleForm.target_gender = that.ruleForm.target_gender.toString();
 						console.log(that.ruleForm.base_bidType)
 						// if(that.ruleForm.base_bidType == )
 						// if(that.ruleForm.onlineStatus == 0) {
@@ -460,6 +537,45 @@
 					that[checked] = 1;
 				}
 			},
+			// 投放fn
+			throwFn(val) {
+				console.log(val);
+				if(val.length == 1) {
+					if(val[0] == 1) {
+						this.Inside = false;
+						this.Outside = false;
+					}else if(val[0] == 2) {
+						this.Inside = true;
+						this.Outside = false;
+					}else {
+						this.Inside = false;
+						this.Outside = true;
+
+						this.openType = false;
+					}
+				}else if(val.length == 0){
+					this.Inside = false;
+					this.Outside = false;
+
+					this.openType = false;
+				}else {
+					this.Inside = true;
+					this.Outside = true;
+				}
+			},
+			// 站内选择
+			InsideFn(val) {
+				for(var i = 0; i < val.length; i++) {
+					if(val[i] == 2) {
+						this.openType = true;
+					}else {
+						this.openType = false;
+					}
+				}
+				if(val.length == 0) {
+					this.openType = false;
+				}
+			},
 			// 广告位fn
 			adPositionFn(val) {
 				var adIndex;
@@ -470,23 +586,41 @@
 				}
 				this.exampleImg = this.adsense[adIndex].urlStr;
 			},
+			// 上下线
+			changeFn(val) {
+				var Values;
+				if(val) {
+					Values = 1
+				}else {
+					Values = 0
+				}
+				this.publicFn.statusInitFn(this,this.ruleForm.id,Values,'/manage/dsp/activity/admin/changeStatus');
+			},
 			// 保存操作
 			saveFn() {
 				var that = this;
 				let username = localStorage.getItem('ms_username');
 				var links;
 				var params = new URLSearchParams();
+				console.log(that.ruleForm.base_openScreenType);
 				params.append('id', that.$route.query.id);
 				params.append('base_name', that.ruleForm.base_name);
 				params.append('base_bidType', that.ruleForm.base_bidType);   //出价类型
 				params.append('base_channel', that.ruleForm.base_channel);
-				params.append('base_showAdsId', that.ruleForm.base_showAdsId);  //要投放的广告位
+				// params.append('base_showAdsId', that.ruleForm.base_showAdsId);  //要投放的广告位
 				// params.append('time_speed', that.ruleForm.time_speed);  //速度控制
-				params.append('time_startTime', that.startTimes);
+				params.append('time_startDate', that.startDates);
+				params.append('time_startTime',that.startTimes)
 				params.append('time_endTime', that.endTimes);
 				// params.append('time_controlType', that.ruleForm.time_controlType);  //频次控制类型
 				// params.append('time_impressionLimit', that.ruleForm.time_impressionLimit);  //单个用户曝光频次
 				params.append('time_clickLimit', that.ruleForm.time_clickLimit);  //单个用户点击频次
+
+				params.append('base_positionType',that.throwReport); // 投放站内外区域
+				params.append('base_insidePosition',that.InsideVal); // 站内广告位置
+				params.append('base_outsidePosition',that.OutsideVal); // 站内/外网页中广告投放位置
+				params.append('base_openScreenType',that.ruleForm.base_openScreenType);
+
 				// params.append('target_theme', that.checkBoxTurn_checkList);  //主题渠道
 				// params.append('target_keyword', that.checkBoxTurn2_checkList);  //关键字
 				// params.append('target_age', that.checkBoxTurn3_checkList);  //年龄

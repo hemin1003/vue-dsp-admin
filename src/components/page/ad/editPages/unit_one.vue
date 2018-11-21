@@ -39,8 +39,7 @@
 
 				<el-form-item label="点击动作" prop="desc">
 					<el-select v-model="ruleForm.clickAction" style="width: 100%;" :disabled="Disabled">
-				    	<el-option label="跳转" value="2"></el-option>
-				    	<el-option label="下载" value="1"></el-option>
+						<el-option v-for="(items,index) in ClickTypes" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 				    </el-select>
 					<span class="unit_infro">用来表示您的跳转地址点击后是直接下载的还是进行跳转的</span>
 				</el-form-item>
@@ -78,9 +77,9 @@
 			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 				<el-form-item label="样式">
 					<el-select v-model="ruleForm.showType" @change="getAds" style="width: 100%;" :disabled="Disabled">
-				    	<el-option label="信息流-三图" value="1"></el-option>
-				    	<el-option label="信息流-左图右文" value="2"></el-option>
-				    	<el-option label="大图" value="3"></el-option>
+				    	<el-option label="单图" value="1"></el-option>
+				    	<el-option label="三图" value="2"></el-option>
+				    	<el-option label="大图" value="0"></el-option>
 				    </el-select>
 				    <span class="unit_infro">选择您想要的广告展示样式</span>
 				</el-form-item>
@@ -166,6 +165,7 @@
 			setTimeout(this.Init.bind(this),20);
 			this.ListFn("b019","ExposureMonitoringType"); //曝光监控类型
 			this.ListFn("b018","MaterialType"); // 物料类型
+			this.ListFn("b023","ClickTypes"); // 点击动作
 		},
 		methods: {
 			goBack() {

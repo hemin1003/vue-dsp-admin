@@ -11,12 +11,12 @@
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
 				<el-switch 
-					@change="change(ruleForm.turn)"
+					@change="changeFn"
 			        on-text ="上线"
                     off-text = "暂停"
                     on-color="#00D1B2"
                     off-color="#dadde5" 
-                    v-model="ruleForm.turn"
+                    v-model="turn"
                     >
 				</el-switch>
 			</div>
@@ -138,46 +138,15 @@
 					})
 				}
 			},
-			// 上下线操作
-			change(val) {
-				console.log(val);
-				var Value;
+			// 上下线
+			changeFn(val) {
+				var Values;
 				if(val) {
-					Value = 1
+					Values = 1
 				}else {
-					Value = 0
+					Values = 0
 				}
-				// 调用公共函数
-				this.StatusFn(Value);
-				// 更新状态
-				setTimeout(this.Init,200);
-			},
-			// 上下线操作公共function
-			StatusFn(statusVal) {
-				var that = this;
-				var params = new URLSearchParams();
-				params.append('id', this.$route.query.id);
-				params.append('onlineStatus', statusVal);
-				this.$axios.post(this.hostname+'/manage/dsp/project/admin/changeStatus',params).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-                    if(res.data.resultCode == 200) {
-                    	that.Disabled = "";
-						that.btn_turn = false;
-                    	that.$notify({
-				          title: '成功',
-				          message: res.data.message,
-				          type: 'success'
-				        });
-                    }else {
-                    	that.$notify.error({
-				          title: '错误',
-				          message: res.data.message
-				        });
-                    }
-                }, function(err){
-                    console.log(err);
-                })
+				this.publicFn.statusInitFn(this,this.ruleForm.id,Values,'/manage/dsp/project/admin/changeStatus');
 			}
     	}
 	}

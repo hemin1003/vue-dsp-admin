@@ -63,7 +63,7 @@
 			      label="创建时间"
 			      >
 			    </el-table-column>
-			    <el-table-column property="turn" label="状态">
+			    <el-table-column property="turn" label="状态" width="160">
 				    <template scope="scope">
 				    <!-- @change="change(scope.$index,scope.row)" -->
 				      <el-switch
