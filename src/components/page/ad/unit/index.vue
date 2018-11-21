@@ -386,7 +386,7 @@
                 })
 			},
 			openDetails(row) {
-				this.$router.push('/ad_detail?id='+row.valueStr+'&type=add');
+				this.$router.push('/ad_detail?id='+row.valueStr+'&ppId='+row.pPid+'&pppId='+row.pPpId+'&type=add');
 			},
 			ListFn(num,contain) {
 				var that = this;

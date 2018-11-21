@@ -29,7 +29,7 @@
 				</el-form-item>
 				
 				<el-form-item label="合同编号" prop="pId">
-					<el-input v-model="ruleForm.pId" :disabled="Disabled"></el-input>
+					<el-input v-model="ruleForm.contractId" :disabled="Disabled"></el-input>
 					<span class="unit_infro">写一个唯一的合同编号信息，若没有签订合同，请根据需求填写下项目编号信息：投放日期_广告主名称缩写_该广告主投放的项目编号</span>
 				</el-form-item>
 
@@ -84,12 +84,13 @@
 				let links;
 				params.append('id', that.$route.query.id);
 				params.append('name', that.ruleForm.name);
-				params.append('contractId', that.ruleForm.pId);
+				params.append('contractId', that.ruleForm.contractId);
 				if(that.$route.query.type == "add") {
 					params.append('pId', that.$route.query.id);
 					params.append('loginUserName', username);
 					links = "add";
 				}else {
+					params.append('pId', that.Pid)
 					links = "update";
 				}
 				that.$axios.post(that.hostname+'/manage/dsp/project/admin/'+links,params).then(function(res){
@@ -128,6 +129,7 @@
 						// 响应成功回调
 						console.log(res.data);
 						that.ruleForm = res.data;
+						that.Pid = that.ruleForm.pId;
 						if(that.ruleForm.onlineStatus == 0) {
 							that.ruleForm.turn = false;
 						}else {
