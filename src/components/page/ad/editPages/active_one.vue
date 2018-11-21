@@ -449,6 +449,7 @@
 						// 响应成功回调
 						console.log(res.data);
 						that.ruleForm = res.data;
+						// 处理时间
 						if(that.ruleForm.time_startTime != "undefined") {
 							let dataArray = that.ruleForm.time_startTime.split(":");
 							that.StartTime =  new Date(1995,11,9,dataArray[0],dataArray[1],dataArray[2]);
@@ -457,6 +458,14 @@
 						if(that.ruleForm.time_endTime != "undefined") {
 							let dataArray2 = that.ruleForm.time_endTime.split(":");
 							that.EndTime = new Date(1995,11,9,dataArray2[0],dataArray2[1],dataArray2[2]);
+						}
+
+						// 处理日期
+						if(that.ruleForm.time_startDate == "undefined") {
+							that.ruleForm.time_startDate = '';
+						}
+						if(that.ruleForm.time_endDate == "undefined") {
+							that.ruleForm.time_endDate = '';
 						}
 
 						that.Pids = that.ruleForm.pId;
@@ -617,14 +626,18 @@
 				let username = localStorage.getItem('ms_username');
 				var links;
 				var params = new URLSearchParams();
-				let date = new Date(that.EndTime);
-				let date2 = new Date(that.StartTime);
-				var endTimeStr = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-				var startTimeStr = date2.getHours() + ':' + date2.getMinutes() + ':' + date2.getSeconds();
-				console.log(endTimeStr);
+				console.log(that.EndTime);
+				if(that.EndTime != "") {
+					let date = new Date(that.EndTime);
+					var endTimeStr = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+				}
+				if(that.StartTime != "") {
+					let date2 = new Date(that.StartTime);
+					var startTimeStr = date2.getHours() + ':' + date2.getMinutes() + ':' + date2.getSeconds();
+				}
+				
 				params.append('id', that.$route.query.id);
-				params.append('pId',that.Pids);
-				params.append('ppId',that.Ppids);
+				
 				params.append('base_name', that.ruleForm.base_name);
 				params.append('base_bidType', that.ruleForm.base_bidType);   //出价类型
 				params.append('base_channel', that.ruleForm.base_channel);
@@ -660,9 +673,12 @@
 
 				if(that.$route.query.type == "add") {
 					params.append('pId', that.$route.query.id);
+					params.append('ppId', that.$route.query.pPid);
 					params.append('loginUserName', username);
 					links = "add";
 				}else {
+					params.append('pId',that.Pids);
+					params.append('ppId',that.Ppids);
 					links = "update";
 				}
 				that.$axios.post(that.hostname+'/manage/dsp/activity/admin/'+links,params).then(function(res){

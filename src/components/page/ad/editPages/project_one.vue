@@ -83,7 +83,6 @@
 				let username = localStorage.getItem('ms_username');
 				let links;
 				params.append('id', that.$route.query.id);
-				params.append('pId', that.Pid);
 				params.append('name', that.ruleForm.name);
 				params.append('contractId', that.ruleForm.contractId);
 				if(that.$route.query.type == "add") {
@@ -91,6 +90,7 @@
 					params.append('loginUserName', username);
 					links = "add";
 				}else {
+					params.append('pId', that.Pid)
 					links = "update";
 				}
 				that.$axios.post(that.hostname+'/manage/dsp/project/admin/'+links,params).then(function(res){

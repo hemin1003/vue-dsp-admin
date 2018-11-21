@@ -187,7 +187,7 @@
 			},
 			EditFn() {
 				// 10.25新增状态判断是否可编辑
-				if(this.ruleForm.proveStatus == 1 || this.ruleForm.proveStatus == 2) {
+				if(this.ruleForm.proveStatus == 1) {
 					 this.$message({
 						message: '当前审核状态不可编辑！',
 						type: 'warning'
@@ -234,6 +234,11 @@
 						that.ruleForm = res.data;
 						that.imgUrlArr = that.ruleForm.imgUrl.split(',');
 						
+						//id集合
+						that.pIds = that.ruleForm.pId;
+						that.ppIds = that.ruleForm.ppId;
+						that.pppIds = that.ruleForm.pppId;
+
 						if(res.data.onlineStatus == 1) {
 							that.turn = true
 						}else {
@@ -341,9 +346,14 @@
 				params.append('proveStatus', 1);
 				if(that.$route.query.type == "add") {
 					params.append('pId', that.$route.query.id);
+					params.append('ppId', that.$route.query.ppId);
+					params.append('pppId', that.$route.query.pppId);
 					params.append('loginUserName', username);
 					links = "add";
 				}else {
+					params.append('pId', that.pIds);
+					params.append('ppId', that.ppIds);
+					params.append('pppId', that.pppIds);
 					links = "update";
 				}
 				that.$axios.post(that.hostname+'/manage/dsp/unit/admin/'+links,params).then(function(res){

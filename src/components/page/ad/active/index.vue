@@ -149,7 +149,7 @@
             </el-pagination>
         </div>
 
-				<!-- 弹窗 -->
+		<!-- 弹窗 -->
 		<el-dialog :title="dialogTitle" style="100px" :visible.sync="dialogFormVisible">
 			<el-table
 				:data="selectList"
@@ -247,7 +247,7 @@
 					loginUserName: username,
 				};
 				this.$axios.get(that.hostname+'/manage/dsp/sys/config/getDspProjectList',{params: datas}).then(function(res){
-          // 响应成功回调
+         			// 响应成功回调
 					console.log(res.data);
 					if(res.status == 200) {
 						that.selectList = res.data;
@@ -286,7 +286,7 @@
 				setTimeout(this.Init,200);
             	// console.log(index,row);
       },
-      // 更新状态
+      		// 更新状态
 			statusInitFn(ids,val) {
 				var that = this;
 				var params = new URLSearchParams();
@@ -314,7 +314,7 @@
 					})
 			},
 			openDetails(row) {
-				this.$router.push('/active_detail?id='+row.valueStr+'&type=add');
+				this.$router.push('/active_detail?id='+row.valueStr+'&pPid='+row.pPid+'&type=add');
 			},
 			//搜索查询fn
 			searchFn() {

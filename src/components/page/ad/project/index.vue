@@ -206,7 +206,7 @@
 				}else {
 					Value = 0
 				}
-				this.statusInitFn(this.tableData[index].id,Value);
+				this.publicFn.statusInitFn(this,this.tableData[index].id,Value,'/manage/dsp/project/admin/changeStatus');
 				setTimeout(this.dataInit,200);
             	// console.log(index,row);
             },
@@ -237,7 +237,7 @@
                 })
 			},
 			openDetails(row) {
-				this.$router.push('/pro_detail?id='+row.valueStr+'&type=add');
+				this.$router.push('/pro_detail?id='+row.pId+'&type=add');
 				// console.log(row.valueStr);
 			},
 			//搜索查询fn
