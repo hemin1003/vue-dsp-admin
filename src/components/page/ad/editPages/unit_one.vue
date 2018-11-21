@@ -39,9 +39,7 @@
 
 				<el-form-item label="点击动作" prop="desc">
 					<el-select v-model="ruleForm.clickAction" style="width: 100%;" :disabled="Disabled">
-						<el-option label="小程序" value="2"></el-option>
-				    	<el-option label="落地页" value="1"></el-option>
-				    	<el-option label="下载" value="0"></el-option>
+						<el-option v-for="(items,index) in ClickTypes" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 				    </el-select>
 					<span class="unit_infro">用来表示您的跳转地址点击后是直接下载的还是进行跳转的</span>
 				</el-form-item>
@@ -167,6 +165,7 @@
 			setTimeout(this.Init.bind(this),20);
 			this.ListFn("b019","ExposureMonitoringType"); //曝光监控类型
 			this.ListFn("b018","MaterialType"); // 物料类型
+			this.ListFn("b023","ClickTypes"); // 点击动作
 		},
 		methods: {
 			goBack() {

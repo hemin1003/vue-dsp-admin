@@ -11,6 +11,7 @@
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
 				<el-switch 
+					@change="changeFn"
 			        on-text ="上线"
                     off-text = "暂停"
                     on-color="#00D1B2"
@@ -202,6 +203,15 @@
 									</el-checkbox-group>
 								</div>
 							</el-form-item>
+							<el-form-item label="投放地区">
+								<el-select v-model="delPhoneArray" style="width: 100%;" multiple filterable allow-create default-first-option :disabled="Disabled"></el-select>
+								<span class="unit_infro">填写：市</span>
+							</el-form-item>
+							<el-form-item label="排除手机品牌">
+							<el-select v-model="delPhoneArray" style="width: 100%;" placeholder="" multiple filterable allow-create default-first-option :disabled="Disabled">
+								<el-option v-for="(items,index) in phoneBrand" :key="index" :label="items.keyStr" :value="items.keyStr"></el-option>
+						    </el-select>
+						</el-form-item>
 						<!-- <el-form-item label="主题渠道">
 						    <el-radio-group @change="RadioFn($event,'checkBoxTurn','checkBoxTurn_obj')" v-model="themeVal" :disabled="Disabled">
 						    	<el-radio label="1">不限</el-radio>
@@ -335,6 +345,7 @@
 				ipArr: [],
 				phoneArray: [],
 				delPhoneArray: [],
+				areaArray: [],
 				checkBoxTurn3: false,
 				checkBoxTurn2: false,
 				checkBoxTurn: false,
@@ -574,6 +585,16 @@
 					}
 				}
 				this.exampleImg = this.adsense[adIndex].urlStr;
+			},
+			// 上下线
+			changeFn(val) {
+				var Values;
+				if(val) {
+					Values = 1
+				}else {
+					Values = 0
+				}
+				this.publicFn.statusInitFn(this,this.ruleForm.id,Values,'/manage/dsp/activity/admin/changeStatus');
 			},
 			// 保存操作
 			saveFn() {
