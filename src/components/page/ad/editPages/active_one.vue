@@ -98,7 +98,6 @@
 						      placeholder="请选择日期"
 							  @change="endTimeFn">
 						    </el-date-picker>
-						    <div class="unit_infro">结束时间不填写表示不限制结束时间</div>
 						</el-form-item>
 
 						<el-form-item label="结束时间">
@@ -109,6 +108,7 @@
 							  @change="startTime"
 						      >
 						    </el-time-picker>
+							<div class="unit_infro">结束时间不填写表示不限制结束时间</div>
 						</el-form-item>
 						
 						<!-- <el-form-item label="控制类型" prop="name">
@@ -204,14 +204,13 @@
 								</div>
 							</el-form-item>
 							<el-form-item label="投放地区">
-								<el-select v-model="delPhoneArray" style="width: 100%;" multiple filterable allow-create default-first-option :disabled="Disabled"></el-select>
+								<el-select v-model="areaArray" style="width: 100%;" multiple filterable allow-create default-first-option :disabled="Disabled"></el-select>
 								<span class="unit_infro">填写：市</span>
 							</el-form-item>
-							<el-form-item label="排除手机品牌">
-							<el-select v-model="delPhoneArray" style="width: 100%;" placeholder="" multiple filterable allow-create default-first-option :disabled="Disabled">
-								<el-option v-for="(items,index) in phoneBrand" :key="index" :label="items.keyStr" :value="items.keyStr"></el-option>
-						    </el-select>
-						</el-form-item>
+							<el-form-item label="排除地区">
+								<el-select v-model="DelAreaArray" style="width: 100%;" placeholder="请选择" multiple filterable allow-create default-first-option :disabled="Disabled"></el-select>
+								<span class="unit_infro">填写：市</span>
+							</el-form-item>
 						<!-- <el-form-item label="主题渠道">
 						    <el-radio-group @change="RadioFn($event,'checkBoxTurn','checkBoxTurn_obj')" v-model="themeVal" :disabled="Disabled">
 						    	<el-radio label="1">不限</el-radio>
@@ -345,6 +344,7 @@
 				ipArr: [],
 				phoneArray: [],
 				delPhoneArray: [],
+				DelAreaArray: [],
 				areaArray: [],
 				checkBoxTurn3: false,
 				checkBoxTurn2: false,
@@ -455,9 +455,14 @@
 						that.StartTime =  new Date();
 						console.log(that.StartTime);
 
+						that.Pids = that.ruleForm.pId;
+						that.Ppids = that.ruleForm.ppId;
+
 						that.throwReport = that.ruleForm.base_positionType.split(",");
 						that.InsideVal = that.ruleForm.base_insidePosition.split(",");
 						that.OutsideVal = that.ruleForm.base_outsidePosition.split(",");
+						that.areaArray = that.ruleForm.target_area.split(",");
+						that.DelAreaArray = that.ruleForm.target_excludeArea.split(",");
 						
 						console.log(that.ruleForm.base_openScreenType)
 						// that.$options.methods.LengthFn(that.ruleForm.target_theme,that.checkBoxTurn_checkList,that.themeVal);
@@ -604,6 +609,8 @@
 				var params = new URLSearchParams();
 				console.log(that.ruleForm.base_openScreenType);
 				params.append('id', that.$route.query.id);
+				params.append('pId',that.Pids);
+				params.append('ppId',that.Ppids);
 				params.append('base_name', that.ruleForm.base_name);
 				params.append('base_bidType', that.ruleForm.base_bidType);   //出价类型
 				params.append('base_channel', that.ruleForm.base_channel);
@@ -619,7 +626,9 @@
 				params.append('base_positionType',that.throwReport); // 投放站内外区域
 				params.append('base_insidePosition',that.InsideVal); // 站内广告位置
 				params.append('base_outsidePosition',that.OutsideVal); // 站内/外网页中广告投放位置
-				params.append('base_openScreenType',that.ruleForm.base_openScreenType);
+				params.append('base_openScreenType',that.ruleForm.base_openScreenType); //开屏投放
+				params.append('target_area',that.areaArray); //投放区域 市
+				params.append('target_excludeArea',that.DelAreaArray); //投放区域 市
 
 				// params.append('target_theme', that.checkBoxTurn_checkList);  //主题渠道
 				// params.append('target_keyword', that.checkBoxTurn2_checkList);  //关键字
