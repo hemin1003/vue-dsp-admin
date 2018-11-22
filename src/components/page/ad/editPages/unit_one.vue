@@ -270,13 +270,15 @@
 				if(name == "2") {
 					this.uploaderData = ["图片一","图片二","图片三"];
 				}else if(name == "1") {
-					this.uploaderData = ["图片"];
-				}else if(name == "3") {
+					this.uploaderData = ["单图"];
+				}else if(name == "0") {
 					this.uploaderData = ["大图"];
 				}
 			},
 			handleAvatarSuccess(i, res, file) {
+				this.imgUrlArr = [];
 				if(res.resultCode == 200) {
+					console.log(i);
 					this.imgUrlArr.splice(i,1,res.data);
 					this.ruleForm.imgUrl = this.imgUrlArr; 
 					console.log(this.ruleForm.imgUrl);

@@ -142,6 +142,13 @@
 					</el-switch>
 				</el-form-item>
 
+				<el-form-item label="总预算">
+					<el-input v-model="ruleForm.budget" type="number" :disabled="Disabled"></el-input>
+				</el-form-item>
+				<el-form-item label="单日预算">
+					<el-input v-model="ruleForm.base_dayBudget" type="number" :disabled="Disabled"></el-input>
+				</el-form-item>
+
 				<el-form-item label="备注" prop="descInfo">
 					<el-input
 					  :disabled="Disabled"
@@ -368,6 +375,9 @@
 				params.append('othersUrl', that.uploadDatas.ohtersPic);
 				params.append('isNotifyByEmail', that.ruleForm.isNotifyByEmail);
 				params.append('descInfo', that.ruleForm.descInfo);
+
+				params.append('budget', that.ruleForm.budget); // 总预算
+				params.append('base_dayBudget', that.ruleForm.base_dayBudget); // 单日预算
 				
 
 				this.$axios.post(this.hostname+'/manage/dsp/userInfo/admin/update',params).then(function(res){
