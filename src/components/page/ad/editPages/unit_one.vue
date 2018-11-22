@@ -390,14 +390,20 @@
 			// 删除操作
 			DelFn() {
 				let that = this;
-				var datas = {
-					id: that.$route.query.id
-				}
-				that.$axios.post(this.hostname+'/manage/dsp/unit/admin/deleteById',{params: datas}).then(function(res){
+				var params = new URLSearchParams();
+				params.append('id', that.$route.query.id);
+				that.$axios.post(this.hostname+'/manage/dsp/unit/admin/deleteById',params).then(function(res){
                     // 响应成功回调
 					console.log(res.data);
 					if(res.data.resultCode == 200) {
-
+						that.$notify({
+				          title: '成功',
+				          message: '删除成功！',
+				          type: 'success'
+						});
+						setTimeout(function() {
+							that.$router.go(-1);
+						},500)
 					}else {
 						that.$notify.error({
 							title: '错误',

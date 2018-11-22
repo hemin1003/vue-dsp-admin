@@ -33,6 +33,10 @@
 					<span class="unit_infro">写一个唯一的合同编号信息，若没有签订合同，请根据需求填写下项目编号信息：投放日期_广告主名称缩写_该广告主投放的项目编号</span>
 				</el-form-item>
 
+				<el-form-item label="单日预算">
+					<el-input v-model="ruleForm.base_dayBudget" type="number" :disabled="Disabled"></el-input>
+				</el-form-item>
+
 				<el-form-item label="商务邮箱">
 					<div>{{ruleForm.businessEmail}}</div>
 					<span class="unit_infro">您的专属客服代表</span>
@@ -85,6 +89,7 @@
 				params.append('id', that.$route.query.id);
 				params.append('name', that.ruleForm.name);
 				params.append('contractId', that.ruleForm.contractId);
+				params.append('base_dayBudget', that.ruleForm.base_dayBudget);
 				if(that.$route.query.type == "add") {
 					params.append('pId', that.$route.query.id);
 					params.append('loginUserName', username);
