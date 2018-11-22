@@ -270,13 +270,15 @@
 				if(name == "2") {
 					this.uploaderData = ["图片一","图片二","图片三"];
 				}else if(name == "1") {
-					this.uploaderData = ["图片"];
-				}else if(name == "3") {
+					this.uploaderData = ["单图"];
+				}else if(name == "0") {
 					this.uploaderData = ["大图"];
 				}
 			},
 			handleAvatarSuccess(i, res, file) {
+				this.imgUrlArr = [];
 				if(res.resultCode == 200) {
+					console.log(i);
 					this.imgUrlArr.splice(i,1,res.data);
 					this.ruleForm.imgUrl = this.imgUrlArr; 
 					console.log(this.ruleForm.imgUrl);
@@ -390,14 +392,20 @@
 			// 删除操作
 			DelFn() {
 				let that = this;
-				var datas = {
-					id: that.$route.query.id
-				}
-				that.$axios.post(this.hostname+'/manage/dsp/unit/admin/deleteById',{params: datas}).then(function(res){
+				var params = new URLSearchParams();
+				params.append('id', that.$route.query.id);
+				that.$axios.post(this.hostname+'/manage/dsp/unit/admin/deleteById',params).then(function(res){
                     // 响应成功回调
 					console.log(res.data);
 					if(res.data.resultCode == 200) {
-
+						that.$notify({
+				          title: '成功',
+				          message: '删除成功！',
+				          type: 'success'
+						});
+						setTimeout(function() {
+							that.$router.go(-1);
+						},500)
 					}else {
 						that.$notify.error({
 							title: '错误',
