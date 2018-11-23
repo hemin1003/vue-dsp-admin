@@ -276,7 +276,11 @@
 				}
 			},
 			handleAvatarSuccess(i, res, file) {
-				this.imgUrlArr = [];
+				let name = this.ruleForm.showType;
+				if(name != 2) {
+					this.imgUrlArr = [];
+				}
+				
 				if(res.resultCode == 200) {
 					console.log(i);
 					this.imgUrlArr.splice(i,1,res.data);
