@@ -51,11 +51,13 @@
 			      prop="budget"
 			      label="总预算(剩余)"
 			      >
+				  	<template scope="scope">
+						{{ scope.row.budget }}({{ scope.row.surplus}})
+					</template>
 			    </el-table-column>
 			    <el-table-column
 			      prop="consumption"
 			      label="总消耗"
-			      
 			      >
 			    </el-table-column>
 			    <el-table-column

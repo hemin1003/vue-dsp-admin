@@ -22,7 +22,7 @@
                     v-model="turn"
                     >
 				</el-switch>
-				<el-tag type="success" style="float: right; margin-right: 1vw; margin-top:5px">{{statusInfo}}</el-tag>
+				<el-tag v-if="statusBtnTurn" type="success" style="float: right; margin-right: 1vw; margin-top:5px">{{statusInfo}}</el-tag>
 			</div>
 		</div>
 		<div class="unit_o_content">
@@ -172,7 +172,10 @@
 		          	{ required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ]
 				},
-				isDisable: true
+				isDisable: true,
+				ClickTypes: [],
+				MaterialType: [],
+				statusBtnTurn: true
 		      }
 			},
 		mounted() {
@@ -223,6 +226,7 @@
 				if(that.$route.query.type == "add") {
 					that.Disabled = null;
 					that.btn_turn = true;
+					that.statusBtnTurn = false;
 				}else {
 					var datas = {
 						id: that.$route.query.id
@@ -286,11 +290,6 @@
 					this.imgUrlArr.splice(i,1,res.data);
 					this.ruleForm.imgUrl = this.imgUrlArr; 
 					console.log(this.ruleForm.imgUrl);
-				}
-		    },
-		    yyleAvatarSuccess(res) {
-		    	if(res.resultCode == 200) {
-					this.ruleForm.businessLicenseUrl = res.data;
 				}
 		    },
 		    beforeAvatarUpload(file) {
