@@ -7,7 +7,7 @@
 					<el-button type="primary" @click="EditFn" plain><i class="el-icon-edit"></i><span>编辑</span></el-button>
 				</div>
 				<div class="out_btn" v-if="btn_turn">
-					<el-button type="primary" @click="saveFn"><span>保存</span></el-button>
+					<el-button type="primary" @click="saveFn('ruleForm')"><span>保存</span></el-button>
 					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
 				</div>
 				<el-switch 
@@ -22,15 +22,16 @@
 			</div>
 		</div>
 		<div class="unit_o_content">
+			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 			<el-collapse v-model="activeNames" @change="handleChange" style="width: 70%;margin-left: 15%;">
 				<el-collapse-item title="基本信息" name="1">
-					<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-						<el-form-item label="名称" prop="name">
+					<!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"> -->
+						<el-form-item label="名称" prop="base_name">
 							<el-input v-model="ruleForm.base_name" :disabled="Disabled"></el-input>
-							<span class="unit_infro">为您的广告项目取一个唯一的名称，格式如下：广告主名称_产品名称，10个字以内</span>
+							<span class="unit_infro">为您的广告活动取一个唯一的名称，格式如下：广告主名称_产品名称，10个字以内</span>
 						</el-form-item>
 						
-						<el-form-item label="出价类型" prop="name">
+						<el-form-item label="出价类型" prop="base_bidType">
 						    <el-radio-group v-model="ruleForm.base_bidType" :disabled="Disabled">
 						    	<el-radio label=1>实时出价</el-radio>
 						    	<!-- <el-radio label=2>固定出价</el-radio> -->
@@ -38,7 +39,7 @@
 						    <div class="unit_infro">目前只支持竞价类型喔</div>
 						</el-form-item>
 
-						<el-form-item label="渠道" prop="prop_channel">
+						<el-form-item label="渠道" prop="base_channel">
 							<el-select v-model="ruleForm.base_channel" style="width: 100%;" :disabled="Disabled">
 						    	<el-option v-for="(items,index) in channel" :label="items.keyStr" :value="items.valueStr" :key="index"></el-option>
 						    	<!-- <el-option label="cpl" value="cpl"></el-option>
@@ -57,11 +58,11 @@
 							<div><img :src="exampleImg" width="30%" alt="example"></div>
 							<span class="unit_infro">您的广告会显示在图示红框位置</span>
 						</el-form-item> -->
-					</el-form>
+					<!-- </el-form> -->
 
 				</el-collapse-item>
 				<el-collapse-item title="时间控制" name="2">
-			    	<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+			    	<!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"> -->
 
 						<!-- <el-form-item label="速度控制" prop="name">
 							<el-select v-model="ruleForm.time_speed" style="width: 100%;" :disabled="Disabled">
@@ -87,6 +88,7 @@
 						      placeholder="请选择时间"
 						      >
 						    </el-time-picker>
+							<div class="unit_infro">*注意开始时间和开始日期两者必须填一项</div>
 						</el-form-item>
 
 						<el-form-item label="结束日期">
@@ -116,12 +118,12 @@
 						    </el-select>
 						</el-form-item> -->
 
-						<el-form-item label="曝光频次" prop="frequency">
+						<el-form-item label="曝光频次" prop="time_impressionLimit">
 							<el-input v-model="ruleForm.time_impressionLimit" type="number" :disabled="Disabled"></el-input>
 							<span class="unit_infro">每日单个用户最多能看到这个广告的次数</span>
 						</el-form-item>
 
-						<el-form-item label="点击频次" prop="Click_times">
+						<el-form-item label="点击频次" prop="time_clickLimit">
 							<el-input v-model="ruleForm.time_clickLimit" :disabled="Disabled"></el-input>
 							<span class="unit_infro">每日单个用户最多能点击这个广告的次数</span>
 						</el-form-item>
@@ -150,7 +152,7 @@
 							  
 							<span class="unit_infro">选择一个具体的时间定向，只有在选中的时间内才会进行投放</span>
 						</el-form-item> -->
-					</el-form>
+					<!-- </el-form> -->
 				</el-collapse-item>
 				
 				
@@ -171,7 +173,7 @@
 						</el-form-item> -->
 
 				<el-collapse-item title="定向控制" name="3">
-						<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+						<!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"> -->
 							<el-form-item label="投放区域">
 								<!-- ($event,'checkBoxTurn2','checkBoxTurn2_obj') -->
 								<el-checkbox-group @change="throwFn" v-model="throwReport">
@@ -286,32 +288,33 @@
 						    </el-select>
 						</el-form-item> -->
 				
-					</el-form>
+					<!-- </el-form> -->
 
 				</el-collapse-item>
 
 
 				<el-collapse-item title="预算控制" name="4">
-			    	<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+			    	<!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"> -->
 
-						<el-form-item label="交易类型" prop="name">
+						<el-form-item label="交易类型" prop="budget_type">
 							<el-select v-model="ruleForm.budget_type" style="width: 100%;" :disabled="Disabled">
 						    	<el-option v-for="(items,index) in TransactionTypes" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 						    </el-select>
 						    <span class="unit_infro">选一个计费方式，我们将按这个来进行计算消耗</span>
 						</el-form-item>
 
-						<el-form-item label="单日预算" prop="frequency">
+						<el-form-item label="单日预算" prop="budget_dayLimit">
 							<el-input v-model="ruleForm.budget_dayLimit" type="number" :disabled="Disabled"></el-input>
 						</el-form-item>
 
-						<el-form-item label="出价" prop="Click_times">
+						<el-form-item label="出价" prop="budget_bidPrice">
 							<el-input v-model="ruleForm.budget_bidPrice" type="number" :disabled="Disabled"></el-input>
 							<span class="unit_infro">选择一个出价价格，不能低于目前底价哦 最低出价: 0.4, 建议出价: 0.57~0.95</span>
 						</el-form-item>
-					</el-form>
+					<!-- </el-form> -->
 				</el-collapse-item>
 			</el-collapse>
+			</el-form>
 			<!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 				<el-form-item label="名称" prop="name">
 					<el-input v-model="ruleForm.name" :disabled="Disabled"></el-input>
@@ -359,45 +362,55 @@
 				ruleForm: {
 		        },
 		        rules: {
-		          prop_channel: [
+				  base_name: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
-		          prop_adsense: [
+		          base_bidType: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+				  ],
+				  base_channel: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+				  ],
+				  prop_adsense: [
+		            { required: true, message: '这一项是必填的', trigger: 'blur' }
+				  ],
+				  time_clickLimit: [
+		            { type:"number",required: true, message: '这一项是必填的', trigger: 'blur' }
+		          ],
+		          time_impressionLimit: [
+		            { type:"number",required: true, message: '这一项是必填的', trigger: 'blur' }
+				  ],
+				   throwReport: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+		          ],
+		          budget_type: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+		          ],
+		          budget_bidPrice: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
-		          time: [
-		            { required: true, message: '这一项是必填的', trigger: 'focus' }
-		          ],
-		          frequency: [
-		            { required: true, message: '这一项是必填的', trigger: 'focus' }
-		          ],
-		          Click_times: [
-		            { required: true, message: '这一项是必填的', trigger: 'focus' }
+		          budget_dayLimit: [
+		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ]
 				},
 				exampleImg: require('./images/example.png'),
 				Inside: false,
 				Outside: false,
 				openType: false,
-				throwReport: [],
+				throwReport: ["1"],
 				InsideVal: [],
 				OutsideVal: [],
 				StartTime: '',
 				EndTime: '',
+				TransactionTypes: []
 		      }
 			},
 		mounted() {
-			setTimeout(this.Init.bind(this),20);
-			this.ListFn("b006","channel"); //渠道
-			this.ListFn("b007","adsense"); //广告位
-			this.ListFn("b008","ThemeChannel"); //主题渠道
-			this.ListFn("b009","keyWord"); //关键字
-			this.ListFn("b010", "ageArray"); //年龄
-			this.ListFn("b014", "phoneBrand"); //手机品牌
-			this.ListFn("b015", "TransactionTypes"); //交易类型
-			this.ListFn("b020","throwList"); // 投放站内外区域
-			this.ListFn("b021","InsideList"); // 站内广告位置
-			this.ListFn("b022","OutsideList"); // 站内/外网页中广告投放位置
+			var that = this;
+			// setTimeout(function() {
+				that.Init();
+			// },20);
+			
 		},
 		methods: {
 			goBack() {
@@ -437,6 +450,16 @@
 			// 初始渲染数据fn
 			Init() {
 				var that = this;
+				this.ListFn("b006","channel"); //渠道
+				this.ListFn("b007","adsense"); //广告位
+				this.ListFn("b008","ThemeChannel"); //主题渠道
+				this.ListFn("b009","keyWord"); //关键字
+				this.ListFn("b010", "ageArray"); //年龄
+				this.ListFn("b014", "phoneBrand"); //手机品牌
+				this.ListFn("b015", "TransactionTypes"); //交易类型
+				this.ListFn("b020","throwList"); // 投放站内外区域
+				this.ListFn("b021","InsideList"); // 站内广告位置
+				this.ListFn("b022","OutsideList"); // 站内/外网页中广告投放位置
 				//10.24 新增type字段判断
 				if(that.$route.query.type == "add") {
 					that.Disabled = null;
@@ -621,86 +644,94 @@
 				this.publicFn.statusInitFn(this,this.ruleForm.id,Values,'/manage/dsp/activity/admin/changeStatus');
 			},
 			// 保存操作
-			saveFn() {
+			saveFn(ruleForm) {
 				var that = this;
-				let username = localStorage.getItem('ms_username');
-				var links;
-				var params = new URLSearchParams();
-				console.log(that.EndTime);
-				if(that.EndTime != "") {
-					let date = new Date(that.EndTime);
-					var endTimeStr = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-				}
-				if(that.StartTime != "") {
-					let date2 = new Date(that.StartTime);
-					var startTimeStr = date2.getHours() + ':' + date2.getMinutes() + ':' + date2.getSeconds();
-				}
-				
-				params.append('id', that.$route.query.id);
-				
-				params.append('base_name', that.ruleForm.base_name);
-				params.append('base_bidType', that.ruleForm.base_bidType);   //出价类型
-				params.append('base_channel', that.ruleForm.base_channel);
-				// params.append('base_showAdsId', that.ruleForm.base_showAdsId);  //要投放的广告位
-				// params.append('time_speed', that.ruleForm.time_speed);  //速度控制
-				params.append('time_startDate', that.startDates); //开始日期
-				params.append('time_startTime',startTimeStr) //开始时间
-				params.append('time_endTime', endTimeStr); // 结束时间
-				params.append('time_endDate', that.endDates); //结束日期
-				// params.append('time_controlType', that.ruleForm.time_controlType);  //频次控制类型
-				// params.append('time_impressionLimit', that.ruleForm.time_impressionLimit);  //单个用户曝光频次
-				params.append('time_clickLimit', that.ruleForm.time_clickLimit);  //单个用户点击频次
+				that.$refs.ruleForm.validate((valid) => {
+				console.log(that.StartTime);
+				console.log(that.ruleForm.time_startDate);
+				if ((valid) && ((that.StartTime !="") || (that.ruleForm.time_startDate != undefined)))  {
+					let username = localStorage.getItem('ms_username');
+					var links;
+					var params = new URLSearchParams();
+					console.log(that.EndTime);
+					if(that.EndTime != "") {
+						let date = new Date(that.EndTime);
+						var endTimeStr = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+					}
+					if(that.StartTime != "") {
+						let date2 = new Date(that.StartTime);
+						var startTimeStr = date2.getHours() + ':' + date2.getMinutes() + ':' + date2.getSeconds();
+					}
+					
+					params.append('id', that.$route.query.id);
+					
+					params.append('base_name', that.ruleForm.base_name);
+					params.append('base_bidType', that.ruleForm.base_bidType);   //出价类型
+					params.append('base_channel', that.ruleForm.base_channel);
+					// params.append('base_showAdsId', that.ruleForm.base_showAdsId);  //要投放的广告位
+					// params.append('time_speed', that.ruleForm.time_speed);  //速度控制
+					params.append('time_startDate', that.startDates); //开始日期
+					params.append('time_startTime',startTimeStr) //开始时间
+					params.append('time_endTime', endTimeStr); // 结束时间
+					params.append('time_endDate', that.endDates); //结束日期
+					// params.append('time_controlType', that.ruleForm.time_controlType);  //频次控制类型
+					params.append('time_impressionLimit', that.ruleForm.time_impressionLimit);  //单个用户曝光频次
+					params.append('time_clickLimit', that.ruleForm.time_clickLimit);  //单个用户点击频次
 
-				params.append('base_positionType',that.throwReport); // 投放站内外区域
-				params.append('base_insidePosition',that.InsideVal); // 站内广告位置
-				params.append('base_outsidePosition',that.OutsideVal); // 站内/外网页中广告投放位置
-				params.append('base_openScreenType',that.ruleForm.base_openScreenType); //开屏投放
-				params.append('target_area',that.areaArray); //投放区域 市
-				params.append('target_excludeArea',that.DelAreaArray); //投放区域 市
+					params.append('base_positionType',that.throwReport); // 投放站内外区域
+					params.append('base_insidePosition',that.InsideVal); // 站内广告位置
+					params.append('base_outsidePosition',that.OutsideVal); // 站内/外网页中广告投放位置
+					params.append('base_openScreenType',that.ruleForm.base_openScreenType); //开屏投放
+					params.append('target_area',that.areaArray); //投放区域 市
+					params.append('target_excludeArea',that.DelAreaArray); //投放区域 市
 
-				// params.append('target_theme', that.checkBoxTurn_checkList);  //主题渠道
-				// params.append('target_keyword', that.checkBoxTurn2_checkList);  //关键字
-				// params.append('target_age', that.checkBoxTurn3_checkList);  //年龄
-				// params.append('target_gender', that.ruleForm.target_gender);  //性别
-				// params.append('target_os', that.ruleForm.target_os);  //操作系统
-				// params.append('target_imei', that.ruleForm.target_imei);  //设备号
-				// params.append('target_excludeImei', that.ruleForm.target_excludeImei);  //排除设备号
-				// params.append('target_brand', that.phoneArray);  //手机品牌
-				// params.append('target_excludeBrand', that.delPhoneArray);  //排除手机品牌
-				params.append('budget_type', that.ruleForm.budget_type);  //交易类型
-				params.append('budget_dayLimit', that.ruleForm.budget_dayLimit);
-				params.append('budget_bidPrice', that.ruleForm.budget_bidPrice);  //出价
+					// params.append('target_theme', that.checkBoxTurn_checkList);  //主题渠道
+					// params.append('target_keyword', that.checkBoxTurn2_checkList);  //关键字
+					// params.append('target_age', that.checkBoxTurn3_checkList);  //年龄
+					// params.append('target_gender', that.ruleForm.target_gender);  //性别
+					// params.append('target_os', that.ruleForm.target_os);  //操作系统
+					// params.append('target_imei', that.ruleForm.target_imei);  //设备号
+					// params.append('target_excludeImei', that.ruleForm.target_excludeImei);  //排除设备号
+					// params.append('target_brand', that.phoneArray);  //手机品牌
+					// params.append('target_excludeBrand', that.delPhoneArray);  //排除手机品牌
+					params.append('budget_type', that.ruleForm.budget_type);  //交易类型
+					params.append('budget_dayLimit', that.ruleForm.budget_dayLimit);
+					params.append('budget_bidPrice', that.ruleForm.budget_bidPrice);  //出价
 
-				if(that.$route.query.type == "add") {
-					params.append('pId', that.$route.query.id);
-					params.append('ppId', that.$route.query.pPid);
-					params.append('loginUserName', username);
-					links = "add";
-				}else {
-					params.append('pId',that.Pids);
-					params.append('ppId',that.Ppids);
-					links = "update";
+					if(that.$route.query.type == "add") {
+						params.append('pId', that.$route.query.id);
+						params.append('ppId', that.$route.query.pPid);
+						params.append('loginUserName', username);
+						links = "add";
+					}else {
+						params.append('pId',that.Pids);
+						params.append('ppId',that.Ppids);
+						links = "update";
+					}
+					that.$axios.post(that.hostname+'/manage/dsp/activity/admin/'+links,params).then(function(res){
+						// 响应成功回调
+						console.log(res.data);
+						if(res.data.resultCode == 200) {
+							that.Disabled = "";
+							that.btn_turn = false;
+							that.$notify({
+							title: '成功',
+							message: res.data.message,
+							type: 'success'
+							});
+						}else {
+							that.$notify.error({
+							title: '错误',
+							message: res.data.message
+							});
+						}
+					}, function(err){
+						console.log(err);
+					})
+				} else {
+					that.$message.error('请检查带*输入框否填写数据(包含开始时间和开始日期)');
 				}
-				that.$axios.post(that.hostname+'/manage/dsp/activity/admin/'+links,params).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-                    if(res.data.resultCode == 200) {
-                    	that.Disabled = "";
-						that.btn_turn = false;
-                    	that.$notify({
-				          title: '成功',
-				          message: res.data.message,
-				          type: 'success'
-				        });
-                    }else {
-                    	that.$notify.error({
-				          title: '错误',
-				          message: res.data.message
-				        });
-                    }
-                }, function(err){
-                    console.log(err);
-                })
+				});
 			},
     	}
 	}
@@ -748,14 +779,13 @@
 
 		.unit_o_content {
 			width: 100%;
-			margin-top: 1vw;
 			padding: 3vw 0 3vw 0;
 			background: #FAFAFA;
 		}
 			.unit_o_content form {
 				margin-top: 2vw;
-				width: 70%;
-				margin-left: 15%;
+				width: 100%;
+				/* margin-left: 15%; */
 			}
 
 		.unit_infro {
@@ -780,4 +810,9 @@
 			margin-right: 15px;
 			margin-left: 0px;
 		}
+
+
+			.el-collapse-item__content {
+				margin: 2vw 0;
+			}
 </style>

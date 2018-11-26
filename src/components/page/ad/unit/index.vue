@@ -22,11 +22,11 @@
 	    				<el-option v-for="(items,index) in Channel" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 	    			</el-select>
     			</el-col>
-    			<el-col :span="3">
+    			<!-- <el-col :span="3">
 	    			<el-select clearable v-model="formInline.adPosition" placeholder="广告位">
 	    				<el-option v-for="(items,index) in adsense" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 	    			</el-select>
-    			</el-col>
+    			</el-col> -->
     			<el-col :span="3">
 	    			<el-select clearable v-model="formInline.staus" placeholder="选择状态">
 	    				<el-option label="上线" value="1"></el-option>
@@ -406,7 +406,8 @@
 			searchFn() {
 				var that = this;
 				that.loading = true;
-				if((that.formInline.adProjectId != undefined) || (that.formInline.adActiveId != undefined) || (that.formInline.adUnitId != undefined) || (that.formInline.adChannel != undefined) || (that.formInline.adPosition != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
+				//  || (that.formInline.adPosition != undefined)
+				if((that.formInline.adProjectId != undefined) || (that.formInline.adActiveId != undefined) || (that.formInline.adUnitId != undefined) || (that.formInline.adChannel != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
 					let username = localStorage.getItem('ms_username');
 					var datas = {
 						loginUserName: username,
@@ -417,7 +418,7 @@
 						startDate: that.timeVal[0],
 						endDate: that.timeVal[1],
 						channel: that.formInline.adChannel,
-						showAdsId: that.formInline.adPosition
+						// showAdsId: that.formInline.adPosition
 					};
 					this.$axios.get(that.hostname+'/manage/dsp/unit/admin/list',{params: datas}).then(function(res){
 						// 响应成功回调
