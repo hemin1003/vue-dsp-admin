@@ -116,7 +116,8 @@
 		          status: '审核中',
 		          link: "/login"
 		        }],
-		        allPage: ''
+				allPage: '',
+				nowPages: 1
 			}
 		},
 		mounted() {
@@ -124,12 +125,17 @@
 			this.home_project_Fn();
 		},
 		methods:{
+			handleCurrentChange(val) {
+				this.loading = true;
+				this.nowPages = val;
+				this.Init();
+			},
 			Init() {
 				var that = this;
 				let username = localStorage.getItem('ms_username');
 				var datas = {
 					loginUserName: username,
-					page: 1,
+					page: that.nowPages,
 					rows: 10,
 					id: that.formInline.id,
 					onlineStatus: that.formInline.staus
@@ -139,7 +145,7 @@
                     console.log(res.data);
 					that.loading = false;
 
-                    that.allPage = res.data.total;
+                    that.allPage = (res.data.total/10)*10;
                     that.tableData = res.data.rows;
                      
                     // 特殊处理

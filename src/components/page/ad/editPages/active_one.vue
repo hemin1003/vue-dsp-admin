@@ -119,12 +119,12 @@
 						</el-form-item> -->
 
 						<el-form-item label="曝光频次" prop="time_impressionLimit">
-							<el-input v-model="ruleForm.time_impressionLimit" type="number" :disabled="Disabled"></el-input>
+							<el-input v-model.number="ruleForm.time_impressionLimit" type="number" :disabled="Disabled"></el-input>
 							<span class="unit_infro">每日单个用户最多能看到这个广告的次数</span>
 						</el-form-item>
 
 						<el-form-item label="点击频次" prop="time_clickLimit">
-							<el-input v-model="ruleForm.time_clickLimit" :disabled="Disabled"></el-input>
+							<el-input v-model.number="ruleForm.time_clickLimit" type="number" :disabled="Disabled"></el-input>
 							<span class="unit_infro">每日单个用户最多能点击这个广告的次数</span>
 						</el-form-item>
 
@@ -375,10 +375,10 @@
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 				  ],
 				  time_clickLimit: [
-		            { type:"number",required: true, message: '这一项是必填的', trigger: 'blur' }
+		            { type: "number",required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
 		          time_impressionLimit: [
-		            { type:"number",required: true, message: '这一项是必填的', trigger: 'blur' }
+		            { type: "number",required: true, message: '这一项是必填的', trigger: 'blur' }
 				  ],
 				   throwReport: [
 		            { required: true, message: '这一项是必填的', trigger: 'change' }
@@ -473,14 +473,18 @@
 						console.log(res.data);
 						that.ruleForm = res.data;
 						// 处理时间
-						if(that.ruleForm.time_startTime != "undefined") {
+						if((that.ruleForm.time_startTime != "") && (that.ruleForm.time_startTime != "undefined") && (that.ruleForm.time_startTime != "NaN:NaN:NaN")) {
 							let dataArray = that.ruleForm.time_startTime.split(":");
 							that.StartTime =  new Date(1995,11,9,dataArray[0],dataArray[1],dataArray[2]);
+						}else {
+							that.ruleForm.time_startTime = "";
 						}
-
-						if(that.ruleForm.time_endTime != "undefined") {
+					
+						if((that.ruleForm.time_endTime != "") && (that.ruleForm.time_endTime != "undefined") && (that.ruleForm.time_endTime != "NaN:NaN:NaN")) {
 							let dataArray2 = that.ruleForm.time_endTime.split(":");
 							that.EndTime = new Date(1995,11,9,dataArray2[0],dataArray2[1],dataArray2[2]);
+						}else {
+							that.ruleForm.time_endTime = "";
 						}
 
 						// 处理日期
@@ -587,31 +591,60 @@
 			// 投放fn
 			throwFn(val) {
 				console.log(val);
-				if(val.length == 1) {
-					if(val[0] == 1) {
+				switch(val.length){
+					case 1:
+						if(val[0] == 1) {
+							this.Inside = false;
+							this.Outside = false;
+						}else if(val[0] == 2) {
+							this.Inside = true;
+							this.Outside = false;
+						}else {
+							this.Inside = false;
+							this.Outside = true;
+
+							this.openType = false;
+						}
+						break;
+					case 0:
 						this.Inside = false;
 						this.Outside = false;
-					}else if(val[0] == 2) {
-						this.Inside = true;
-						this.Outside = false;
-					}else {
-						this.Inside = false;
-						this.Outside = true;
 
 						this.openType = false;
-					}
-				}else if(val.length == 0){
-					this.Inside = false;
-					this.Outside = false;
-
-					this.openType = false;
-				}else {
-					this.Inside = true;
-					this.Outside = true;
+						break;
+					case 3:
+						this.Inside = false;
+						this.Outside = false;
+					default:
+						this.Inside = true;
+						this.Outside = true;
 				}
+				// if(val.length == 1) {
+				// 	if(val[0] == 1) {
+				// 		this.Inside = false;
+				// 		this.Outside = false;
+				// 	}else if(val[0] == 2) {
+				// 		this.Inside = true;
+				// 		this.Outside = false;
+				// 	}else {
+				// 		this.Inside = false;
+				// 		this.Outside = true;
+
+				// 		this.openType = false;
+				// 	}
+				// }else if(val.length == 0){
+				// 	this.Inside = false;
+				// 	this.Outside = false;
+
+				// 	this.openType = false;
+				// }else {
+				// 	this.Inside = true;
+				// 	this.Outside = true;
+				// }
 			},
 			// 站内选择
 			InsideFn(val) {
+				console.log(val);
 				for(var i = 0; i < val.length; i++) {
 					if(val[i] == 2) {
 						this.openType = true;
@@ -621,6 +654,9 @@
 				}
 				if(val.length == 0) {
 					this.openType = false;
+				}
+				if(val.length == 3) {
+					
 				}
 			},
 			// 广告位fn
@@ -652,6 +688,7 @@
 				if ((valid) && ((that.StartTime !="") || (that.ruleForm.time_startDate != undefined)))  {
 					let username = localStorage.getItem('ms_username');
 					var links;
+					var openScreenTypes;
 					var params = new URLSearchParams();
 					console.log(that.EndTime);
 					if(that.EndTime != "") {
@@ -662,7 +699,16 @@
 						let date2 = new Date(that.StartTime);
 						var startTimeStr = date2.getHours() + ':' + date2.getMinutes() + ':' + date2.getSeconds();
 					}
-					
+					if(that.ruleForm.base_openScreenType == "undefined") {
+						openScreenTypes = "";
+					}else {
+						openScreenTypes = that.ruleForm.base_openScreenType;
+					}
+					if(that.throwReport[0] == "") {
+						that.throwReport[0] = 1;
+					}
+
+					 
 					params.append('id', that.$route.query.id);
 					
 					params.append('base_name', that.ruleForm.base_name);
@@ -670,18 +716,18 @@
 					params.append('base_channel', that.ruleForm.base_channel);
 					// params.append('base_showAdsId', that.ruleForm.base_showAdsId);  //要投放的广告位
 					// params.append('time_speed', that.ruleForm.time_speed);  //速度控制
-					params.append('time_startDate', that.startDates); //开始日期
-					params.append('time_startTime',startTimeStr) //开始时间
-					params.append('time_endTime', endTimeStr); // 结束时间
-					params.append('time_endDate', that.endDates); //结束日期
+					params.append('time_startDate', that.startDates || ""); //开始日期
+					params.append('time_startTime',startTimeStr || "") //开始时间
+					params.append('time_endTime', endTimeStr || ""); // 结束时间
+					params.append('time_endDate', that.endDates || ""); //结束日期
 					// params.append('time_controlType', that.ruleForm.time_controlType);  //频次控制类型
 					params.append('time_impressionLimit', that.ruleForm.time_impressionLimit);  //单个用户曝光频次
 					params.append('time_clickLimit', that.ruleForm.time_clickLimit);  //单个用户点击频次
 
-					params.append('base_positionType',that.throwReport); // 投放站内外区域
-					params.append('base_insidePosition',that.InsideVal); // 站内广告位置
-					params.append('base_outsidePosition',that.OutsideVal); // 站内/外网页中广告投放位置
-					params.append('base_openScreenType',that.ruleForm.base_openScreenType); //开屏投放
+					params.append('base_positionType',that.throwReport || ["1"]); // 投放站内外区域
+					params.append('base_insidePosition',that.InsideVal || ""); // 站内广告位置
+					params.append('base_outsidePosition',that.OutsideVal || ""); // 站内/外网页中广告投放位置
+					params.append('base_openScreenType', openScreenTypes || ""); //开屏投放
 					params.append('target_area',that.areaArray); //投放区域 市
 					params.append('target_excludeArea',that.DelAreaArray); //投放区域 市
 
@@ -736,7 +782,7 @@
     	}
 	}
 </script>
-<style>
+<style scoped>
 	.unit_one_top {
 		width: 100%;
 		height: 2vw;

@@ -28,7 +28,7 @@
 					<span class="unit_infro">为您的广告项目取一个唯一的名称，格式如下：广告主名称_产品名称，10个字以内</span>
 				</el-form-item>
 				
-				<el-form-item label="合同编号" prop="pId">
+				<el-form-item label="合同编号" prop="contractId">
 					<el-input v-model="ruleForm.contractId" :disabled="Disabled"></el-input>
 					<span class="unit_infro">写一个唯一的合同编号信息，若没有签订合同，请根据需求填写下项目编号信息：投放日期_广告主名称缩写_该广告主投放的项目编号</span>
 				</el-form-item>
@@ -58,7 +58,7 @@
 		          name: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
-		          pId: [
+		          contractId: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ]
 		        }
@@ -83,41 +83,47 @@
 			// 保存操作
 			saveFn() {
 				var that = this;
-				var params = new URLSearchParams();
-				let username = localStorage.getItem('ms_username');
-				let links;
-				params.append('id', that.$route.query.id);
-				params.append('name', that.ruleForm.name);
-				params.append('contractId', that.ruleForm.contractId);
-				params.append('base_dayBudget', that.ruleForm.base_dayBudget);
-				if(that.$route.query.type == "add") {
-					params.append('pId', that.$route.query.id);
-					params.append('loginUserName', username);
-					links = "add";
-				}else {
-					params.append('pId', that.Pid)
-					links = "update";
-				}
-				that.$axios.post(that.hostname+'/manage/dsp/project/admin/'+links,params).then(function(res){
-					// 响应成功回调
-					console.log(res.data);
-					if(res.data.resultCode == 200) {
-						that.Disabled = "";
-						that.btn_turn = false;
-						that.$notify({
-						title: '成功',
-						message: res.data.message,
-						type: 'success'
-						});
-					}else {
-						that.$notify.error({
-						title: '错误',
-						message: res.data.message
-						});
-					}
-				}, function(err){
-					console.log(err);
-				})
+				that.$refs.ruleForm.validate((valid) => {
+					if(valid) {
+						var params = new URLSearchParams();
+						let username = localStorage.getItem('ms_username');
+						let links;
+						params.append('id', that.$route.query.id);
+						params.append('name', that.ruleForm.name);
+						params.append('contractId', that.ruleForm.contractId);
+						params.append('base_dayBudget', that.ruleForm.base_dayBudget);
+						if(that.$route.query.type == "add") {
+							params.append('pId', that.$route.query.id);
+							params.append('loginUserName', username);
+							links = "add";
+						}else {
+							params.append('pId', that.Pid)
+							links = "update";
+						}
+						that.$axios.post(that.hostname+'/manage/dsp/project/admin/'+links,params).then(function(res){
+							// 响应成功回调
+							console.log(res.data);
+							if(res.data.resultCode == 200) {
+								that.Disabled = "";
+								that.btn_turn = false;
+								that.$notify({
+								title: '成功',
+								message: res.data.message,
+								type: 'success'
+								});
+							}else {
+								that.$notify.error({
+								title: '错误',
+								message: res.data.message
+								});
+							}
+						}, function(err){
+							console.log(err);
+						})
+							}else {
+								that.$message.error('请检查带*输入框否填写数据');
+							}
+						})	
 			},
 			// 初始渲染数据fn
 			Init() {
@@ -158,7 +164,7 @@
     	}
 	}
 </script>
-<style>
+<style scoped>
 	.unit_one_top {
 		width: 100%;
 		height: 2vw;
