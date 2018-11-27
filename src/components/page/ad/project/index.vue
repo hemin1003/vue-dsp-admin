@@ -37,7 +37,7 @@
 		    <div class="tabs_btn">
 				<!-- tabs_btn_left -->
 		    	<div class="tabs_btn_left" @click="dialogFormVisible = true"><i class="el-icon-plus"></i><span>新建</span></div>
-		    	<div class="tabs_btn_right"><span>下载数据</span></div>
+		    	<div class="tabs_btn_right" @click="DownloadFn"><span>下载数据</span></div>
 		    </div>
 		</div>
 
@@ -136,7 +136,8 @@
 				formInline: {},
 		        timeVal: '',
 		        tableData: [],
-		        allPage: ''
+				allPage: '',
+				nowPages: 1
 			}
 		},
 		mounted() {
@@ -144,12 +145,17 @@
 			this.selectFn();
 		},
 		methods: {
+			handleCurrentChange(val) {
+				this.loading = true;
+				this.nowPages = val;
+				this.dataInit();
+			},
 			dataInit() {
 				var that = this;
 				let username = localStorage.getItem('ms_username');
 				var datas = {
 					loginUserName: username,
-					page: 1,
+					page: that.nowPages,
 					rows: 10,
 					id: that.formInline.id,
 					onlineStatus: that.formInline.staus,
@@ -161,7 +167,7 @@
                     console.log(res.data)
 					that.loading = false;
 
-                    that.allPage = res.data.total;
+                    that.allPage = (res.data.total/10)*10;
                     that.tableData = res.data.rows;
                      
                     // 特殊处理
@@ -317,6 +323,7 @@
 					return;
 				}
 				const values = data.map(item => Number(item[column.property]));
+				console.log(values);
 				if (!values.every(value => isNaN(value))) {
 					sums[index] = values.reduce((prev, curr) => {
 					const value = Number(curr);
@@ -333,6 +340,13 @@
 				});
 
 				return sums;
+			},
+			// 下载数据fn
+			DownloadFn() {
+				this.$message({
+					message: '正在加速开发中....',
+					type: 'warning'
+				});
 			}
 		}
 	}

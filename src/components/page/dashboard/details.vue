@@ -1,5 +1,5 @@
 <template>
-	<div class="unit_one">
+	<div class="unit_one unit_lafite">
 		<div class="unit_one_top">
 			<div class="unit_o_left_btn" @click="goBack"><i class="el-icon-arrow-left"></i>{{msg}}</div>
 			<div class="unit_o_right">
@@ -37,14 +37,14 @@
 					<span class="unit_infro">填一个广告主的邮箱账号，可以为广告主申请用这个邮箱来登录查看信息</span>
 				</el-form-item>
 
-				<el-form-item label="类型" prop="action">
+				<el-form-item label="类型" prop="typeName">
 					<el-select v-model="ruleForm.typeName" style="width: 100%;" @change="selectFn($event,item)" :disabled="Disabled">
 				    	<el-option v-for="items in selectType" :label="items.keyStr" :value="items.valueStr" :key="items.index"></el-option>
 				    </el-select>
 					<span class="unit_infro">为广告主选择一个正确的类型，可以更好的获取到精准用户</span>
 				</el-form-item>
 
-				<el-form-item label="级别">
+				<el-form-item label="级别" prop="level">
 					<el-radio-group v-model="ruleForm.level">
 					    <el-radio label="A">A</el-radio>
 					    <el-radio label="B">B</el-radio>
@@ -52,20 +52,20 @@
 					 </el-radio-group>
 				</el-form-item>
 
-				<el-form-item label="联系人名称">
+				<el-form-item label="联系人名称" prop="contactName">
 					<el-input v-model="ruleForm.contactName" :disabled="Disabled"></el-input>
 				</el-form-item>
 
-				<el-form-item label="联系人电话">
+				<el-form-item label="联系人电话" prop="contactTel">
 					<el-input v-model="ruleForm.contactTel" :disabled="Disabled"></el-input>
 				</el-form-item>
 
-				<el-form-item label="联系人地址">
+				<el-form-item label="联系人地址" prop="contactAddress">
 					<el-input v-model="ruleForm.contactAddress" :disabled="Disabled"></el-input>
 				</el-form-item>
 				
 				<!--  prop="title" -->
-				<el-form-item label="营业执照">
+				<el-form-item label="营业执照" prop="businessLicenseUrl">
 					<!-- :action="UploadUrl()" -->
 					<el-upload
 					  :disabled="Disabled"
@@ -88,7 +88,7 @@
 					</el-upload>
 				</el-form-item>
 
-				<el-form-item label="ICP证书">
+				<el-form-item label="ICP证书" prop="icpUrl">
 					<el-upload
 					  :disabled="Disabled"
 					  class="avatar-uploader"
@@ -142,10 +142,10 @@
 					</el-switch>
 				</el-form-item>
 
-				<el-form-item label="总预算">
+				<el-form-item label="总预算" prop="budget">
 					<el-input v-model="ruleForm.budget" type="number" :disabled="Disabled"></el-input>
 				</el-form-item>
-				<el-form-item label="单日预算">
+				<el-form-item label="单日预算" prop="base_dayBudget">
 					<el-input v-model="ruleForm.base_dayBudget" type="number" :disabled="Disabled"></el-input>
 				</el-form-item>
 
@@ -190,9 +190,36 @@
 		          email: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
-		          action: [
-		            { required: true, message: '请填写活动形式', trigger: 'blur' }
-		          ]
+		          typeName: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+				  ],
+				   level: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+				  ],
+				   contactName: [
+		            { required: true, message: '这一项是必填的', trigger: 'blur' }
+				  ],
+				   contactTel: [
+		            { required: true, message: '这一项是必填的', trigger: 'blur' }
+				  ],
+				   contactAddress: [
+		            { required: true, message: '这一项是必填的', trigger: 'blur' }
+				  ],
+				   budget: [
+		            { required: true, message: '这一项是必填的', trigger: 'blur' }
+				  ],
+				   base_dayBudget: [
+		            { required: true, message: '这一项是必填的', trigger: 'blur' }
+				  ],
+				   descInfo: [
+		            { required: true, message: '这一项是必填的', trigger: 'blur' }
+				  ],
+				  icpUrl: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+				  ],
+				  businessLicenseUrl: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+				  ]
 		        },
 		        selectType: [],
 		        typeid: "",
@@ -360,46 +387,53 @@
 		    // 保存操作
 			saveFn() {
 				var that = this;
-				var params = new URLSearchParams();
-				params.append('id', this.$route.query.id);
-				params.append('name', that.ruleForm.name);
-				params.append('email', that.ruleForm.email);
-				params.append('typeId', that.typeid);
-				params.append('typeName', that.typename);
-				params.append('level', that.ruleForm.level);
-				params.append('contactName', that.ruleForm.contactName);
-				params.append('contactAddress', that.ruleForm.contactAddress);
-				params.append('contactTel', that.ruleForm.contactTel);
-				params.append('businessLicenseUrl', that.ruleForm.businessLicenseUrl);
-				params.append('icpUrl', that.ruleForm.icpUrl);
-				params.append('othersUrl', that.uploadDatas.ohtersPic);
-				params.append('isNotifyByEmail', that.ruleForm.isNotifyByEmail);
-				params.append('descInfo', that.ruleForm.descInfo);
+				that.$refs.ruleForm.validate((valid) => {
+					if(valid) {
+						var params = new URLSearchParams();
+						params.append('id', this.$route.query.id);
+						params.append('name', that.ruleForm.name);
+						params.append('email', that.ruleForm.email);
+						params.append('typeId', that.typeid);
+						params.append('typeName', that.typename);
+						params.append('level', that.ruleForm.level);
+						params.append('contactName', that.ruleForm.contactName);
+						params.append('contactAddress', that.ruleForm.contactAddress);
+						params.append('contactTel', that.ruleForm.contactTel);
+						params.append('businessLicenseUrl', that.ruleForm.businessLicenseUrl);
+						params.append('icpUrl', that.ruleForm.icpUrl);
+						params.append('othersUrl', that.uploadDatas.ohtersPic);
+						params.append('isNotifyByEmail', that.ruleForm.isNotifyByEmail);
+						params.append('descInfo', that.ruleForm.descInfo);
 
-				params.append('budget', that.ruleForm.budget); // 总预算
-				params.append('base_dayBudget', that.ruleForm.base_dayBudget); // 单日预算
-				
+						params.append('budget', that.ruleForm.budget); // 总预算
+						params.append('base_dayBudget', that.ruleForm.base_dayBudget); // 单日预算
+						
 
-				this.$axios.post(this.hostname+'/manage/dsp/userInfo/admin/update',params).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-                    if(res.data.resultCode == 200) {
-                    	that.Disabled = "";
-						that.btn_turn = false;
-                    	that.$notify({
-				          title: '成功',
-				          message: res.data.message,
-				          type: 'success'
-				        });
-                    }else {
-                    	that.$notify.error({
-				          title: '错误',
-				          message: res.data.message
-				        });
-                    }
-                }, function(err){
-                    console.log(err);
-                })
+						that.$axios.post(that.hostname+'/manage/dsp/userInfo/admin/update',params).then(function(res){
+							// 响应成功回调
+							console.log(res.data);
+							if(res.data.resultCode == 200) {
+								that.Disabled = "";
+								that.btn_turn = false;
+								that.$notify({
+								title: '成功',
+								message: res.data.message,
+								type: 'success'
+								});
+							}else {
+								that.$notify.error({
+								title: '错误',
+								message: res.data.message
+								});
+							}
+						}, function(err){
+							console.log(err);
+						})
+					}else {
+						that.$message.error('请检查带*输入框否填写数据和图片是否上传');
+					}
+				})
+			
 			},
 			//公用函数=>改变状态fn
 			changeFn(val) {
@@ -461,7 +495,7 @@
 			padding: 2vw 0 .2vw 0;
 			background: #FAFAFA;
 		}
-			.unit_o_content form,.unit_o_content2 form {
+			.unit_lafite .unit_o_content form,.unit_o_content2 form {
 				width: 70%;
 				margin-left: 15%;
 			}

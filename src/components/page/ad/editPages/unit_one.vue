@@ -25,14 +25,15 @@
 				<el-tag v-if="statusBtnTurn" type="success" style="float: right; margin-right: 1vw; margin-top:5px">{{statusInfo}}</el-tag>
 			</div>
 		</div>
+		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 		<div class="unit_o_content">
-			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-				<el-form-item label="名称" prop="name">
+			<!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"> -->
+				<el-form-item label="名称" prop="base_name">
 					<el-input v-model="ruleForm.base_name" :disabled="Disabled"></el-input>
 					<span class="unit_infro">为您的广告单元取一个唯一的名称，10个字以内，建议带上活动_物料信息等</span>
 				</el-form-item>
 				
-				<el-form-item label="点击动作" prop="desc">
+				<el-form-item label="点击动作" prop="clickAction">
 					<el-select v-model="ruleForm.clickAction" style="width: 100%;" :disabled="Disabled">
 						<el-option v-for="(items,index) in ClickTypes" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 				    </el-select>
@@ -84,12 +85,12 @@
     <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
     <el-button @click="resetForm('ruleForm')">重置</el-button>
   </el-form-item> -->
-</el-form>
+<!-- </el-form> -->
 		</div>
 
 		<div class="unit_o_content2">
-			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-				<el-form-item label="样式">
+			<!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"> -->
+				<el-form-item label="样式" prop="showType">
 					<el-select v-model="ruleForm.showType" @change="getAds" style="width: 100%;" :disabled="Disabled">
 				    	<el-option label="单图" value="1"></el-option>
 				    	<el-option label="三图" value="2"></el-option>
@@ -98,7 +99,7 @@
 				    <span class="unit_infro">选择您想要的广告展示样式</span>
 				</el-form-item>
 
-				<el-form-item label="物料类型" >
+				<el-form-item label="物料类型" prop="materialType">
 					<el-select v-model="ruleForm.materialType" style="width: 100%;" :disabled="Disabled">
 				    	<el-option v-for="(items,index) in MaterialType" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 				    </el-select>
@@ -109,7 +110,7 @@
 					<el-input v-model="ruleForm.title" :disabled="Disabled"></el-input>
 				</el-form-item>
 
-				<el-form-item v-for="(items,index) in uploaderData" :key="index" :label="items" prop="title">
+				<el-form-item v-for="(items,index) in uploaderData" :key="index" :label="items">
 					<!-- http://sys.midongtech.com  http://182.92.82.188:8280 -->
 					<el-upload
 					  :disabled="Disabled"
@@ -138,8 +139,9 @@
 					</el-upload>
 				</el-form-item>
 
-			</el-form>
+			<!-- </el-form> -->
 		</div>
+		</el-form>
 	</div>
 </template>
 <script>
@@ -159,17 +161,26 @@
 				uploaderData: ["图片一","图片二","图片三"],
 				ruleForm: {},
 		        rules: {
+				  base_name: [
+		            { required: true, message: '这一项是必填的', trigger: 'blur' }
+		          ],
+		          clickAction: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+		          ],
 		          clickUrl: [
 		            { required: true, message: '这一项是必填的', trigger: 'blur' }
 		          ],
-		          url: [
-		            { required: true, message: '这一项是必填的', trigger: 'blur' }
-		          ],
-		          desc: [
-		            { required: true, message: '请填写活动形式', trigger: 'blur' }
+		          showType: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
+				  ],
+				  materialType: [
+		            { required: true, message: '这一项是必填的', trigger: 'change' }
 		          ],
 		          title: [
 		          	{ required: true, message: '这一项是必填的', trigger: 'blur' }
+				  ],
+				  imgUrl: [
+		          	{ required: true, message: '这一项是必填的', trigger: 'change' }
 		          ]
 				},
 				isDisable: true,
@@ -189,6 +200,8 @@
 				this.$router.go(-1);
 			},
 			EditFn() {
+				// this.Disabled = null;
+				// this.btn_turn = true;
 				// 10.25新增状态判断是否可编辑
 				if(this.ruleForm.proveStatus == 1) {
 					 this.$message({
@@ -328,59 +341,68 @@
 			// 保存操作
 			saveFn() {
 				var that = this;
-				let username = localStorage.getItem('ms_username');
-				let links;
-				var params = new URLSearchParams();
-				params.append('id', that.$route.query.id);
-				params.append('base_name', that.ruleForm.base_name);
-				params.append('clickUrl', that.ruleForm.clickUrl);
-				// params.append('base_channel', that.ruleForm.base_channel);
-				params.append('clickAction', that.ruleForm.clickAction);
-				// params.append('impressionMonitorUrl', that.ruleForm.impressionMonitorUrl);  //曝光监控类型
-				// params.append('clickMonitorType', that.ruleForm.clickMonitorType);  //点击监控类型
-				// params.append('clickMonitorUrl', that.ruleForm.clickMonitorUrl);  //点击监控链接
+				that.$refs.ruleForm.validate((valid) => {
+					if((valid) && (that.imgUrlArr.length > 0)) {
+						let username = localStorage.getItem('ms_username');
+						let links;
+						var params = new URLSearchParams();
+						params.append('id', that.$route.query.id);
+						params.append('base_name', that.ruleForm.base_name);
+						params.append('clickUrl', that.ruleForm.clickUrl);
+						// params.append('base_channel', that.ruleForm.base_channel);
+						params.append('clickAction', that.ruleForm.clickAction);
+						// params.append('impressionMonitorUrl', that.ruleForm.impressionMonitorUrl);  //曝光监控类型
+						// params.append('clickMonitorType', that.ruleForm.clickMonitorType);  //点击监控类型
+						// params.append('clickMonitorUrl', that.ruleForm.clickMonitorUrl);  //点击监控链接
 
-				params.append('userExposureNumBudget', that.ruleForm.userExposureNumBudget);  //单个用户曝光频次
-				params.append('userClickNumBudget', that.ruleForm.userClickNumBudget);  //单个用户点击频次
-				params.append('base_dayBudget', that.ruleForm.base_dayBudget);  //当日预算金额
+						params.append('userExposureNumBudget', that.ruleForm.userExposureNumBudget || "");  //单个用户曝光频次
+						params.append('userClickNumBudget', that.ruleForm.userClickNumBudget || "");  //单个用户点击频次
+						params.append('base_dayBudget', that.ruleForm.base_dayBudget || "");  //当日预算金额
 
-				params.append('showType', that.ruleForm.showType);
-				params.append('materialType', that.ruleForm.materialType);
-				params.append('title', that.ruleForm.title);
-				params.append('imgUrl', that.ruleForm.imgUrl);
-				params.append('proveStatus', 1);
-				if(that.$route.query.type == "add") {
-					params.append('pId', that.$route.query.id);
-					params.append('ppId', that.$route.query.ppId);
-					params.append('pppId', that.$route.query.pppId);
-					params.append('loginUserName', username);
-					links = "add";
-				}else {
-					params.append('pId', that.pIds);
-					params.append('ppId', that.ppIds);
-					params.append('pppId', that.pppIds);
-					links = "update";
-				}
-				that.$axios.post(that.hostname+'/manage/dsp/unit/admin/'+links,params).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-                    if(res.data.resultCode == 200) {
-                    	that.Disabled = "";
-						that.btn_turn = false;
-                    	that.$notify({
-				          title: '成功',
-				          message: res.data.message,
-				          type: 'success'
-				        });
-                    }else {
-                    	that.$notify.error({
-				          title: '错误',
-				          message: res.data.message
-				        });
-                    }
-                }, function(err){
-                    console.log(err);
-                })
+						params.append('showType', that.ruleForm.showType);
+						params.append('materialType', that.ruleForm.materialType);
+						params.append('title', that.ruleForm.title);
+						params.append('imgUrl', that.ruleForm.imgUrl);
+						params.append('proveStatus', 1);
+						if(that.$route.query.type == "add") {
+							params.append('pId', that.$route.query.id);
+							params.append('ppId', that.$route.query.ppId);
+							params.append('pppId', that.$route.query.pppId);
+							params.append('loginUserName', username);
+							links = "add";
+						}else {
+							params.append('pId', that.pIds);
+							params.append('ppId', that.ppIds);
+							params.append('pppId', that.pppIds);
+							links = "update";
+						}
+						that.$axios.post(that.hostname+'/manage/dsp/unit/admin/'+links,params).then(function(res){
+							// 响应成功回调
+							console.log(res.data);
+							if(res.data.resultCode == 200) {
+								that.Disabled = "";
+								that.btn_turn = false;
+								that.$notify({
+								title: '成功',
+								message: res.data.message,
+								type: 'success'
+								});
+							}else {
+								that.$notify.error({
+								title: '错误',
+								message: res.data.message
+								});
+							}
+						}, function(err){
+							console.log(err);
+						})
+					}else {
+						that.$message.error('请检查带*输入框否填写数据和图片是否上传');
+					}
+				})
+
+
+				
 			},
 			// 上下线
 			changeFn(val) {
@@ -422,7 +444,7 @@
     	}
 	}
 </script>
-<style>
+<style scoped>
 	.unit_one_top {
 		width: 100%;
 		height: 2vw;
@@ -472,14 +494,15 @@
 		}
 
 		.unit_o_content,.unit_o_content2 {
-			width: 100%;
+			width: 70%;
 			margin-top: 1vw;
 			padding: 2vw 0 .2vw 0;
 			background: #FAFAFA;
+			margin-left: 15%;
 		}
 			.unit_o_content form,.unit_o_content2 form {
-				width: 70%;
-				margin-left: 15%;
+				width: 100%;
+				/* margin-left: 15%; */
 			}
 
 		.unit_infro {

@@ -62,7 +62,7 @@
 		    </el-radio-group>
 		    <div class="tabs_btn">
 		    	<div class="tabs_btn_left" @click="dialogFormVisible = true"><i class="el-icon-plus"></i><span>新建</span></div>
-		    	<div class="tabs_btn_right"><span>下载数据</span></div>
+		    	<div class="tabs_btn_right" @click="DownloadFn"><span>下载数据</span></div>
 		    </div>
 		</div>
 
@@ -105,12 +105,12 @@
 				  content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
 				  <el-button >hover 激活</el-button>
 				</el-popover> -->
-			    <el-table-column
+			    <!-- <el-table-column
 			      header-cell-class-name="special_cell"
 			      prop="reqNum"
 			      label="请求量"
 			      >
-			    </el-table-column>
+			    </el-table-column> -->
 			    <el-table-column
 			      prop="impressionNum"
 			      label="曝光量"
@@ -207,7 +207,8 @@
 		        	
 		        },
 		        timeVal: '',
-		        tableData: []
+				tableData: [],
+				nowPages: 1
 			}
 		},
 		mounted() {
@@ -219,8 +220,10 @@
 			this.ListFn("b006","Channel"); //渠道
 		},
 		methods: {
-			handleCurrentChange() {
-				console.log('66');
+			handleCurrentChange(val) {
+				this.loading = true;
+				this.nowPages = val;
+				this.Init();
 			},
 			cell({row, column, rowIndex, columnIndex}) {
 				if(columnIndex === 0) {
@@ -241,7 +244,7 @@
 				let username = localStorage.getItem('ms_username');
 				var datas = {
 					loginUserName: username,
-					page: 1,
+					page: that.nowPages,
 					rows: 10,
 					proveStatus: tabs,
 					id: that.formInline.adUnitId,
@@ -259,7 +262,7 @@
                     console.log(res.data.rows)
 					that.loading = false;
 					
-                    that.allPage = res.data.total;
+                    that.allPage = (res.data.total/10)*10;
                     that.tableData = res.data.rows;
                      
 					// 特殊处理
@@ -472,6 +475,13 @@
 			dateChange(val) {
 				var timeArr = val.split('至');
 				this.timeVal = timeArr;
+			},
+			// 下载数据fn
+			DownloadFn() {
+				this.$message({
+					message: '正在加速开发中....',
+					type: 'warning'
+				});
 			}
 		}
 	}
