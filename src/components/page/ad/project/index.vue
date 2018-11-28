@@ -61,7 +61,7 @@
 			      label="名称"
 			      width="220">
 			      <template scope="scope_name">
-			      	<router-link class="names" to="/ad_activity">{{scope_name.row.name}}</router-link>
+			      	<router-link class="names" :to="{path: '/ad_activity',query: {ids: scope_name.row.link}}">{{scope_name.row.name}}</router-link>
 			      </template>
 			    </el-table-column>
 			    <el-table-column
@@ -194,7 +194,7 @@
 				var datas = {
 					loginUserName: username,
 				};
-				this.$axios.get(this.hostname+'/manage/dsp/sys/config/getDspUserInfoList',{params: datas}).then(function(res){
+				this.$axios.get(this.hostname+'/manage/dsp/sys/config/getDspProjectList',{params: datas}).then(function(res){
                     // 响应成功回调
 					console.log(res)
 					if(res.status == 200) {
@@ -300,11 +300,7 @@
 						console.log(err);
 					})
 				}else {
-					that.loading = false;
-					that.$notify.error({
-						title: '错误',
-						message: "请选择过滤条件！"
-					});
+					that.dataInit();
 				}
 				// console.log(that.formInline);
 			},

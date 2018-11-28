@@ -303,7 +303,7 @@
 						    <span class="unit_infro">选一个计费方式，我们将按这个来进行计算消耗</span>
 						</el-form-item>
 
-						<el-form-item label="单日预算" prop="budget_dayLimit">
+						<el-form-item label="单日预算">
 							<el-input v-model="ruleForm.budget_dayLimit" type="number" :disabled="Disabled"></el-input>
 						</el-form-item>
 

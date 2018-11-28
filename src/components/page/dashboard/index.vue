@@ -260,11 +260,7 @@
 						console.log(err);
 					})
 				}else {
-					that.loading = false;
-					that.$notify.error({
-						title: '错误',
-						message: "请选择过滤条件！"
-					});
+					that.Init();
 				}
 				// console.log(that.formInline);
 			} 
