@@ -1,5 +1,6 @@
 <template>
     <div class="sidebar">
+        <!-- :default-active="onRoutes" -->
         <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
             <template v-for="(item,index) in items">
                 <template v-if="item.children">

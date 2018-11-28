@@ -211,15 +211,15 @@
 				if(that.$route.query.ids != "") {
 					IDs = that.$route.query.ids;
 				}else {
-					IDs = that.formInline.active_id
+					IDs = that.formInline.project_id
 				}
 				let username = localStorage.getItem('ms_username');
 				var datas = {
 					loginUserName: username,
 					page: that.nowPages,
 					rows: 10,
-					id: IDs,
-					pId: that.formInline.project_id,
+					id: that.formInline.active_id,
+					pId: IDs,
 					onlineStatus: that.formInline.staus,
 					startDate: that.timeVal[0],
 					endDate: that.timeVal[1]

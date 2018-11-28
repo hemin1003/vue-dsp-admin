@@ -741,7 +741,7 @@
 					// params.append('target_brand', that.phoneArray);  //手机品牌
 					// params.append('target_excludeBrand', that.delPhoneArray);  //排除手机品牌
 					params.append('budget_type', that.ruleForm.budget_type);  //交易类型
-					params.append('budget_dayLimit', that.ruleForm.budget_dayLimit);
+					params.append('budget_dayLimit', that.ruleForm.budget_dayLimit || "");
 					params.append('budget_bidPrice', that.ruleForm.budget_bidPrice);  //出价
 
 					if(that.$route.query.type == "add") {
