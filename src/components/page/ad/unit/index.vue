@@ -79,6 +79,7 @@
 			    <el-table-column
 			      prop="id"
 			      label="ID"
+				  v-if="id == 'all'"
 			      >
 			    </el-table-column>
 			    <el-table-column
@@ -152,15 +153,16 @@
                         on-color="#00D1B2"
                         off-color="#dadde5" 
                         v-model="scope.row.Status"
+						v-if="scope.row.id != 'all'"
                         >
 					  </el-switch>
-					  <el-tag type="success">{{scope.row.proveStatusTxt}}</el-tag>
+					  <el-tag v-if="scope.row.id != 'all'" type="success">{{scope.row.proveStatusTxt}}</el-tag>
 					</template>
 			    </el-table-column>
 				<el-table-column width="100">
 					<!-- v-if="scope2.row.switch" -->
 			      <template scope="scope2">
-			      	<router-link :to="{path: '/ad_detail',query: {id: scope2.row.link}}"><span class="table_detail">详情</span></router-link>
+			      	<router-link v-if="scope2.row.id != 'all'" :to="{path: '/ad_detail',query: {id: scope2.row.link}}"><span class="table_detail">详情</span></router-link>
 			      </template>
 			    </el-table-column>
 		  	</el-table>
@@ -269,7 +271,16 @@
 					that.loading = false;
 					
                     that.allPage = (res.data.total/10)*10;
-                    that.tableData = res.data.rows;
+					var MyDatas = res.data.rows;
+					
+					MyDatas[MyDatas.length-1].impressionNum = "累计"+MyDatas[MyDatas.length-1].impressionNum;
+					MyDatas[MyDatas.length-1].clickNum = "累计"+MyDatas[MyDatas.length-1].clickNum;
+					MyDatas[MyDatas.length-1].ctr = "平均"+MyDatas[MyDatas.length-1].ctr+"%";
+					MyDatas[MyDatas.length-1].ecpm = "平均"+MyDatas[MyDatas.length-1].ecpm;
+					MyDatas[MyDatas.length-1].acp = "平均"+MyDatas[MyDatas.length-1].acp;
+					MyDatas[MyDatas.length-1].consumption = "累计￥"+MyDatas[MyDatas.length-1].consumption;
+
+					that.tableData = MyDatas;
                      
 					// 特殊处理
                     for(var i = 0, Len = that.tableData.length; i < Len; i++) {
