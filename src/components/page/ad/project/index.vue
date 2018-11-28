@@ -43,18 +43,19 @@
 
 		<div class="tables">
 		 <el-form>
+			 <!-- :summary-method="getSummaries"
+				show-summary -->
 			<el-table
 				v-loading="loading" element-loading-text="数据加载中"
 			    :data="tableData"
 			    stripe
-				:summary-method="getSummaries"
-				show-summary
 			    style="width: 100%"
 				row-style="height:60px"
 				>
 			    <el-table-column
 			      prop="id"
 			      label="ID"
+				  v-if="id == 'all'"
 			      >
 			    </el-table-column>
 			    <el-table-column
@@ -83,6 +84,7 @@
                         on-color="#00D1B2"
                         off-color="#dadde5" 
                         v-model="scope.row.Status"
+						v-if="scope.row.id != 'all'"
                         >
 					  </el-switch>
 					</template>
@@ -90,7 +92,7 @@
 				<el-table-column
 			    >
 			      <template scope="scope2">
-			      	<router-link :to="{path: '/pro_detail',query: {id: scope2.row.link}}"><span class="table_detail">详情</span></router-link>
+			      	<router-link v-if="scope2.row.id != 'all'" :to="{path: '/pro_detail',query: {id: scope2.row.link}}"><span class="table_detail">详情</span></router-link>
 			      </template>
 			    </el-table-column>
 		  	</el-table>
@@ -169,7 +171,13 @@
 					that.loading = false;
 
                     that.allPage = (res.data.total/10)*10;
-                    that.tableData = res.data.rows;
+					// that.tableData = res.data.rows;
+					var MyDatas = res.data.rows;
+					MyDatas[MyDatas.length-1].consumption = "￥"+MyDatas[MyDatas.length-1].consumption;
+					that.tableData = MyDatas;
+					// that.tableData = MyDatas.concat(tableLast);
+					// console.log(that.tableData);
+					// that.tableData = that.tableData.push(tableLast);
                      
                     // 特殊处理
                     for(var i = 0, Len = that.tableData.length; i < Len; i++) {
