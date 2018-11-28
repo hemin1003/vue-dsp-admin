@@ -303,7 +303,7 @@
 						    <span class="unit_infro">选一个计费方式，我们将按这个来进行计算消耗</span>
 						</el-form-item>
 
-						<el-form-item label="单日预算" prop="budget_dayLimit">
+						<el-form-item label="单日预算">
 							<el-input v-model="ruleForm.budget_dayLimit" type="number" :disabled="Disabled"></el-input>
 						</el-form-item>
 
@@ -741,7 +741,7 @@
 					// params.append('target_brand', that.phoneArray);  //手机品牌
 					// params.append('target_excludeBrand', that.delPhoneArray);  //排除手机品牌
 					params.append('budget_type', that.ruleForm.budget_type);  //交易类型
-					params.append('budget_dayLimit', that.ruleForm.budget_dayLimit);
+					params.append('budget_dayLimit', that.ruleForm.budget_dayLimit || "");
 					params.append('budget_bidPrice', that.ruleForm.budget_bidPrice);  //出价
 
 					if(that.$route.query.type == "add") {

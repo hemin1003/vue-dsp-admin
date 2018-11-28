@@ -91,7 +91,7 @@
 						params.append('id', that.$route.query.id);
 						params.append('name', that.ruleForm.name);
 						params.append('contractId', that.ruleForm.contractId);
-						params.append('base_dayBudget', that.ruleForm.base_dayBudget);
+						params.append('base_dayBudget', that.ruleForm.base_dayBudget || "");
 						if(that.$route.query.type == "add") {
 							params.append('pId', that.$route.query.id);
 							params.append('loginUserName', username);

@@ -145,7 +145,7 @@
 				<el-form-item label="总预算" prop="budget">
 					<el-input v-model="ruleForm.budget" type="number" :disabled="Disabled"></el-input>
 				</el-form-item>
-				<el-form-item label="单日预算" prop="base_dayBudget">
+				<el-form-item label="单日预算">
 					<el-input v-model="ruleForm.base_dayBudget" type="number" :disabled="Disabled"></el-input>
 				</el-form-item>
 

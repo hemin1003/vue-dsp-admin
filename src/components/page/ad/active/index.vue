@@ -1,5 +1,5 @@
 <template>
-	<div class="ad_project" v-loading="loading" element-loading-text="数据加载中">
+	<div class="ad_project">
 		<el-row :gutter="20">
 			<el-form :inline="true" :model="formInline" label-width="500px">
 				<el-col :span="4">
@@ -47,6 +47,8 @@
 		<div class="tables">
 		 <el-form>
 			<el-table
+				v-loading="loading" 
+				element-loading-text="数据加载中"
 			    :data="tableData"
 			    stripe
 				:summary-method="getSummaries"
@@ -205,13 +207,19 @@
 			// 数据初始化渲染
 			Init() {
 				var that = this;
+				var IDs;
+				if(that.$route.query.ids != "") {
+					IDs = that.$route.query.ids;
+				}else {
+					IDs = that.formInline.project_id
+				}
 				let username = localStorage.getItem('ms_username');
 				var datas = {
 					loginUserName: username,
 					page: that.nowPages,
 					rows: 10,
 					id: that.formInline.active_id,
-					pId: that.formInline.project_id,
+					pId: IDs,
 					onlineStatus: that.formInline.staus,
 					startDate: that.timeVal[0],
 					endDate: that.timeVal[1]
@@ -356,11 +364,7 @@
 						console.log(err);
 					})
 				}else {
-					that.loading = false;
-					that.$notify.error({
-						title: '错误',
-						message: "请选择过滤条件！"
-					});
+					that.Init();
 				}
 			},
 			// 格式化时间

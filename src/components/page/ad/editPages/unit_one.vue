@@ -1,5 +1,5 @@
 <template>
-	<div class="unit_one">
+	<div class="unit_one lafiteOne">
 		<div class="unit_one_top">
 			<div class="unit_o_left_btn" @click="goBack"><i class="el-icon-arrow-left"></i>{{msg}}</div>
 			<div class="unit_o_right">
@@ -192,7 +192,7 @@
 		mounted() {
 			setTimeout(this.Init.bind(this),20);
 			this.ListFn("b019","ExposureMonitoringType"); //曝光监控类型
-			this.ListFn("b018","MaterialType"); // 物料类型
+			this.ListFn("b001","MaterialType"); // 物料类型
 			this.ListFn("b023","ClickTypes"); // 点击动作
 		},
 		methods: {
@@ -444,7 +444,7 @@
     	}
 	}
 </script>
-<style scoped>
+<style>
 	.unit_one_top {
 		width: 100%;
 		height: 2vw;
@@ -493,14 +493,14 @@
 			margin-top: 7px;
 		}
 
-		.unit_o_content,.unit_o_content2 {
+		.lafiteOne .unit_o_content,.lafiteOne .unit_o_content2 {
 			width: 70%;
 			margin-top: 1vw;
 			padding: 2vw 0 .2vw 0;
 			background: #FAFAFA;
 			margin-left: 15%;
 		}
-			.unit_o_content form,.unit_o_content2 form {
+			.lafiteOne .unit_o_content form,.unit_o_content2 form {
 				width: 100%;
 				/* margin-left: 15%; */
 			}

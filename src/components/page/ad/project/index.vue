@@ -4,7 +4,7 @@
 			<el-form :inline="true" :model="formInline" label-width="500px">
 				<el-col :span="12">
 					<el-select clearable v-model="formInline.id" placeholder="查询广告项目">
-	    				<el-option v-for="(items,index) in selectList" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
+	    				<el-option v-for="(items,index) in selectList2" :key="index" :label="items.keyStr" :value="items.valueStr"></el-option>
 	    			</el-select>
 					<!-- <el-input placeholder="查询广告主" icon="search"  class="search" ></el-input> -->
 				</el-col>
@@ -61,7 +61,7 @@
 			      label="名称"
 			      width="220">
 			      <template scope="scope_name">
-			      	<router-link class="names" to="/ad_activity">{{scope_name.row.name}}</router-link>
+			      	<router-link class="names" :to="{path: '/ad_activity',query: {ids: scope_name.row.link}}">{{scope_name.row.name}}</router-link>
 			      </template>
 			    </el-table-column>
 			    <el-table-column
@@ -143,6 +143,7 @@
 		mounted() {
 			this.dataInit();
 			this.selectFn();
+			this.selectOutFn();
 		},
 		methods: {
 			handleCurrentChange(val) {
@@ -194,11 +195,30 @@
 				var datas = {
 					loginUserName: username,
 				};
+				// getDspProjectList
 				this.$axios.get(this.hostname+'/manage/dsp/sys/config/getDspUserInfoList',{params: datas}).then(function(res){
                     // 响应成功回调
 					console.log(res)
 					if(res.status == 200) {
 						that.selectList = res.data;
+					}
+                }, function(err){
+                    console.log(err);
+                })
+			},
+			// 广告项目下拉菜单数据 11.28
+			selectOutFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+				};
+				// getDspProjectList
+				this.$axios.get(this.hostname+'/manage/dsp/sys/config/getDspProjectList',{params: datas}).then(function(res){
+                    // 响应成功回调
+					console.log(res)
+					if(res.status == 200) {
+						that.selectList2 = res.data;
 					}
                 }, function(err){
                     console.log(err);
@@ -300,11 +320,7 @@
 						console.log(err);
 					})
 				}else {
-					that.loading = false;
-					that.$notify.error({
-						title: '错误',
-						message: "请选择过滤条件！"
-					});
+					that.dataInit();
 				}
 				// console.log(that.formInline);
 			},
