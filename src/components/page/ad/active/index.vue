@@ -65,7 +65,7 @@
 			      label="名称"
 			    >
 			      <template scope="scope_name">
-			      	<router-link class="names" to="/ad_unit">{{scope_name.row.base_name}}</router-link>
+			      	<router-link class="names" :to="{path: '/ad_unit',query: {id: scope_name.row.id}}">{{scope_name.row.base_name}}</router-link>
 			      </template>
 			    </el-table-column>
 			    <el-table-column
@@ -73,7 +73,7 @@
 				  width="200"
 			      >
 			      <template scope="scope_ads">
-			      	<router-link class="names" to="/ad_project">{{scope_ads.row.pName}}</router-link>
+			      	<router-link class="names" :to="{path: '/pro_detail',query: {id: scope_ads.row.pId}}">{{scope_ads.row.pName}}</router-link>
 			      </template>
 			    </el-table-column>
         		<!-- <el-popover
