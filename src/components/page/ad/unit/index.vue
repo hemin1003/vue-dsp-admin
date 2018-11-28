@@ -241,6 +241,12 @@
 			// 数据初始化渲染
 			Init(tabs) {
 				var that = this;
+				var IDs;
+				if(that.$route.query.ids != "") {
+					IDs = that.$route.query.id;
+				}else {
+					IDs = that.formInline.adActiveId
+				}
 				let username = localStorage.getItem('ms_username');
 				var datas = {
 					loginUserName: username,
@@ -248,7 +254,7 @@
 					rows: 10,
 					proveStatus: tabs,
 					id: that.formInline.adUnitId,
-					pId: that.formInline.adActiveId,
+					pId: IDs,
 					ppId: that.formInline.adProjectId,
 					onlineStatus: that.formInline.staus,
 					startDate: that.timeVal[0],

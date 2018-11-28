@@ -39,6 +39,7 @@
     export default {
         data() {
             return {
+                nowPath: '',
                 Ids: [],
                 touchData: [],
                 // items: [
@@ -145,9 +146,42 @@
                 ]
             }
         },
+         watch: {
+            //监听路由，只要路由有变化(路径，参数等变化)都有执行下面的函数
+            $route: {
+                handler: function(val, oldVal) {
+                    let that = this;
+                    // this.nowPath = val.matched[0].path;
+                    console.log(val);
+                    console.log(this.$route.path.replace('/',''));
+                    // if(that.nowPath == "details") {
+                    //     that.nowPath = "ad_userinfo";
+                    // }
+                },
+
+            }
+        },
         computed:{
             onRoutes(){
-                return this.$route.path.replace('/','');
+                this.nowPath = this.$route.path.replace('/','');
+                // 广告主 子菜单绑定
+                if(this.nowPath == "details") {
+                    this.nowPath = "ad_userinfo";
+                }
+                // 广告活动 子菜单绑定
+                if(this.nowPath == "pro_detail") {
+                    this.nowPath = "ad_project";
+                }
+                // 广告活动 子菜单绑定
+                if(this.nowPath == "active_detail") {
+                    this.nowPath = "ad_activity"
+                }
+                // 广告单元 子菜单绑定
+                if(this.nowPath == "ad_detail") {
+                    this.nowPath = "ad_unit"
+                }
+                console.log(this.nowPath);
+                return this.nowPath;
             }
         },
         mounted(){
