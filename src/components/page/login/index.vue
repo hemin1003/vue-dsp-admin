@@ -18,7 +18,7 @@ export default {
   name: 'login',
   data () {
     return {
-      msg: 'Ad广告管理平台',
+      msg: '悦动广告平台',
       datas: {
         name: "",
         pwd: ""
