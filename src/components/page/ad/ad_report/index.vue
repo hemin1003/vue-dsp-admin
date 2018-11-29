@@ -326,6 +326,7 @@ import echarts from 'echarts'
 						that.loading = false;
 						that.allPage = (res.data.total/10)*10;
 						that.tableData = res.data.rows;
+						that.All = res.data.footer;
 
 						var datas2 = {
 							loginUserName: username,
@@ -336,9 +337,9 @@ import echarts from 'echarts'
 								// 响应成功回调
 								that.countAll = res.data.rows[0].surplus;
 								that.arr= [
-									{name: "今日总曝光",val: that.tableData[0].showNum,class: "count_special"},
-									{name: "今日总点击",val: that.tableData[0].clickNum},
-									{name: "今日总消耗",val: that.tableData[0].consumption},
+									{name: "今日总曝光",val: that.All[0].allShowNum,class: "count_special"},
+									{name: "今日总点击",val: that.All[0].allClickNum},
+									{name: "今日总消耗",val: that.All[0].allConsumption},
 									{name: "账户余额",val: that.countAll}
 							]
 						}, function(err){
@@ -413,7 +414,7 @@ import echarts from 'echarts'
     }
 	}
 </script>
-<style>
+<style scoped>
 	.tables {
 		margin-top: 20px;
 	}
@@ -433,12 +434,6 @@ import echarts from 'echarts'
 		.table_detail:focus {
 			color: gray;
 		}
-
-
-
-		.content {
-    background: #EFEFEF;
-}
 .el-row {
     margin-bottom: 20px;
   }
@@ -446,10 +441,10 @@ import echarts from 'echarts'
     border-radius: 4px;
   }
   .bg-purple-dark {
-    background: #99a9bf;
+    background: #EEF6F6;
   }
   .bg-purple {
-    background: #d3dce6;
+    background: #EEF6F6;
   }
   .bg-purple-light {
     background: #e5e9f2;
@@ -458,7 +453,7 @@ import echarts from 'echarts'
     min-height: 8.5rem;
     text-align: center;
     font-size: 1.4rem;
-    background: white;
+    /* background: white; */
     margin-bottom: .5rem;
   }
     .grid-content span {
