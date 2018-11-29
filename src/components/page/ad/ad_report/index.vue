@@ -105,7 +105,7 @@
 	</div>
 </template>
 <script>
-import echarts from 'echarts'
+// import echarts from 'echarts'
 	export default {
 		data() {
 			return {
@@ -301,13 +301,8 @@ import echarts from 'echarts'
                     ]
                     })
                 });
-                // echarts 随着窗口大小改变而改变
-                // window.onresize(myChart.resize()) 
-                    
-                
-                
             }
-						that.fn();
+						// that.fn();
 		},
 		methods:{
 			Init() {
@@ -397,18 +392,18 @@ import echarts from 'echarts'
 								message: '暂未开放，敬请期待~',
 							});
 					}else {
-						this.fn()  
+						// this.fn()  
 					}
 			},
 			SelectFn(val) {
 				  this.show_day = '';
 					this.startDate = val.split('至')[0];
 					this.endDate = val.split('至')[1];
-					this.fn();
+					// this.fn();
 					console.log(this.endDate);
 			},
 			adStatusFn(val) {
-				this.fn();
+				// this.fn();
 				console.log(this.adVal);
 			}
     }
