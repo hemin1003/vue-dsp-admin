@@ -70,6 +70,9 @@
 			      prop="pName"
 			      label="广告主"
 			      >
+				  <template scope="scope_name">
+			      	<router-link class="names" :to="{path: '/details',query: {id: scope_name.row.pId}}">{{scope_name.row.pName}}</router-link>
+			      </template>
 			    </el-table-column>
 			    <el-table-column
 			      prop="consumption"
