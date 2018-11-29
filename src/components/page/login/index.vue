@@ -18,7 +18,7 @@ export default {
   name: 'login',
   data () {
     return {
-      msg: '悦易投DSP平台',
+      msg: 'Ad广告管理平台',
       datas: {
         name: "",
         pwd: ""
