@@ -245,11 +245,10 @@
 			// 数据初始化渲染
 			Init(tabs) {
 				var that = this;
-				var IDs;
 				if(that.$route.query.ids != "") {
-					IDs = that.$route.query.id;
+					that.IDs = that.$route.query.id;
 				}else {
-					IDs = that.formInline.adActiveId
+					that.IDs = that.formInline.adActiveId;
 				}
 				let username = localStorage.getItem('ms_username');
 				var datas = {
@@ -258,7 +257,7 @@
 					rows: 10,
 					proveStatus: tabs,
 					id: that.formInline.adUnitId,
-					pId: IDs,
+					pId: that.IDs,
 					ppId: that.formInline.adProjectId,
 					onlineStatus: that.formInline.staus,
 					startDate: that.timeVal[0],
@@ -424,13 +423,10 @@
                     console.log(err);
                 })
 			},
-			//搜索查询fn
-			searchFn() {
+			// 公共函数api Fn
+			commonAjaxFn() {
 				var that = this;
-				that.loading = true;
-				//  || (that.formInline.adPosition != undefined)
-				if((that.formInline.adProjectId != undefined) || (that.formInline.adActiveId != undefined) || (that.formInline.adUnitId != undefined) || (that.formInline.adChannel != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
-					let username = localStorage.getItem('ms_username');
+				let username = localStorage.getItem('ms_username');
 					var datas = {
 						loginUserName: username,
 						id: that.formInline.adUnitId,
@@ -478,13 +474,25 @@
 								that.tableData[i].Status = true
 							}
 						}
-                     
+					
 					}, function(err){
 						console.log(err);
 					})
+				},
+			//搜索查询fn
+			searchFn() {
+				var that = this;
+				that.loading = true;
+				if(that.$route.query.ids != "") {
+					that.commonAjaxFn();
 				}else {
-					that.Init();
+					if((that.formInline.adProjectId != undefined) || (that.formInline.adActiveId != undefined) || (that.formInline.adUnitId != undefined) || (that.formInline.adChannel != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
+						that.commonAjaxFn();
+					}else {
+						that.Init();
+					}
 				}
+				
 			},
 			// 格式化时间
 			dateChange(val) {
@@ -497,6 +505,12 @@
 					message: '正在加速开发中....',
 					type: 'warning'
 				});
+			}
+		},
+		watch: {
+			// 下拉框清楚数据
+			getClear() {
+				return this.formInline.adActiveId
 			}
 		}
 	}

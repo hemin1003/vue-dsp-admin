@@ -150,10 +150,10 @@ import echarts from 'echarts'
                 ],
                 countdata: [],
                 arr: [
-                    {name: "今日总曝光",val: "￥0.000",class: "count_special"},
-                    {name: "今日总点击",val: "￥0.000"},
-                    {name: "今日总消耗",val: "￥0.000"},
-                    {name: "账户余额",val: "￥0.000"}
+                    // {name: "今日总曝光",val: "￥0.000",class: "count_special"},
+                    // {name: "今日总点击",val: "￥0.000"},
+                    // {name: "今日总消耗",val: "￥0.000"},
+                    // {name: "账户余额",val: "￥0.000"}
                ],
                tableData: [],
                 Xdate: null,
@@ -176,7 +176,7 @@ import echarts from 'echarts'
 									dateEnd: that.endDate,
 									advertiserId: userId
 								};
-                that.$axios.get(that.hostname+"/manage/htt/httReportAdsCustomChild/admin/report",{params: datas}).then(function(response){
+                that.$axios.get(that.hostname+"/manage/dsp/userInfo/admin/reportList",{params: datas}).then(function(response){
 										console.log(response.data);
 										// object => array
 										var arr = [],
@@ -310,7 +310,7 @@ import echarts from 'echarts'
                 
                 
             }
-            that.fn();
+						that.fn();
 		},
 		methods:{
 			Init() {
@@ -323,16 +323,50 @@ import echarts from 'echarts'
 					rows: that.paramdata.returnPage,
 					advertiserId: userId
 				};
-				this.$axios.get(this.hostname+'/manage/htt/httReportAdsCustomChild/admin/list',{params: datas}).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-										that.loading = false;
-										
-                    that.allPage = res.data.total;
-                    that.tableData = res.data.rows;
-                }, function(err){
-                    console.log(err);
+				that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/listInfo',{params: datas}).then(function(res){
+						// 响应成功回调
+						console.log(res.data);
+						that.loading = false;
+						that.allPage = res.data.total;
+						that.tableData = res.data.rows;
+
+						var datas2 = {
+							loginUserName: username,
+							page: 1,
+							rows: 10
+						};
+						that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/list',{params: datas2}).then(function(res){
+								// 响应成功回调
+								that.countAll = res.data.rows[0].surplus;
+								that.arr= [
+									{name: "今日总曝光",val: that.tableData[0].showNum,class: "count_special"},
+									{name: "今日总点击",val: that.tableData[0].clickNum},
+									{name: "今日总消耗",val: that.tableData[0].consumption},
+									{name: "账户余额",val: that.countAll}
+							]
+						}, function(err){
+								console.log(err);
+						})
+				}, function(err){
+						console.log(err);
         })
+			},
+			// 获取账户余额
+				countAllFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas2 = {
+					loginUserName: username,
+					page: 1,
+					rows: 10
+				};
+				that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/list',{params: datas2}).then(function(res){
+            // 响应成功回调
+						that.countAll = res.data.rows[0].surplus;
+						console.log("吴丰池"+that.countAll);
+				}, function(err){
+						console.log(err);
+				})
 			},
 			dropdownFn() {
 				var that = this;

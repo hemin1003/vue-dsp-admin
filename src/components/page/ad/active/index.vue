@@ -338,44 +338,83 @@
 			openDetails(row) {
 				this.$router.push('/active_detail?id='+row.valueStr+'&pPid='+row.pPid+'&type=add');
 			},
+			// 公共函数api Fn
+			commonAjaxFn() {
+				var that = this;
+				let username = localStorage.getItem('ms_username');
+				var datas = {
+					loginUserName: username,
+					id: that.formInline.active_id,
+					pId: that.formInline.project_id,
+					onlineStatus: that.formInline.staus,
+					startDate: that.timeVal[0],
+					endDate: that.timeVal[1]
+				};
+				this.$axios.get(that.hostname+'/manage/dsp/activity/admin/list',{params: datas}).then(function(res){
+					// 响应成功回调
+					console.log(res.data);
+					that.loading = false;
+
+					that.allPage = res.data.total;
+					that.tableData = res.data.rows;
+					
+					// 特殊处理
+					for(var i = 0, Len = that.tableData.length; i < Len; i++) {
+						that.tableData[i].btn_stauts = true;
+						that.tableData[i].link = that.tableData[i].id;
+						// 上线状态
+						if(that.tableData[i].onlineStatus == 0) {
+							that.tableData[i].Status = false
+						}else {
+							that.tableData[i].Status = true
+						}
+					}
+				}, function(err){
+					console.log(err);
+				})
+			},
 			//搜索查询fn
 			searchFn() {
 				var that = this;
 				that.loading = true;
-				if((that.formInline.project_id != undefined) || (that.formInline.active_id != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
-					let username = localStorage.getItem('ms_username');
-					var datas = {
-						loginUserName: username,
-						id: that.formInline.active_id,
-						pId: that.formInline.project_id,
-						onlineStatus: that.formInline.staus,
-						startDate: that.timeVal[0],
-						endDate: that.timeVal[1]
-					};
-					this.$axios.get(that.hostname+'/manage/dsp/activity/admin/list',{params: datas}).then(function(res){
-						// 响应成功回调
-						console.log(res.data);
-						that.loading = false;
-
-						that.allPage = res.data.total;
-						that.tableData = res.data.rows;
-						
-						// 特殊处理
-						for(var i = 0, Len = that.tableData.length; i < Len; i++) {
-							that.tableData[i].btn_stauts = true;
-							that.tableData[i].link = that.tableData[i].id;
-							// 上线状态
-							if(that.tableData[i].onlineStatus == 0) {
-								that.tableData[i].Status = false
-							}else {
-								that.tableData[i].Status = true
-							}
-						}
-					}, function(err){
-						console.log(err);
-					})
+				if(that.$route.query.ids != "") {
+					that.commonAjaxFn();
 				}else {
-					that.Init();
+					if((that.formInline.project_id != undefined) || (that.formInline.active_id != undefined) || (that.formInline.staus != undefined) || (that.timeVal.length != 0)) {
+						let username = localStorage.getItem('ms_username');
+						var datas = {
+							loginUserName: username,
+							id: that.formInline.active_id,
+							pId: that.formInline.project_id,
+							onlineStatus: that.formInline.staus,
+							startDate: that.timeVal[0],
+							endDate: that.timeVal[1]
+						};
+						this.$axios.get(that.hostname+'/manage/dsp/activity/admin/list',{params: datas}).then(function(res){
+							// 响应成功回调
+							console.log(res.data);
+							that.loading = false;
+
+							that.allPage = res.data.total;
+							that.tableData = res.data.rows;
+							
+							// 特殊处理
+							for(var i = 0, Len = that.tableData.length; i < Len; i++) {
+								that.tableData[i].btn_stauts = true;
+								that.tableData[i].link = that.tableData[i].id;
+								// 上线状态
+								if(that.tableData[i].onlineStatus == 0) {
+									that.tableData[i].Status = false
+								}else {
+									that.tableData[i].Status = true
+								}
+							}
+						}, function(err){
+							console.log(err);
+						})
+					}else {
+						that.Init();
+					}
 				}
 			},
 			// 格式化时间
