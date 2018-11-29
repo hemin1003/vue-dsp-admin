@@ -243,7 +243,7 @@
                     // 响应成功回调
                     console.log(res.data);
 					that.ruleForm = res.data;
-
+					that.selectDataFn();
 					//状态开关
 					if(that.ruleForm.onlineStatus == 1) {
 						that.statusRadio = true
@@ -267,7 +267,6 @@
 							break;
 					}
                     that.uploadDatas.ohtersPic = that.ruleForm.othersUrl.split(',');
-                    that.selectDataFn();
                     if(turn == 1) {
                     	// 多张图片上传渲染
 	                    for(var i = 0,L = that.ruleForm.othersUrl.split(',').length; i < L; i++) {
