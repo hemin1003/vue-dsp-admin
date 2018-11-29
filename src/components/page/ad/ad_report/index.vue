@@ -3,18 +3,15 @@
 				<el-row>
             <el-col :span="6" v-for="(item,index) in arr" :key="index"><div class="grid-content bg-purple" :class="item.class"><span>{{item.name}}</span><p>{{item.val}}</p></div></el-col>
         </el-row>
-        <div class="chart_nav">
+				
+        <!-- <div class="chart_nav">
             <span class="chart_title">{{echart_title}}</span>
-						<!-- <el-col :span="3"> -->
 	    			<el-select v-model="adVal" placeholder="选择状态" @change="adStatusFn" style="margin-left: 15px;">
-	    				<el-option v-for="ads in adsType" :key="ads.id" :label="ads.adsName" :value="ads.adsId"></el-option>
-	    				<!-- <el-option label="暂停" value="32131233"></el-option> -->
+	    				<el-option v-for="ads in adsType" :key="ads.id" :label="ads.keyStr" :value="ads.valueStr"></el-option>
 	    			</el-select>
-    			<!-- </el-col> -->
             <div class="all_btn">
                 <div class="chart_btn" @click="tap(index)" :class="{echat_active: active ==index}" v-for="(item,index) in echart_btn" :key="index">{{item.name}}</div>
 
-                <!-- 日期选择 -->
                 <el-date-picker
                     @change="SelectFn"
                     v-model="valueDate"
@@ -29,7 +26,7 @@
            <el-col :span="24">
                 <div id="mychart"></div>
             </el-col> 
-        </el-row>
+        </el-row> -->
 
 	  	<el-row :gutter="20">
 			<!-- <el-form :inline="true" :model="formInline" label-width="500px">
@@ -327,7 +324,7 @@ import echarts from 'echarts'
 						// 响应成功回调
 						console.log(res.data);
 						that.loading = false;
-						that.allPage = res.data.total;
+						that.allPage = (res.data.total/10)*10;
 						that.tableData = res.data.rows;
 
 						var datas2 = {
@@ -363,18 +360,17 @@ import echarts from 'echarts'
 				that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/list',{params: datas2}).then(function(res){
             // 响应成功回调
 						that.countAll = res.data.rows[0].surplus;
-						console.log("吴丰池"+that.countAll);
 				}, function(err){
 						console.log(err);
 				})
 			},
 			dropdownFn() {
 				var that = this;
-				that.$axios.get(this.hostname+'/manage/htt/httReportAdsCustomChild/admin/getAdsIdList').then(function(res){
+				that.$axios.get(this.hostname+'/manage/dsp/sys/config/getDspUnitList').then(function(res){
 							// 响应成功回调
 							console.log(res.data);
 							that.adsType = res.data;
-							that.adVal = res.data[0].adsId;
+							that.adVal = res.data[0].valueStr;
 							}, function(err){
 									console.log(err);
         })
