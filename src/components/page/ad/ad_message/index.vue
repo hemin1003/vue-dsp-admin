@@ -33,28 +33,28 @@
 			    style="width: 100%"
 					row-style="height:60px">
 			    <el-table-column
-			      prop="advertiserId"
+			      prop="id"
 			      label="广告主ID"
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="advertiserName"
-			      label="广告主昵称"
+			      prop="name"
+			      label="广告主名"
 			      width="">
 			    </el-table-column>
 			    <el-table-column
-			      prop="account"
+			      prop="loginUserName"
 			      label="账号"
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="amount"
+			      prop="rechargeAmount"
 			      label="充值总金额"
 			      
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="remainAmount"
+			      prop="surplus"
 			      label="剩余金额"
 			      >
 			    </el-table-column>
@@ -105,7 +105,7 @@
 					page: 1,
 					rows: 10
 				};
-				this.$axios.get(this.hostname+'/manage/htt/httAdvertiserInfoNew/admin/list',{params: datas}).then(function(res){
+				this.$axios.get(this.hostname+'/manage/dsp/userInfo/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调
                     console.log(res.data);
 										that.loading = false;

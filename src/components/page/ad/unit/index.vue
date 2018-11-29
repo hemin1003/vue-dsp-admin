@@ -77,10 +77,12 @@
 			    style="width: 100%"
 				row-style="height:60px">
 			    <el-table-column
-			      prop="id"
 			      label="ID"
-				  v-if="id == 'all'"
 			      >
+				  <template scope="scope_id">
+			      	<span v-if="scope_id.row.id != 'all'">{{scope_id.row.id}}</span>
+			      </template>
+
 			    </el-table-column>
 			    <el-table-column
 			      label="名称"

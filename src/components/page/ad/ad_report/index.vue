@@ -165,14 +165,16 @@ import echarts from 'echarts'
 			that.dropdownFn();
 			that.Init();
             // 初始化echarts
-            let myChart = echarts.init(document.getElementById('mychart'));
+						let myChart = echarts.init(document.getElementById('mychart'));
+						let userId = localStorage.getItem('adId');
             // 封装调用api
             that.fn = function () {
 								// 日期数据api
 								var datas = {
 									dayNum: that.show_day,
 									dateStart: that.startDate,
-									dateEnd: that.endDate
+									dateEnd: that.endDate,
+									advertiserId: userId
 								};
                 that.$axios.get(that.hostname+"/manage/htt/httReportAdsCustomChild/admin/report",{params: datas}).then(function(response){
 										console.log(response.data);
@@ -314,10 +316,12 @@ import echarts from 'echarts'
 			Init() {
 				var that = this;
 				let username = localStorage.getItem('ms_username');
+				let userId = localStorage.getItem('adId');
 				var datas = {
 					loginUserName: username,
 					page: that.paramdata.currentPage,
-					rows: that.paramdata.returnPage
+					rows: that.paramdata.returnPage,
+					advertiserId: userId
 				};
 				this.$axios.get(this.hostname+'/manage/htt/httReportAdsCustomChild/admin/list',{params: datas}).then(function(res){
                     // 响应成功回调

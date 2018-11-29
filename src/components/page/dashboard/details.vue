@@ -63,10 +63,9 @@
 				<el-form-item label="联系人地址" prop="contactAddress">
 					<el-input v-model="ruleForm.contactAddress" :disabled="Disabled"></el-input>
 				</el-form-item>
-				
-				<!--  prop="title" -->
-				<el-form-item label="营业执照" prop="businessLicenseUrl">
-					<!-- :action="UploadUrl()" -->
+
+				<!-- prop="businessLicenseUrl" -->
+				<el-form-item label="营业执照">
 					<el-upload
 					  :disabled="Disabled"
 					  :data="uploadDatas"
@@ -88,7 +87,8 @@
 					</el-upload>
 				</el-form-item>
 
-				<el-form-item label="ICP证书" prop="icpUrl">
+				<!-- prop="icpUrl" -->
+				<el-form-item label="ICP证书">
 					<el-upload
 					  :disabled="Disabled"
 					  class="avatar-uploader"
@@ -141,15 +141,17 @@
 					  off-color="#dadde5">
 					</el-switch>
 				</el-form-item>
-
-				<el-form-item label="总预算" prop="budget">
+				
+				<!--  prop="budget" -->
+				<el-form-item label="总预算">
 					<el-input v-model="ruleForm.budget" type="number" :disabled="Disabled"></el-input>
 				</el-form-item>
 				<el-form-item label="单日预算">
 					<el-input v-model="ruleForm.base_dayBudget" type="number" :disabled="Disabled"></el-input>
 				</el-form-item>
 
-				<el-form-item label="备注" prop="descInfo">
+				<!-- prop="descInfo" -->
+				<el-form-item label="备注">
 					<el-input
 					  :disabled="Disabled"
 					  type="textarea"
