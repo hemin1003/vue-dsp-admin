@@ -146,7 +146,10 @@
 					that.loading = false;
 
                     that.allPage = (res.data.total/10)*10;
-                    that.tableData = res.data.rows;
+					that.tableData = res.data.rows;
+					
+					// 存储广告主id
+					localStorage.setItem('adId',that.tableData[0].id);
                      
                     // 特殊处理
                     for(var i = 0, Len = that.tableData.length; i < Len; i++) {
