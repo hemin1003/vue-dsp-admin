@@ -57,7 +57,7 @@
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="advertiser"
+			      prop="advertiserName"
 			      label="广告主"
 			      width="220">
 			    </el-table-column>
@@ -73,13 +73,13 @@
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="showNum"
-			      label="展示次数"
+			      prop="exposureNum"
+			      label="曝光数"
 			      >
 			    </el-table-column>
 					<el-table-column
 			      prop="clickNum"
-			      label="点击次数"
+			      label="点击数"
 			      >
 			    </el-table-column>
 					<el-table-column
@@ -88,7 +88,7 @@
 			      >
 			    </el-table-column>
 					<el-table-column
-			      prop="consumption"
+			      prop="clickConsumption"
 			      label="消耗金额"
 			      >
 			    </el-table-column>
@@ -284,12 +284,12 @@
                         //     data: that.val_date
 												// },
 												 {
-															name:'展示次数',
+															name:'曝光数',
 															type:'line',
 															data: showNumArr
 													},
 													{
-															name:'点击次数',
+															name:'点击数',
 															type:'line',
 															data: clickNumArr
 													},
@@ -315,7 +315,7 @@
 					rows: that.paramdata.returnPage,
 					advertiserId: userId
 				};
-				that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/listInfo',{params: datas}).then(function(res){
+				that.$axios.get(that.hostname+'/manage/dsp/deductHis/admin/reportList',{params: datas}).then(function(res){
 						// 响应成功回调
 						console.log(res.data);
 						that.loading = false;
@@ -328,18 +328,25 @@
 							page: 1,
 							rows: 10
 						};
-						that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/list',{params: datas2}).then(function(res){
-								// 响应成功回调
-								that.countAll = res.data.rows[0].surplus;
-								that.arr= [
-									{name: "今日总曝光",val: that.All[0].allShowNum,class: "count_special"},
-									{name: "今日总点击",val: that.All[0].allClickNum},
-									{name: "今日总消耗",val: that.All[0].allConsumption},
-									{name: "账户余额",val: that.countAll}
-							]
-						}, function(err){
-								console.log(err);
-						})
+
+						that.arr= [
+								{name: "今日总曝光",val: that.All[0].allExposureNum,class: "count_special"},
+								{name: "今日总点击",val: that.All[0].allClickNum},
+								{name: "今日总消耗",val: that.All[0].allConsumption},
+								{name: "账户余额",val: that.All[0].surplus}
+						]
+						// that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/list',{params: datas2}).then(function(res){
+						// 		// 响应成功回调
+						// 		that.countAll = res.data.rows[0].surplus;
+						// 		that.arr= [
+						// 			{name: "今日总曝光",val: that.All[0].allShowNum,class: "count_special"},
+						// 			{name: "今日总点击",val: that.All[0].allClickNum},
+						// 			{name: "今日总消耗",val: that.All[0].allConsumption},
+						// 			{name: "账户余额",val: that.countAll}
+						// 	]
+						// }, function(err){
+						// 		console.log(err);
+						// })
 				}, function(err){
 						console.log(err);
         })
