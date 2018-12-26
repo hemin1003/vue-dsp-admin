@@ -80,16 +80,7 @@
 		          user: '',
 		          region: ''
 		        },
-		        tableData: [{
-		          ID: "1108118799",
-		          Creatdate: '2016-05-02',
-		          balance: "76178 (0)",
-		          Allprice: "76179.42",
-		          turn: true,
-		          name: '上海为行投资管理有限公司',
-		          status: '审核中',
-		          link: "/login"
-		        }],
+		        tableData: [{}],
 		        allPage: ''
 			}
 		},
@@ -111,7 +102,11 @@
 										that.loading = false;
 										
                     that.allPage = res.data.total;
-                    that.tableData = res.data.rows;
+										that.tableData = res.data.rows;
+										for(var i =0; i < that.tableData.length; i++) {
+											that.tableData[i].rechargeAmount = "￥"+that.tableData[i].rechargeAmount;
+											that.tableData[i].surplus = "￥"+that.tableData[i].surplus;
+										}
                 }, function(err){
                     console.log(err);
                 })

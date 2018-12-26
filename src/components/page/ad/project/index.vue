@@ -177,7 +177,14 @@
                     that.allPage = (res.data.total/10)*10;
 					// that.tableData = res.data.rows;
 					var MyDatas = res.data.rows;
-					MyDatas[MyDatas.length-1].consumption = "￥"+MyDatas[MyDatas.length-1].consumption;
+					for(var i = 0; i < MyDatas.length; i++) {
+						if(MyDatas[i].consumption == null) {
+							MyDatas[i].consumption = "￥0.00";
+						}else {
+							MyDatas[i].consumption = "￥"+MyDatas[i].consumption;
+						}
+					}
+					// MyDatas[MyDatas.length-1].consumption = "￥"+MyDatas[MyDatas.length-1].consumption;
 					that.tableData = MyDatas;
 					// that.tableData = MyDatas.concat(tableLast);
 					// console.log(that.tableData);
