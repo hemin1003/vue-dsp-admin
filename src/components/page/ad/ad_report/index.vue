@@ -57,13 +57,8 @@
 			      >
 			    </el-table-column>
 			    <el-table-column
-			      prop="advertiserName"
-			      label="广告主"
-			      width="220">
-			    </el-table-column>
-			    <el-table-column
-			      prop="advertiserId"
-			      label="广告主ID"
+			      prop="adsId"
+			      label="广告ID"
 			      >
 			    </el-table-column>
 			    <el-table-column
@@ -95,6 +90,7 @@
 					<el-table-column
 			      prop="createDate"
 			      label="消耗时间"
+						width="220"
 			      >
 			    </el-table-column>
 		  	</el-table>
