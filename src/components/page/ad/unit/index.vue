@@ -273,13 +273,41 @@
 					
                     that.allPage = (res.data.total/10)*10;
 					var MyDatas = res.data.rows;
+
+					for(var i =0; i < MyDatas.length; i++) {
+						if(MyDatas[i].impressionNum == null) {
+							MyDatas[i].impressionNum = "-";
+						}
+
+						if(MyDatas[i].clickNum == null) {
+							MyDatas[i].clickNum = "-";
+						}
+
+						if(MyDatas[i].ctr == null) {
+							MyDatas[i].ctr = "-";
+						}
+
+						if(MyDatas[i].ecpm == null) {
+							MyDatas[i].ecpm = "-";
+						}
+
+						if(MyDatas[i].acp == null) {
+							MyDatas[i].acp = "-";
+						}
+
+						if(MyDatas[i].consumption == null) {
+							MyDatas[i].consumption = "￥0.00";
+						}else {
+							MyDatas[i].consumption = "￥"+MyDatas[i].consumption;
+						}
+					}
 					
 					MyDatas[MyDatas.length-1].impressionNum = "累计"+MyDatas[MyDatas.length-1].impressionNum;
 					MyDatas[MyDatas.length-1].clickNum = "累计"+MyDatas[MyDatas.length-1].clickNum;
-					MyDatas[MyDatas.length-1].ctr = "平均"+MyDatas[MyDatas.length-1].ctr+"%";
+					MyDatas[MyDatas.length-1].ctr = "平均"+MyDatas[MyDatas.length-1].ctr;
 					MyDatas[MyDatas.length-1].ecpm = "平均"+MyDatas[MyDatas.length-1].ecpm;
 					MyDatas[MyDatas.length-1].acp = "平均"+MyDatas[MyDatas.length-1].acp;
-					MyDatas[MyDatas.length-1].consumption = "累计￥"+MyDatas[MyDatas.length-1].consumption;
+					MyDatas[MyDatas.length-1].consumption = "累计"+MyDatas[MyDatas.length-1].consumption;
 
 					that.tableData = MyDatas;
                      

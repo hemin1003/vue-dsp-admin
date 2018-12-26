@@ -92,6 +92,11 @@
 			      label="消耗金额"
 			      >
 			    </el-table-column>
+					<el-table-column
+			      prop="createDate"
+			      label="消耗时间"
+			      >
+			    </el-table-column>
 		  	</el-table>
 		</el-form>
 		</div>
@@ -322,7 +327,7 @@
 						that.allPage = (res.data.total/10)*10;
 						that.tableData = res.data.rows;
 						that.All = res.data.footer;
-
+						
 						var datas2 = {
 							loginUserName: username,
 							page: 1,
@@ -332,9 +337,13 @@
 						that.arr= [
 								{name: "今日总曝光",val: that.All[0].allExposureNum,class: "count_special"},
 								{name: "今日总点击",val: that.All[0].allClickNum},
-								{name: "今日总消耗",val: that.All[0].allConsumption},
-								{name: "账户余额",val: that.All[0].surplus}
+								{name: "今日总消耗",val: '￥'+ that.All[0].allConsumption},
+								{name: "账户余额",val: '￥'+ that.All[0].surplus}
 						]
+
+						for(var i = 0; i < that.tableData.length; i++) {
+							that.tableData[i].clickConsumption = "￥"+that.tableData[i].clickConsumption;
+						}
 						// that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/list',{params: datas2}).then(function(res){
 						// 		// 响应成功回调
 						// 		that.countAll = res.data.rows[0].surplus;
@@ -352,21 +361,21 @@
         })
 			},
 			// 获取账户余额
-				countAllFn() {
-				var that = this;
-				let username = localStorage.getItem('ms_username');
-				var datas2 = {
-					loginUserName: username,
-					page: 1,
-					rows: 10
-				};
-				that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/list',{params: datas2}).then(function(res){
-            // 响应成功回调
-						that.countAll = res.data.rows[0].surplus;
-				}, function(err){
-						console.log(err);
-				})
-			},
+			// 	countAllFn() {
+			// 	var that = this;
+			// 	let username = localStorage.getItem('ms_username');
+			// 	var datas2 = {
+			// 		loginUserName: username,
+			// 		page: 1,
+			// 		rows: 10
+			// 	};
+			// 	that.$axios.get(that.hostname+'/manage/dsp/userInfo/admin/list',{params: datas2}).then(function(res){
+      //       // 响应成功回调
+			// 			that.countAll = res.data.rows[0].surplus;
+			// 	}, function(err){
+			// 			console.log(err);
+			// 	})
+			// },
 			dropdownFn() {
 				var that = this;
 				that.$axios.get(this.hostname+'/manage/dsp/sys/config/getDspUnitList').then(function(res){
